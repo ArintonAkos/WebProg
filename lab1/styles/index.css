@@ -1,9 +1,9 @@
-article.item .read-more-link {
-    text-align: right;
+div.item .read-more-link {
+  text-align: right;
 }
 
 article .description {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
