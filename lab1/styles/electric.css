@@ -1,0 +1,14 @@
+.comparison-table {
+    width: 100%;
+}
+
+.comparison-table th {
+    background-color: #CACACA88;
+    font-size: 18px;
+}
+
+/* 1.2 - 5 */
+section > h2 + ol {
+    list-style-type: lower-latin;
+    color: #363636;
+}
