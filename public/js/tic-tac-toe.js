@@ -12,9 +12,147 @@ const getHeight = () => {
   return parseInt(heightInput.value, 10);
 };
 
-const updateGameState = (i, j, turn) => {
-  gameBoard[i][j] = turn;
+const updateGameState = (i, j, turn_state) => {
+  gameBoard[i][j] = turn_state;
 };
+
+
+const checkHorizontal = (width, height) => {
+  for (let i = 0; i < height; i++) {
+    let count = 0;
+    let currentType = null;
+
+    for (let j = 0; j < width; j++) {
+      const cellType = gameBoard[i][j];
+
+      if (cellType === null) {
+        count = 0;
+        currentType = null;
+      } else if (cellType === currentType) {
+        count++;
+
+        if (count === 3) {
+          return currentType;
+        }
+      } else {
+        count = 1;
+        currentType = cellType;
+      }
+    }
+  }
+
+  return false;
+};
+
+const checkVertical = (width, height) => {
+  for (let j = 0; j < width; j++) {
+    let count = 0;
+    let currentType = null;
+
+    for (let i = 0; i < height; i++) {
+      const cellType = gameBoard[i][j];
+
+      if (cellType === null) {
+        count = 0;
+        currentType = null;
+      } else if (cellType === currentType) {
+        count++;
+
+        if (count === 3) {
+          return currentType;
+        }
+      } else {
+        count = 1;
+        currentType = cellType;
+      }
+    }
+  }
+
+  return false;
+};
+
+const checkDiagonal = (width, height) => {
+  for (let i = 0; i < height; i++) {
+    for (let j = 0; j < width; j++) {
+      if (i + 2 < height && j + 2 < width) {
+        const cellType = gameBoard[i][j];
+        const diagonal1 = gameBoard[i + 1][j + 1];
+        const diagonal2 = gameBoard[i + 2][j + 2];
+
+        if (cellType !== null && cellType === diagonal1 && cellType === diagonal2) {
+          return cellType;
+        }
+      }
+
+      if (i + 2 < height && j - 2 >= 0) {
+        const cellType = gameBoard[i][j];
+        const diagonal1 = gameBoard[i + 1][j - 1];
+        const diagonal2 = gameBoard[i + 2][j - 2];
+
+        if (cellType !== null && cellType === diagonal1 && cellType === diagonal2) {
+          return cellType;
+        }
+      }
+    }
+  }
+
+  return false;
+};
+
+const checkTie = (width, height) => {
+  let isTie = true;
+
+  for (let i = 0; i < height; i++) {
+    for (let j = 0; j < width; j++) {
+      if (gameBoard[i][j] === null) {
+        isTie = false;
+        break;
+      }
+    }
+
+    if (!isTie) {
+      break;
+    }
+  }
+
+  if (isTie) {
+    return 'Tie';
+  }
+
+  return false;
+};
+
+const getGameState = () => {
+  const width = getWidth();
+  const height = getHeight();
+
+  let winner = checkHorizontal(width, height);
+
+  if (winner !== false) {
+    return winner;
+  }
+
+  winner = checkVertical(width, height);
+
+  if (winner !== false) {
+    return winner;
+  }
+
+  winner = checkDiagonal(width, height);
+
+  if (winner !== false) {
+    return winner;
+  }
+
+  const isTie = checkTie(width, height);
+
+  if (isTie !== false) {
+    return isTie;
+  }
+
+  return null;
+};
+
 
 const checkGameState = () => {
   const gameState = getGameState();
@@ -97,142 +235,6 @@ const endOfGame = (gameState) => {
   gameEnded = true;
   playerIdElement.innerHTML = text;
   restartGameElement.removeAttribute('hidden');
-};
-
-const checkHorizontal = (width, height) => {
-  for (let i = 0; i < height; i++) {
-    let count = 0;
-    let currentType = null;
-
-    for (let j = 0; j < width; j++) {
-      const cellType = gameBoard[i][j];
-
-      if (cellType === null) {
-        count = 0;
-        currentType = null;
-      } else if (cellType === currentType) {
-        count++;
-
-        if (count === 3) {
-          return currentType;
-        }
-      } else {
-        count = 1;
-        currentType = cellType;
-      }
-    }
-  }
-
-  return false;
-}
-
-const checkVertical = (width, height) => {
-  for (let j = 0; j < width; j++) {
-    let count = 0;
-    let currentType = null;
-
-    for (let i = 0; i < height; i++) {
-      const cellType = gameBoard[i][j];
-
-      if (cellType === null) {
-        count = 0;
-        currentType = null;
-      } else if (cellType === currentType) {
-        count++;
-
-        if (count === 3) {
-          return currentType;
-        }
-      } else {
-        count = 1;
-        currentType = cellType;
-      }
-    }
-  }
-
-  return false;
-}
-
-const checkDiagonal = (width, height) => {
-  for (let i = 0; i < height; i++) {
-    for (let j = 0; j < width; j++) {
-      if (i + 2 < height && j + 2 < width) {
-        const cellType = gameBoard[i][j];
-        const diagonal1 = gameBoard[i + 1][j + 1];
-        const diagonal2 = gameBoard[i + 2][j + 2];
-
-        if (cellType !== null && cellType === diagonal1 && cellType === diagonal2) {
-          return cellType;
-        }
-      }
-
-      if (i + 2 < height && j - 2 >= 0) {
-        const cellType = gameBoard[i][j];
-        const diagonal1 = gameBoard[i + 1][j - 1];
-        const diagonal2 = gameBoard[i + 2][j - 2];
-
-        if (cellType !== null && cellType === diagonal1 && cellType === diagonal2) {
-          return cellType;
-        }
-      }
-    }
-  }
-
-  return false;
-}
-
-const checkTie = (width, height) => {
-  let isTie = true;
-
-  for (let i = 0; i < height; i++) {
-    for (let j = 0; j < width; j++) {
-      if (gameBoard[i][j] === null) {
-        isTie = false;
-        break;
-      }
-    }
-
-    if (!isTie) {
-      break;
-    }
-  }
-
-  if (isTie) {
-    return 'Tie';
-  }
-
-  return false;
-}
-
-const getGameState = () => {
-  const width = getWidth();
-  const height = getHeight();
-
-  let winner = checkHorizontal(width, height);
-
-  if (winner !== false) {
-    return winner;
-  }
-
-  winner = checkVertical(width, height);
-
-  if (winner !== false) {
-    return winner;
-  }
-
-  winner = checkDiagonal(width, height);
-
-  if (winner !== false) {
-    return winner;
-  }
-
-  let isTie = checkTie(width, height);
-
-  if (isTie !== false) {
-    return isTie;
-  }
-
-  return null;
 };
 
 const onGameRestart = () => {
