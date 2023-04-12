@@ -12,10 +12,36 @@ const getHeight = () => {
   return parseInt(heightInput.value, 10);
 };
 
+const updateGameState = (i, j, turn) => {
+  gameBoard[i][j] = turn;
+};
+
+const checkGameState = () => {
+  const gameState = getGameState();
+
+  if (!gameState) {
+    changeTurn();
+    updatePlayerIdText();
+  } else {
+    endOfGame(gameState);
+  }
+};
+
 const clearChildren = (container) => {
   while (container.firstChild) {
     container.removeChild(container.firstChild);
   }
+};
+
+const onCellClick = (cell, i, j) => {
+  if (gameEnded || gameBoard[i][j]) {
+    return;
+  }
+
+  cell.innerHTML = turn;
+
+  updateGameState(i, j, turn);
+  checkGameState();
 };
 
 const createGrid = (width, height, container) => {
@@ -26,7 +52,7 @@ const createGrid = (width, height, container) => {
   container.style.gridTemplateColumns = `repeat(${width}, 1fr)`;
 
   for (let i = 0; i < height; i++) {
-    let boardRow = [];
+    const boardRow = [];
 
     for (let j = 0; j < width; j++) {
       const cell = document.createElement('div');
@@ -51,35 +77,9 @@ const changeTurn = () => {
   return turn;
 };
 
-const onCellClick = (cell, i, j) => {
-  if (gameEnded || gameBoard[i][j]) {
-    return;
-  }
-
-  cell.innerHTML = turn;
-
-  updateGameState(i, j, turn);
-  checkGameState();
-};
-
 const updatePlayerIdText = () => {
   const playerIdElement = document.getElementById('player-id');
   playerIdElement.innerHTML = `Player ${turn}'s turn`;
-};
-
-const updateGameState = (i, j, turn) => {
-  gameBoard[i][j] = turn;
-};
-
-const checkGameState = () => {
-  const gameState = getGameState();
-
-  if (!gameState) {
-    changeTurn();
-    updatePlayerIdText();
-  } else {
-    endOfGame(gameState);
-  }
 };
 
 const endOfGame = (gameState) => {
@@ -99,11 +99,7 @@ const endOfGame = (gameState) => {
   restartGameElement.removeAttribute('hidden');
 };
 
-const getGameState = () => {
-  const width = getWidth();
-  const height = getHeight();
-
-  // Check rows for a win
+const checkHorizontal = (width, height) => {
   for (let i = 0; i < height; i++) {
     let count = 0;
     let currentType = null;
@@ -127,7 +123,10 @@ const getGameState = () => {
     }
   }
 
-  // Check columns for a win
+  return false;
+}
+
+const checkVertical = (width, height) => {
   for (let j = 0; j < width; j++) {
     let count = 0;
     let currentType = null;
@@ -151,7 +150,10 @@ const getGameState = () => {
     }
   }
 
-  // Check diagonals for a win
+  return false;
+}
+
+const checkDiagonal = (width, height) => {
   for (let i = 0; i < height; i++) {
     for (let j = 0; j < width; j++) {
       if (i + 2 < height && j + 2 < width) {
@@ -176,7 +178,10 @@ const getGameState = () => {
     }
   }
 
-  // Check for a tie
+  return false;
+}
+
+const checkTie = (width, height) => {
   let isTie = true;
 
   for (let i = 0; i < height; i++) {
@@ -194,6 +199,37 @@ const getGameState = () => {
 
   if (isTie) {
     return 'Tie';
+  }
+
+  return false;
+}
+
+const getGameState = () => {
+  const width = getWidth();
+  const height = getHeight();
+
+  let winner = checkHorizontal(width, height);
+
+  if (winner !== false) {
+    return winner;
+  }
+
+  winner = checkVertical(width, height);
+
+  if (winner !== false) {
+    return winner;
+  }
+
+  winner = checkDiagonal(width, height);
+
+  if (winner !== false) {
+    return winner;
+  }
+
+  let isTie = checkTie(width, height);
+
+  if (isTie !== false) {
+    return isTie;
   }
 
   return null;
