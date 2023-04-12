@@ -4,26 +4,12 @@ let gameEnded = false;
 
 const getWidth = () => {
   const widthInput = document.getElementById('width');
-  return parseInt(widthInput.value);
+  return parseInt(widthInput.value, 10);
 };
 
 const getHeight = () => {
   const heightInput = document.getElementById('height');
-  return parseInt(heightInput.value);
-};
-
-window.onload = () => {
-  const container = document.getElementById('grid-container');
-
-  const widthInput = document.getElementById('width');
-  const heightInput = document.getElementById('height');
-
-  const changeListener = () => createGrid(getWidth(), getHeight(), container);
-
-  widthInput.onchange = changeListener;
-  heightInput.onchange = changeListener;
-
-  onGameRestart();
+  return parseInt(heightInput.value, 10);
 };
 
 const clearChildren = (container) => {
@@ -224,4 +210,18 @@ const onGameRestart = () => {
   updatePlayerIdText();
   createGrid(getWidth(), getHeight(), container);
   restartGameElement.setAttribute('hidden', 'true');
+};
+
+window.onload = () => {
+  const container = document.getElementById('grid-container');
+
+  const widthInput = document.getElementById('width');
+  const heightInput = document.getElementById('height');
+
+  const changeListener = () => createGrid(getWidth(), getHeight(), container);
+
+  widthInput.onchange = changeListener;
+  heightInput.onchange = changeListener;
+
+  onGameRestart();
 };
