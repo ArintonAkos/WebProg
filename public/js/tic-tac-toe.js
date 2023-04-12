@@ -84,7 +84,7 @@ const checkLeftDiagonal = (i, j, width, height) => {
   return false;
 };
 
-const checkRightDiagonal = (width, height) => {
+const checkRightDiagonal = (i, j, width, height) => {
   if (i + 2 < height && j - 2 >= 0) {
     const cellType = gameBoard[i][j];
     const diagonal1 = gameBoard[i + 1][j - 1];
