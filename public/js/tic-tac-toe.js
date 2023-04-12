@@ -12,10 +12,9 @@ const getHeight = () => {
   return parseInt(heightInput.value, 10);
 };
 
-const updateGameState = (i, j, turn_state) => {
-  gameBoard[i][j] = turn_state;
+const updateGameState = (i, j, turnState) => {
+  gameBoard[i][j] = turnState;
 };
-
 
 const checkHorizontal = (width, height) => {
   for (let i = 0; i < height; i++) {
@@ -153,6 +152,37 @@ const getGameState = () => {
   return null;
 };
 
+const changeTurn = () => {
+  if (turn === 'X') {
+    turn = 'O';
+  } else {
+    turn = 'X';
+  }
+
+  return turn;
+};
+
+const updatePlayerIdText = () => {
+  const playerIdElement = document.getElementById('player-id');
+  playerIdElement.innerHTML = `Player ${turn}'s turn`;
+};
+
+const endOfGame = (gameState) => {
+  const playerIdElement = document.getElementById('player-id');
+  const restartGameElement = document.getElementById('restart-button');
+
+  let text;
+
+  if (gameState === 'Tie') {
+    text = 'Tie!';
+  } else {
+    text = `Winner is ${gameState}`;
+  }
+
+  gameEnded = true;
+  playerIdElement.innerHTML = text;
+  restartGameElement.removeAttribute('hidden');
+};
 
 const checkGameState = () => {
   const gameState = getGameState();
@@ -203,38 +233,6 @@ const createGrid = (width, height, container) => {
 
     gameBoard.push(boardRow);
   }
-};
-
-const changeTurn = () => {
-  if (turn === 'X') {
-    turn = 'O';
-  } else {
-    turn = 'X';
-  }
-
-  return turn;
-};
-
-const updatePlayerIdText = () => {
-  const playerIdElement = document.getElementById('player-id');
-  playerIdElement.innerHTML = `Player ${turn}'s turn`;
-};
-
-const endOfGame = (gameState) => {
-  const playerIdElement = document.getElementById('player-id');
-  const restartGameElement = document.getElementById('restart-button');
-
-  let text;
-
-  if (gameState === 'Tie') {
-    text = 'Tie!';
-  } else {
-    text = `Winner is ${gameState}`;
-  }
-
-  gameEnded = true;
-  playerIdElement.innerHTML = text;
-  restartGameElement.removeAttribute('hidden');
 };
 
 const onGameRestart = () => {
