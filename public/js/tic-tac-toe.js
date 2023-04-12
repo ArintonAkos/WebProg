@@ -70,27 +70,47 @@ const checkVertical = (width, height) => {
   return false;
 };
 
+const checkLeftDiagonal = (i, j, width, height) => {
+  if (i + 2 < height && j + 2 < width) {
+    const cellType = gameBoard[i][j];
+    const diagonal1 = gameBoard[i + 1][j + 1];
+    const diagonal2 = gameBoard[i + 2][j + 2];
+
+    if (cellType !== null && cellType === diagonal1 && cellType === diagonal2) {
+      return cellType;
+    }
+  }
+
+  return false;
+};
+
+const checkRightDiagonal = (width, height) => {
+  if (i + 2 < height && j - 2 >= 0) {
+    const cellType = gameBoard[i][j];
+    const diagonal1 = gameBoard[i + 1][j - 1];
+    const diagonal2 = gameBoard[i + 2][j - 2];
+
+    if (cellType !== null && cellType === diagonal1 && cellType === diagonal2) {
+      return cellType;
+    }
+  }
+
+  return false;
+};
+
 const checkDiagonal = (width, height) => {
   for (let i = 0; i < height; i++) {
     for (let j = 0; j < width; j++) {
-      if (i + 2 < height && j + 2 < width) {
-        const cellType = gameBoard[i][j];
-        const diagonal1 = gameBoard[i + 1][j + 1];
-        const diagonal2 = gameBoard[i + 2][j + 2];
+      const isLeft = checkLeftDiagonal(i, j, width, height);
 
-        if (cellType !== null && cellType === diagonal1 && cellType === diagonal2) {
-          return cellType;
-        }
+      if (isLeft !== false) {
+        return isLeft;
       }
 
-      if (i + 2 < height && j - 2 >= 0) {
-        const cellType = gameBoard[i][j];
-        const diagonal1 = gameBoard[i + 1][j - 1];
-        const diagonal2 = gameBoard[i + 2][j - 2];
+      const isRight = checkRightDiagonal(i, j, width, height);
 
-        if (cellType !== null && cellType === diagonal1 && cellType === diagonal2) {
-          return cellType;
-        }
+      if (isRight !== false) {
+        return isRight;
       }
     }
   }
