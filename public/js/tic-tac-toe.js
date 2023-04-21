@@ -17,6 +17,8 @@ const updateGameState = (i, j, turnState) => {
 };
 
 const checkHorizontal = (width, height) => {
+  const elementCount = parseInt(document.getElementById('element_count').value);
+
   for (let i = 0; i < height; i++) {
     let count = 0;
     let currentType = null;
@@ -30,7 +32,7 @@ const checkHorizontal = (width, height) => {
       } else if (cellType === currentType) {
         count++;
 
-        if (count === 3) {
+        if (count === elementCount) {
           return currentType;
         }
       } else {
@@ -44,6 +46,8 @@ const checkHorizontal = (width, height) => {
 };
 
 const checkVertical = (width, height) => {
+  const elementCount = parseInt(document.getElementById('element_count').value);
+
   for (let j = 0; j < width; j++) {
     let count = 0;
     let currentType = null;
@@ -57,7 +61,7 @@ const checkVertical = (width, height) => {
       } else if (cellType === currentType) {
         count++;
 
-        if (count === 3) {
+        if (count === elementCount) {
           return currentType;
         }
       } else {
@@ -70,28 +74,60 @@ const checkVertical = (width, height) => {
   return false;
 };
 
-const checkLeftDiagonal = (i, j, width, height) => {
-  if (i + 2 < height && j + 2 < width) {
-    const cellType = gameBoard[i][j];
-    const diagonal1 = gameBoard[i + 1][j + 1];
-    const diagonal2 = gameBoard[i + 2][j + 2];
+const checkLeftDiagonal = (i_index, j_index) => {
+  const m = parseInt(document.getElementById('element_count').value);
+  let count = 1;
+  let i = i_index;
+  let j = j_index;
+  let currentType = gameBoard[i][j];
 
-    if (cellType !== null && cellType === diagonal1 && cellType === diagonal2) {
-      return cellType;
+  for (let k = 0; k < m; k++) {
+    i--;
+    j--;
+
+    if (i < 0 || j < 0) {
+      return false;
+    }
+
+    if (gameBoard[i][j] != null && currentType === gameBoard[i][j]) {
+      count++;
+    } else {
+      currentType = gameBoard[i][j];
+      count = 1;
+    }
+
+    if (count >= m) {
+      return currentType;
     }
   }
 
   return false;
 };
 
-const checkRightDiagonal = (i, j, width, height) => {
-  if (i + 2 < height && j - 2 >= 0) {
-    const cellType = gameBoard[i][j];
-    const diagonal1 = gameBoard[i + 1][j - 1];
-    const diagonal2 = gameBoard[i + 2][j - 2];
+const checkRightDiagonal = (i_index, j_index, width, height) => {
+  const m = parseInt(document.getElementById('element_count').value);
+  let count = 1;
+  let i = i_index;
+  let j = j_index;
+  let currentType = gameBoard[i][j];
 
-    if (cellType !== null && cellType === diagonal1 && cellType === diagonal2) {
-      return cellType;
+  for (let k = 0; k < m; k++) {
+    i++;
+    j--;
+
+    if (i >= width || j >= height) {
+      return false;
+    }
+
+    if (gameBoard[i][j] != null && currentType === gameBoard[i][j]) {
+      count++;
+    } else {
+      currentType = gameBoard[i][j];
+      count = 1;
+    }
+
+    if (count >= m) {
+      return currentType;
     }
   }
 
@@ -233,8 +269,6 @@ const onCellClick = (cell, i, j) => {
 };
 
 const createGrid = (width, height, container) => {
-  console.log(`Create grid: ${width}, ${height}, ${container}`);
-
   clearChildren(container);
 
   container.style.gridTemplateColumns = `repeat(${width}, 1fr)`;
