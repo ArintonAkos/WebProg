@@ -27,7 +27,7 @@ const Sidebar: React.FC = () => {
       <Link as={RouterLink} to="/restaurants">
         Restaurants
       </Link>
-      <Link as={RouterLink} to="/add-restaurant">
+      <Link as={RouterLink} to="/restaurant/add">
         Add Restaurant
       </Link>
     </VStack>

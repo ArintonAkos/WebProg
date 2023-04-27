@@ -6,6 +6,7 @@ export interface CustomToastOptions {
   type: ToastType | undefined;
   title: string;
   description?: string;
+  isClosable?: boolean;
 }
 
 const toastColors = {
@@ -26,7 +27,7 @@ const toastColors = {
 export const useCustomToast = () => {
   const toast = useToast();
 
-  return ({ type, title, description }: CustomToastOptions) => {
+  return ({ type, title, description, isClosable }: CustomToastOptions) => {
     if (!type) {
       return;
     }
@@ -40,8 +41,7 @@ export const useCustomToast = () => {
         description,
         status: type,
         duration: 2500,
-        isClosable: true,
-
+        isClosable: isClosable,
         position: 'top-right',
         render: () => (
           <Box color={toastColors[type].color} bg={toastColors[type].bgColor} p={4} borderRadius={4}>

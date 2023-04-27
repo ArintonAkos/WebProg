@@ -6,13 +6,14 @@ import useAppDispatch from '../../hooks/useAppDispatch';
 import useStateHandling from '../../hooks/useStateHandling';
 import StatusHandler from '../../components/shared/StatusHandler';
 
-type AddRestaurantFormData = {
+export type AddRestaurantFormData = {
   name: string;
   city: string;
   street: string;
   number: string;
   phone: string;
   openingHours: string;
+  images?: Array<File>;
 };
 
 const fields: Array<FormFieldProps> = [

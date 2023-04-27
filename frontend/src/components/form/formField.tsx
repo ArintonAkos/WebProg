@@ -18,6 +18,7 @@ const FormField: React.FC<FormFieldPropsWithControl> = ({
   placeHolder,
   settings,
   element,
+  value,
 }) => {
   const renderedObject = (field: ControllerRenderProps) => {
     switch (element) {
@@ -51,7 +52,7 @@ const FormField: React.FC<FormFieldPropsWithControl> = ({
     <Controller
       name={name}
       control={control}
-      defaultValue=""
+      defaultValue={value ?? ''}
       rules={{ required: required }}
       render={({ field }) => renderedObject(field)}
     />

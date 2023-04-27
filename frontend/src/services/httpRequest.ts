@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000/';
+const API_BASE_URL = 'http://localhost:3000';
 
 type Request = {
   url: string;
@@ -13,16 +13,22 @@ export const httpRequest = async ({ url, method, data = null, headers = {} }: Re
   const options: RequestInit = {
     method,
     headers: {
-      'Content-Type': 'application/json',
       ...headers,
     },
   };
 
-  if (data) {
+  if (data instanceof FormData) {
+    options.body = data;
+  } else if (data) {
+    options.headers = {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    };
     options.body = JSON.stringify(data);
   }
 
-  const response = await fetch(`${API_BASE_URL}${url}`, options);
+  const response = await fetch(`${API_BASE_URL}/${url}`, options);
+  console.log(response);
 
   if (!response.ok) {
     throw new Error(`An error occurred: ${response.statusText}`);
@@ -48,6 +54,30 @@ export const post = (url: string, data: object | undefined = undefined, headers:
   });
 
 export const put = (url: string, data: object | undefined = undefined, headers: object | undefined = undefined) =>
+  httpRequest({
+    url: url,
+    method: 'PUT',
+    data: data,
+    headers: headers,
+  });
+
+export const postMultiPart = (
+  url: string,
+  data: FormData | undefined = undefined,
+  headers: object | undefined = undefined,
+) =>
+  httpRequest({
+    url: url,
+    method: 'POST',
+    data: data,
+    headers: headers,
+  });
+
+export const putMultiPart = (
+  url: string,
+  data: FormData | undefined = undefined,
+  headers: object | undefined = undefined,
+) =>
   httpRequest({
     url: url,
     method: 'PUT',

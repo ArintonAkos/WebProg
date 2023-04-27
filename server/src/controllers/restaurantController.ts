@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Restaurant from '../models/restaurant';
+import { upload } from '../utils/storage';
 
 export const getRestaurants = async (req: Request, res: Response) => {
   try {
@@ -50,5 +51,53 @@ export const getRestaurantById = async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Error getting restaurant:', error);
     res.status(500).json({ message: 'Error getting restaurant' });
+  }
+};
+
+const uploadImages = upload.array('images');
+export const editRestaurant = async (req, res) => {
+  try {
+    console.log('eljutottam idaig');
+
+    const { name, city, street, number, phone, openingHours } = req.body;
+
+    console.log('2');
+    const updatedRestaurantData = {
+      name,
+      city,
+      street,
+      number,
+      phone,
+      openingHours,
+      images: [],
+    };
+
+    console.log(3);
+    uploadImages(req, res, async (err) => {
+      console.log(err);
+      if (err) {
+        return res.status(400).json({ message: 'Error uploading images', error: err });
+      }
+
+      if (req.files && req.files.length > 0) {
+        updatedRestaurantData.images = req.files.map((file) => file.path);
+      }
+
+      try {
+        const updatedRestaurant = await Restaurant.findByIdAndUpdate(req.params.id, updatedRestaurantData, {
+          new: true,
+        });
+
+        if (!updatedRestaurant) {
+          return res.status(404).json({ message: 'Restaurant not found' });
+        }
+
+        res.json(updatedRestaurant);
+      } catch (err) {
+        res.status(500).json({ message: 'Error updating restaurant', error: err });
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Error processing request', error: err });
   }
 };

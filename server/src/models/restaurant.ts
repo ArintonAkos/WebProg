@@ -7,6 +7,7 @@ interface Restaurant {
   city: string;
   street: string;
   number: string;
+  images?: string[];
 }
 
 const restaurantSchema = new Schema<Restaurant>({
@@ -16,6 +17,11 @@ const restaurantSchema = new Schema<Restaurant>({
   number: { type: String, required: true },
   phone: { type: String, required: true },
   openingHours: { type: String, required: true },
+  images: [
+    {
+      type: String,
+    },
+  ],
 });
 
 const Restaurant = model<Restaurant>('Restaurant', restaurantSchema);

@@ -18,10 +18,10 @@ if (localStorage.getItem('chakra-ui-color-mode') !== theme.config.initialColorMo
 
 root.render(
   <Provider store={store}>
-    <React.StrictMode>
-      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <App />
-    </React.StrictMode>
+    {/*<React.StrictMode>*/}
+    <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+    <App />
+    {/*</React.StrictMode>*/}
   </Provider>,
 );
 

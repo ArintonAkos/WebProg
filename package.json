@@ -9,6 +9,7 @@
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-import": "2.27.5",
     "eslint-plugin-prettier": "4.2.1",
+    "nodemon": "^2.0.22",
     "prettier": "2.8.7",
     "typescript": "^5.0.4"
   },
@@ -20,5 +21,9 @@
     "@types/react-router-dom": "^5.3.3",
     "framer-motion": "^10.12.4",
     "react-router-dom": "^6.10.0"
+  },
+  "scripts": {
+    "frontend": "npm start --prefix frontend/",
+    "backend": "npm start --prefix server/"
   }
 }

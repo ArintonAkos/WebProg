@@ -12,7 +12,7 @@ const HomePage: React.FC = () => {
     },
     {
       name: 'Add Restaurant',
-      path: '/add-restaurant',
+      path: '/restaurant/add',
       image: 'https://source.unsplash.com/random?chef',
       description: 'Add a new restaurant to the list.',
     },
