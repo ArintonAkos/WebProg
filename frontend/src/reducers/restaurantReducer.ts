@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchRestaurants } from '../actions/restaurantActions';
+import { createRestaurant, fetchRestaurants } from '../actions/restaurantActions';
 import { DefaultState, CustomRootState } from './state';
+import { mapAsyncThunkToGlobalAction } from '../actions';
 
 export interface RestaurantState {
   data: any;
@@ -14,14 +15,7 @@ const InitialState: RestaurantState & CustomRootState = {
 const restaurantSlice = createSlice({
   name: 'restaurant',
   initialState: InitialState,
-  reducers: {
-    addRestaurant: (state, action) => {
-      console.log(action);
-    },
-    getRestaurants: (state, action) => {
-      console.log(action);
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchRestaurants.pending, (state) => {
@@ -30,15 +24,30 @@ const restaurantSlice = createSlice({
       .addCase(fetchRestaurants.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.data = action.payload;
-        addRestaurant(state);
       })
       .addCase(fetchRestaurants.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       });
+
+    mapAsyncThunkToGlobalAction(builder, createRestaurant, {
+      pending: (state, action) => {
+        state.status = 'loading';
+      },
+      fulfilled: (state, action) => {
+        state.status = 'succeeded';
+        state.requestStatus = action.requestStatus;
+      },
+      rejected: (state, action) => {
+        console.log(state, action);
+
+        state.status = 'failed';
+        state.requestStatus = action.requestStatus;
+      },
+    });
   },
 });
 
-export const { addRestaurant, getRestaurants } = restaurantSlice.actions;
+export const {} = restaurantSlice.actions;
 
 export default restaurantSlice.reducer;

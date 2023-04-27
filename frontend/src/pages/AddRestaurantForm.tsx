@@ -3,6 +3,10 @@ import { Container, Text } from '@chakra-ui/react';
 import Form, { FormFieldProps } from '../components/form';
 import { createRestaurant } from '../actions/restaurantActions';
 import useAppDispatch from '../hooks/useAppDispatch';
+import withLoadingAndErrorFromState from '../hoc/withStateHandling';
+import { CustomRootState } from '../reducers/state';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 type AddRestaurantFormData = {
   name: string;
@@ -75,4 +79,4 @@ const AddRestaurantForm: React.FC = () => {
   );
 };
 
-export default AddRestaurantForm;
+export default withLoadingAndErrorFromState(AddRestaurantForm, 'restaurant');

@@ -6,11 +6,15 @@ import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
 import store from './store';
-import theme from './theme';
+import theme from './theme/theme';
 
 const container = document.getElementById('root');
 if (!container) throw new Error('Failed to find the root element');
 const root = ReactDOM.createRoot(container);
+
+if (localStorage.getItem('chakra-ui-color-mode') !== theme.config.initialColorMode) {
+  localStorage.setItem('chakra-ui-color-mode', theme.config.initialColorMode);
+}
 
 root.render(
   <Provider store={store}>

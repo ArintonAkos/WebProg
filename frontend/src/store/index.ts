@@ -1,13 +1,13 @@
-import { applyMiddleware, configureStore } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from '../reducers';
-import updateStateMiddleware from './requestStatusMiddleware';
+import updateActionMiddleware from './middlewares/requestStatusMiddleware';
 
-const store = configureStore({
+export const store = configureStore({
   reducer: rootReducer,
-  middleware: [updateStateMiddleware],
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ thunk: true }).concat(updateActionMiddleware),
 });
 
 export default store;
 
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;

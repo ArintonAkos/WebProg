@@ -8,34 +8,27 @@ type Request = {
 };
 
 export const httpRequest = async ({ url, method, data = null, headers = {} }: Request) => {
-  try {
-    try {
-      const options: RequestInit = {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          ...headers,
-        },
-      };
+  console.log('Sending request');
 
-      if (data) {
-        options.body = JSON.stringify(data);
-      }
+  const options: RequestInit = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      ...headers,
+    },
+  };
 
-      const response = await fetch(`${API_BASE_URL}${url}`, options);
-
-      if (!response.ok) {
-        throw new Error(`An error occurred: ${response.statusText}`);
-      }
-
-      return await response.json();
-    } catch (error: unknown) {
-      console.error('Error while fetching data:', error);
-      return {};
-    }
-  } catch (e) {
-    console.error(e);
+  if (data) {
+    options.body = JSON.stringify(data);
   }
+
+  const response = await fetch(`${API_BASE_URL}${url}`, options);
+
+  if (!response.ok) {
+    throw new Error(`An error occurred: ${response.statusText}`);
+  }
+
+  return await response.json();
 };
 
 export const get = (url: string, headers: object | undefined = undefined) =>

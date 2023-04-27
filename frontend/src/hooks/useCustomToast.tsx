@@ -1,9 +1,9 @@
-import { useToast } from '@chakra-ui/react';
+import { Box, useToast } from '@chakra-ui/react';
 
 type ToastType = 'error' | 'success' | 'warning';
 
 export interface CustomToastOptions {
-  type: ToastType;
+  type: ToastType | undefined;
   title: string;
   description?: string;
 }
@@ -27,27 +27,29 @@ export const useCustomToast = () => {
   const toast = useToast();
 
   return ({ type, title, description }: CustomToastOptions) => {
-    toast({
-      title,
-      description,
-      status: type,
-      duration: 5000,
-      isClosable: true,
-      position: 'top-right',
-      render: () => (
-        <div
-          style={{
-            padding: '1rem',
-            color: toastColors[type].color,
-            backgroundColor: toastColors[type].bgColor,
-            borderRadius: '4px',
-            textAlign: 'left',
-          }}
-        >
-          <strong>{title}</strong>
-          {description && <p>{description}</p>}
-        </div>
-      ),
-    });
+    if (!type) {
+      return;
+    }
+
+    const id = title + description;
+
+    if (!toast.isActive(id)) {
+      toast({
+        id: id,
+        title,
+        description,
+        status: type,
+        duration: 2500,
+        isClosable: true,
+
+        position: 'top-right',
+        render: () => (
+          <Box color={toastColors[type].color} bg={toastColors[type].bgColor} p={4} borderRadius={4}>
+            <strong>{title}</strong>
+            {description && <p>{description}</p>}
+          </Box>
+        ),
+      });
+    }
   };
 };
