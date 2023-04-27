@@ -1,8 +1,5 @@
 import React from 'react';
-import { Action } from 'redux';
-import { useSelector } from 'react-redux';
-import { ActionReducerMapBuilder, AsyncThunk, Draft } from '@reduxjs/toolkit';
-import { CustomRootState } from '../reducers/state';
+import { ActionReducerMapBuilder, AnyAction, AsyncThunk, Draft } from '@reduxjs/toolkit';
 
 export interface RequestStatus {
   type?: 'success' | 'error' | 'warning';
@@ -11,7 +8,7 @@ export interface RequestStatus {
   title?: string;
 }
 
-export interface GlobalAction<T = string> extends Action<T> {
+export interface GlobalAction<T = string> extends AnyAction {
   requestStatus?: RequestStatus;
 }
 

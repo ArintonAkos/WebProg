@@ -2,7 +2,6 @@ import { Middleware, Dispatch } from 'redux';
 import { RootState } from '../index';
 import { Action } from '@reduxjs/toolkit';
 import { capitalizeFirstLetter, includesAny } from '../../utils/stringUtils';
-import { capitalize } from '@reduxjs/toolkit/dist/query/utils';
 
 const updateActionMiddleware: Middleware<
   {}, // S parameter: RootState,

@@ -1,14 +1,11 @@
-interface Address {
+interface Restaurant {
+  name: string;
+  phone: string;
+  openingHours: string;
   city: string;
   street: string;
   number: number;
-}
-
-interface Restaurant {
-  name: string;
-  address: Address;
-  phone: string;
-  openingHours: string;
+  _id?: string;
 }
 
 export default Restaurant;

@@ -1,6 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
 import { fetchRestaurantReservations } from '../actions/reservationActions';
-import { DefaultState, CustomRootState } from './state';
+import { DefaultState, CustomRootState } from '../store/state';
+import { wrapSliceWithCommonFunctions } from '../hoc/reducerWrapper';
 
 export interface ReservationState {
   restaurantId?: number;
@@ -13,7 +13,7 @@ const InitialState: ReservationState & CustomRootState = {
   items: [],
 };
 
-const reservationSlice = createSlice({
+const reservationSlice = wrapSliceWithCommonFunctions({
   name: 'reservation',
   initialState: InitialState,
   reducers: {
@@ -37,6 +37,6 @@ const reservationSlice = createSlice({
   },
 });
 
-export const { submitReservation } = reservationSlice.actions;
+export const { submitReservation, setShowToast } = reservationSlice.actions;
 
 export default reservationSlice.reducer;

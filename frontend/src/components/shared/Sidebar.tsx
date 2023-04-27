@@ -19,19 +19,16 @@ const Sidebar: React.FC = () => {
 
   const content = (
     <VStack spacing={4} alignItems="start">
-      <Link as={RouterLink} to="/restaurants">
+      <Link as={RouterLink} to="/">
         <Text fontSize="xl" mb={3}>
           Dashboard
         </Text>
       </Link>
+      <Link as={RouterLink} to="/restaurants">
+        Restaurants
+      </Link>
       <Link as={RouterLink} to="/add-restaurant">
         Add Restaurant
-      </Link>
-      <Link as={RouterLink} to="/upload-images">
-        Upload Images
-      </Link>
-      <Link as={RouterLink} to="/reservation">
-        Make a Reservation
       </Link>
     </VStack>
   );

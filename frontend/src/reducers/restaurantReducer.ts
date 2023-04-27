@@ -1,7 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { createRestaurant, fetchRestaurants } from '../actions/restaurantActions';
-import { DefaultState, CustomRootState } from './state';
+import { createRestaurant, fetchRestaurant, fetchRestaurants } from '../actions/restaurantActions';
+import { DefaultState, CustomRootState } from '../store/state';
 import { mapAsyncThunkToGlobalAction } from '../actions';
+import { wrapSliceWithCommonFunctions } from '../hoc/reducerWrapper';
 
 export interface RestaurantState {
   data: any;
@@ -12,23 +12,42 @@ const InitialState: RestaurantState & CustomRootState = {
   data: undefined,
 };
 
-const restaurantSlice = createSlice({
+const restaurantSlice = wrapSliceWithCommonFunctions({
   name: 'restaurant',
   initialState: InitialState,
-  reducers: {},
+  reducers: {
+    submitRestaurant: (state, action) => {},
+  },
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchRestaurants.pending, (state) => {
+    mapAsyncThunkToGlobalAction(builder, fetchRestaurants, {
+      pending: (state, action) => {
         state.status = 'loading';
-      })
-      .addCase(fetchRestaurants.fulfilled, (state, action) => {
+        state.data = undefined;
+      },
+      fulfilled: (state, action) => {
         state.status = 'succeeded';
-        state.data = action.payload;
-      })
-      .addCase(fetchRestaurants.rejected, (state, action) => {
+        state.data = [...action.payload.data];
+        state.requestStatus = action.requestStatus;
+      },
+      rejected: (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
-      });
+      },
+    });
+
+    mapAsyncThunkToGlobalAction(builder, fetchRestaurant, {
+      pending: (state, action) => {
+        state.status = 'loading';
+        state.data = undefined;
+      },
+      fulfilled: (state, action) => {
+        state.status = 'succeeded';
+        state.data = action.payload;
+      },
+      rejected: (state, action) => {
+        state.status = 'failed';
+      },
+    });
 
     mapAsyncThunkToGlobalAction(builder, createRestaurant, {
       pending: (state, action) => {
@@ -39,8 +58,6 @@ const restaurantSlice = createSlice({
         state.requestStatus = action.requestStatus;
       },
       rejected: (state, action) => {
-        console.log(state, action);
-
         state.status = 'failed';
         state.requestStatus = action.requestStatus;
       },
@@ -48,6 +65,6 @@ const restaurantSlice = createSlice({
   },
 });
 
-export const {} = restaurantSlice.actions;
+export const { submitRestaurant, setShowToast } = restaurantSlice.actions;
 
 export default restaurantSlice.reducer;

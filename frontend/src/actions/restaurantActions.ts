@@ -1,18 +1,17 @@
 import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
 import { get, post } from '../services/httpRequest';
 
-export const fetchRestaurants = createAsyncThunk<any, any>('restaurants/fetchRestaurants', async () => {
+export const fetchRestaurants = createAsyncThunk<any, void>('restaurant/fetchRestaurants', async () => {
   return await get('restaurant/');
 });
 
+export const fetchRestaurant = createAsyncThunk<any, any>('restaurant/fetchRestaurant', async (id: any) => {
+  return await get('restaurant/' + id);
+});
+
 export const createRestaurant: AsyncThunk<any, any, {}> = createAsyncThunk<any, any>(
-  'restaurants/createRestaurant',
+  'restaurant/createRestaurant',
   async (restaurant: any) => {
-    console.log(restaurant);
-
-    const response = await post('restaurant/', restaurant);
-    console.log(response);
-
-    return response;
+    return await post('restaurant/', restaurant);
   },
 );

@@ -1,6 +1,7 @@
 import React from 'react';
-import { FormControl, FormLabel, Input, Button, Stack, Container, Text } from '@chakra-ui/react';
-import Form, { FormFieldProps } from '../components/form';
+import { Container, Text } from '@chakra-ui/react';
+import Form, { FormFieldProps } from '../../components/form';
+import { useParams } from 'react-router-dom';
 
 const fields: Array<FormFieldProps> = [
   {
@@ -14,6 +15,7 @@ const fields: Array<FormFieldProps> = [
 ];
 
 const UploadImagesForm: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const handleFormSubmit = (data: any) => {};
 
   return (

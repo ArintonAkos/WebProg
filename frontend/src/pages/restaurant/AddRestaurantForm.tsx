@@ -1,12 +1,10 @@
 import React from 'react';
 import { Container, Text } from '@chakra-ui/react';
-import Form, { FormFieldProps } from '../components/form';
-import { createRestaurant } from '../actions/restaurantActions';
-import useAppDispatch from '../hooks/useAppDispatch';
-import withLoadingAndErrorFromState from '../hoc/withStateHandling';
-import { CustomRootState } from '../reducers/state';
-import { useSelector } from 'react-redux';
-import { RootState } from '../store';
+import Form, { FormFieldProps } from '../../components/form';
+import { createRestaurant } from '../../actions/restaurantActions';
+import useAppDispatch from '../../hooks/useAppDispatch';
+import useStateHandling from '../../hooks/useStateHandling';
+import StatusHandler from '../../components/shared/StatusHandler';
 
 type AddRestaurantFormData = {
   name: string;
@@ -64,19 +62,22 @@ const fields: Array<FormFieldProps> = [
 
 const AddRestaurantForm: React.FC = () => {
   const dispatch = useAppDispatch();
+  const { status, error } = useStateHandling('restaurant');
 
   const handleFormSubmit = (data: AddRestaurantFormData) => {
     dispatch(createRestaurant(data));
   };
 
   return (
-    <Container mt={5}>
-      <Text fontSize="2xl" mb={5}>
-        Add Restaurant
-      </Text>
-      <Form fields={fields} onSubmit={handleFormSubmit} submitText="Add Restaurant"></Form>
-    </Container>
+    <StatusHandler status={status} error={error}>
+      <Container mt={5}>
+        <Text fontSize="2xl" mb={5}>
+          Add Restaurant
+        </Text>
+        <Form fields={fields} onSubmit={handleFormSubmit} submitText="Add Restaurant"></Form>
+      </Container>
+    </StatusHandler>
   );
 };
 
-export default withLoadingAndErrorFromState(AddRestaurantForm, 'restaurant');
+export default AddRestaurantForm;

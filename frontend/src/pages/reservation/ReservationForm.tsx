@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Text } from '@chakra-ui/react';
-import Form, { FormFieldProps } from '../components/form';
+import Form, { FormFieldProps } from '../../components/form';
 
 const fields: Array<FormFieldProps> = [
   {
