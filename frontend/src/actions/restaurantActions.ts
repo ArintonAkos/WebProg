@@ -14,7 +14,7 @@ const restaurantToFormData = (restaurant: AddRestaurantFormData) => {
   for (const key in restaurant) {
     console.log(key);
     if (key === 'images' && restaurant.images) {
-      restaurant.images.forEach((image, index) => {
+      restaurant.images.forEach((image) => {
         formData.append('images', image);
       });
     } else {

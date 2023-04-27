@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Box, Heading, VStack, SimpleGrid, Button, Flex } from '@chakra-ui/react';
+import { Box, Heading, VStack, SimpleGrid, Button } from '@chakra-ui/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { RootState } from '../../store';
 import { shallowEqual, useSelector } from 'react-redux';

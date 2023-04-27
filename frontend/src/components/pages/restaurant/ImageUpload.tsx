@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Box, VStack, Button, Text, Image, Container, Flex } from '@chakra-ui/react';
+import { Box, Button, Text, Image, Container, Flex } from '@chakra-ui/react';
 import { useDropzone } from 'react-dropzone';
 import { useCustomToast } from '../../../hooks/useCustomToast';
 

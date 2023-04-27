@@ -1,4 +1,3 @@
-import React from 'react';
 import { ActionReducerMapBuilder, AnyAction, AsyncThunk, Draft } from '@reduxjs/toolkit';
 
 export interface RequestStatus {
@@ -10,13 +9,6 @@ export interface RequestStatus {
 
 export interface GlobalAction<T = string> extends AnyAction {
   requestStatus?: RequestStatus;
-}
-
-interface RenderAsyncStateProps {
-  pending: React.ComponentType;
-  fulfilled: React.ComponentType;
-  rejected: React.ComponentType;
-  actionType: string;
 }
 
 type AsyncThunkCallbacks<State> = {

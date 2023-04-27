@@ -19,7 +19,6 @@ export const wrapSliceWithCommonFunctions = <
   }
 > => {
   const { reducers, ...sliceOptions } = options;
-  const sliceName = sliceOptions.name;
 
   const mergedReducers = {
     ...reducers,

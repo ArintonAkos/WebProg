@@ -33,15 +33,8 @@ type FormProps = {
   portals?: Portal[];
 };
 
-export type FormPropsWithControl = FormProps & WithControl;
-
 const Form: React.FC<FormProps> = ({ fields, onSubmit, submitText, portals }) => {
-  const {
-    handleSubmit,
-    formState: { errors },
-    control,
-    setValue,
-  } = useForm();
+  const { handleSubmit, control, setValue } = useForm();
 
   useEffect(() => {
     fields.forEach((field) => {

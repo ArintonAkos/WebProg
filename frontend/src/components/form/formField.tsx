@@ -1,6 +1,6 @@
 import React from 'react';
-import { Control, Controller, ControllerRenderProps } from 'react-hook-form';
-import Select, { SelectOption } from './elements/Select';
+import { Controller, ControllerRenderProps } from 'react-hook-form';
+import Select from './elements/Select';
 import Input from './elements/Input';
 import { FormFieldProps, WithControl } from './index';
 import { InputProps, SelectProps } from '@chakra-ui/react';

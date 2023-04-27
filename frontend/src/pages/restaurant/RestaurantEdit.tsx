@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { VStack, Text, Container } from '@chakra-ui/react';
+import { Text, Container } from '@chakra-ui/react';
 import ImageUpload from '../../components/pages/restaurant/ImageUpload';
 import { useNavigate, useParams } from 'react-router-dom';
 import useStateHandling from '../../hooks/useStateHandling';

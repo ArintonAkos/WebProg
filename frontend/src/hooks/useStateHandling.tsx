@@ -4,7 +4,6 @@ import { RootState } from '../store';
 import { useCustomToast } from './useCustomToast';
 import useAppDispatch from './useAppDispatch';
 import { Dispatch } from 'redux';
-import { AnyAction } from '@reduxjs/toolkit';
 
 type RootStateKey = keyof RootState;
 
@@ -26,7 +25,7 @@ const useStateHandling = <K extends RootStateKey>(reducerKey: K) => {
   const error = useSelector(selectError(reducerKey));
   const responseMessage = useSelector(selectRequestStatus(reducerKey));
   const showToast = useCustomToast();
-  const dispatch: Dispatch<AnyAction> = useAppDispatch();
+  const dispatch: Dispatch = useAppDispatch();
 
   useEffect(() => {
     if (responseMessage?.showToast) {

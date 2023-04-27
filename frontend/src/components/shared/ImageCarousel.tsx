@@ -1,7 +1,7 @@
-import { Box, Center, Image, Skeleton } from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { Box, Image, Skeleton } from '@chakra-ui/react';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import { useState } from 'react';
 
 const CarouselImage: React.FC<{ image: string; index: number }> = ({ image, index }) => {
   const [imageLoaded, setImageLoaded] = useState(false);

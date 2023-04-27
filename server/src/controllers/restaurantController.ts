@@ -57,11 +57,8 @@ export const getRestaurantById = async (req: Request, res: Response) => {
 const uploadImages = upload.array('images');
 export const editRestaurant = async (req, res) => {
   try {
-    console.log('eljutottam idaig');
-
     const { name, city, street, number, phone, openingHours } = req.body;
 
-    console.log('2');
     const updatedRestaurantData = {
       name,
       city,
@@ -72,9 +69,7 @@ export const editRestaurant = async (req, res) => {
       images: [],
     };
 
-    console.log(3);
     uploadImages(req, res, async (err) => {
-      console.log(err);
       if (err) {
         return res.status(400).json({ message: 'Error uploading images', error: err });
       }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Flex, Link, useMediaQuery } from '@chakra-ui/react';
+import { Box, Flex, useMediaQuery } from '@chakra-ui/react';
 import Sidebar from './Sidebar';
 
 interface LayoutProps {

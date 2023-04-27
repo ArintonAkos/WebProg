@@ -3,11 +3,7 @@ import { RootState } from '../index';
 import { Action } from '@reduxjs/toolkit';
 import { capitalizeFirstLetter, includesAny } from '../../utils/stringUtils';
 
-const updateActionMiddleware: Middleware<
-  {}, // S parameter: RootState,
-  RootState, // D parameter: RootState
-  Dispatch<Action> // Dispatch parameter: Dispatch<AnyAction>
-> = (storeAPI) => (next) => (action) => {
+const updateActionMiddleware: Middleware<{}, RootState, Dispatch<Action>> = () => (next) => (action) => {
   if (!includesAny(action.meta?.requestStatus, ['rejected', 'fulfilled'])) {
     return next({ ...action });
   }
