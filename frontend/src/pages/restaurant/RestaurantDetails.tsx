@@ -11,13 +11,6 @@ import Restaurant from '../../models/restaurant';
 import ImageCarousel from '../../components/shared/ImageCarousel';
 import { EditIcon, Icon } from '@chakra-ui/icons';
 
-const images = [
-  'https://source.unsplash.com/random?restaurant',
-  'https://source.unsplash.com/random?restaurant',
-  'https://source.unsplash.com/random?restaurant',
-  'https://source.unsplash.com/random?restaurant',
-];
-
 const RestaurantDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { status, error } = useStateHandling('restaurant');
@@ -46,9 +39,9 @@ const RestaurantDetails: React.FC = () => {
             </Button>
           </ButtonGroup>
         </Flex>
-        {images && (
+        {restaurant?.images?.length && (
           <Box w="full">
-            <ImageCarousel images={images} />
+            <ImageCarousel images={restaurant.images!} />
           </Box>
         )}
         <Flex direction="column" fontSize="lg" fontWeight="medium" lineHeight="taller">

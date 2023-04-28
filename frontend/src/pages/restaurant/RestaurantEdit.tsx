@@ -97,6 +97,7 @@ const RestaurantEditPage: React.FC = () => {
       description: 'Restaurant not found',
       isClosable: true,
     });
+
     navigate('/');
   }
 
@@ -104,13 +105,15 @@ const RestaurantEditPage: React.FC = () => {
     setImages([...files]);
   };
 
-  const handleSubmit = async (data: AddRestaurantFormData) => {
-    data.images = [...images];
+  const handleSubmit = async (submittedData: AddRestaurantFormData) => {
+    console.log(submittedData);
+
+    submittedData.images = [...images];
     try {
       await dispatch(
         editRestaurant({
           id: id!,
-          restaurant: data,
+          restaurant: submittedData,
         }),
       );
 

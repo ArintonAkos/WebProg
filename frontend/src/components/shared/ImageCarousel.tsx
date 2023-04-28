@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Image, Skeleton } from '@chakra-ui/react';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { API_BASE_URL } from '../../services/httpRequest';
 
 const CarouselImage: React.FC<{ image: string; index: number }> = ({ image, index }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -25,7 +26,7 @@ const ImageCarousel: React.FC<{ images: string[] }> = ({ images }) => (
     <Carousel showStatus={false} showThumbs={false} infiniteLoop>
       {images.map((image, index) => (
         <div key={index}>
-          <CarouselImage image={image} index={index} />
+          <CarouselImage image={`${API_BASE_URL}/${image}`} index={index} />
         </div>
       ))}
     </Carousel>

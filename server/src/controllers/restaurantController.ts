@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import Restaurant from '../models/restaurant';
-import { upload } from '../utils/storage';
+import { uploadImages } from '../index';
 
 export const getRestaurants = async (req: Request, res: Response) => {
   try {
@@ -54,31 +54,33 @@ export const getRestaurantById = async (req: Request, res: Response) => {
   }
 };
 
-const uploadImages = upload.array('images');
 export const editRestaurant = async (req, res) => {
   try {
-    const { name, city, street, number, phone, openingHours } = req.body;
-
-    const updatedRestaurantData = {
-      name,
-      city,
-      street,
-      number,
-      phone,
-      openingHours,
-      images: [],
-    };
-
     uploadImages(req, res, async (err) => {
-      if (err) {
-        return res.status(400).json({ message: 'Error uploading images', error: err });
-      }
-
-      if (req.files && req.files.length > 0) {
-        updatedRestaurantData.images = req.files.map((file) => file.path);
-      }
+      const { name, city, street, number, phone, openingHours } = req.body;
 
       try {
+        const restaurant = await Restaurant.findById(req.params.id);
+
+        if (!restaurant) {
+          return res.status(404).json({ message: 'Restaurant not found' });
+        }
+
+        const updatedRestaurantData = {
+          name,
+          city,
+          street,
+          number,
+          phone,
+          openingHours,
+          images: [...restaurant.images],
+        };
+
+        if (req.files && req.files.length > 0) {
+          const uploadedImages = req.files.map((file) => file.path);
+          updatedRestaurantData.images.push(...uploadedImages);
+        }
+
         const updatedRestaurant = await Restaurant.findByIdAndUpdate(req.params.id, updatedRestaurantData, {
           new: true,
         });

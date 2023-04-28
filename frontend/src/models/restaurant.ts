@@ -5,6 +5,7 @@ interface Restaurant {
   city: string;
   street: string;
   number: number;
+  images?: string[];
   _id?: string;
 }
 

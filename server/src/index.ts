@@ -3,13 +3,16 @@ import reservationRoutes from './routes/reservationRoutes';
 import restaurantRoutes from './routes/restaurantRoutes';
 import connectToDatabase from './config/database';
 import path from 'path';
+import { upload } from './utils/storage';
 
 const app = express();
 const port = 3000;
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+export const uploadImages = upload.array('images');
 app.use('/images', express.static(path.join(__dirname, '../images')));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.all('*', (req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');

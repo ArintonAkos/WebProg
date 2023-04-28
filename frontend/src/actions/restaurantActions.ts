@@ -24,6 +24,10 @@ const restaurantToFormData = (restaurant: AddRestaurantFormData) => {
     }
   }
 
+  // @ts-ignore
+  for (var pair of formData.entries()) {
+    console.log(pair[0] + ', ' + pair[1]);
+  }
   return formData;
 };
 
@@ -45,6 +49,8 @@ export const createRestaurant: AsyncThunk<any, any, {}> = createAsyncThunk<any, 
 export const editRestaurant: AsyncThunk<any, EditRestaurantArgs, {}> = createAsyncThunk<any, any>(
   'restaurant/editRestaurant',
   async ({ id, restaurant }) => {
+    console.log(restaurant);
+
     const formData = restaurantToFormData(restaurant);
 
     console.log(formData);
