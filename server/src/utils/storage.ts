@@ -7,7 +7,6 @@ export const storage = multer.diskStorage({
     const restaurantId = req.params.id;
     const dir = `./images/${restaurantId}`;
 
-    console.log(fs.existsSync(dir));
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }

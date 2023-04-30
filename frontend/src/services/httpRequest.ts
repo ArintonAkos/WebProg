@@ -8,8 +8,6 @@ type Request = {
 };
 
 export const httpRequest = async ({ url, method, data = null, headers = {} }: Request) => {
-  console.log('Sending request');
-
   const options: RequestInit = {
     method,
     headers: {
@@ -28,7 +26,6 @@ export const httpRequest = async ({ url, method, data = null, headers = {} }: Re
   }
 
   const response = await fetch(`${API_BASE_URL}/${url}`, options);
-  console.log(response);
 
   if (!response.ok) {
     throw new Error(`An error occurred: ${response.statusText}`);

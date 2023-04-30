@@ -3,7 +3,7 @@ import { addReservation, getReservationsByRestaurantId } from '../controllers/re
 
 const router = express.Router();
 
-router.post('/restaurant/:restaurantId', addReservation);
-router.get('/restaurant/:restaurantId', getReservationsByRestaurantId);
+router.post('/:restaurantId', addReservation);
+router.get('/:restaurantId', getReservationsByRestaurantId);
 
 export default router;

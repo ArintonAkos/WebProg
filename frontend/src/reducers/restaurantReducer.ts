@@ -2,8 +2,6 @@ import { createRestaurant, editRestaurant, fetchRestaurant, fetchRestaurants } f
 import { DefaultState, CustomRootState } from '../store/state';
 import { mapAsyncThunkToGlobalAction } from '../actions';
 import { wrapSliceWithCommonFunctions } from '../hoc/reducerWrapper';
-import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
-import { putMultiPart } from '../services/httpRequest';
 
 export interface RestaurantState {
   data: any;
@@ -17,13 +15,10 @@ const InitialState: RestaurantState & CustomRootState = {
 const restaurantSlice = wrapSliceWithCommonFunctions({
   name: 'restaurant',
   initialState: InitialState,
-  reducers: {
-    submitRestaurant: (state, action) => {},
-  },
+  reducers: {},
   extraReducers: (builder) => {
     mapAsyncThunkToGlobalAction(builder, fetchRestaurants, {
-      pending: (state, action) => {
-        console.log('pending');
+      pending: (state) => {
         state.status = 'loading';
         state.data = undefined;
       },
@@ -39,7 +34,7 @@ const restaurantSlice = wrapSliceWithCommonFunctions({
     });
 
     mapAsyncThunkToGlobalAction(builder, fetchRestaurant, {
-      pending: (state, action) => {
+      pending: (state) => {
         state.status = 'loading';
         state.data = undefined;
       },
@@ -47,13 +42,13 @@ const restaurantSlice = wrapSliceWithCommonFunctions({
         state.status = 'succeeded';
         state.data = action.payload;
       },
-      rejected: (state, action) => {
+      rejected: (state) => {
         state.status = 'failed';
       },
     });
 
     mapAsyncThunkToGlobalAction(builder, createRestaurant, {
-      pending: (state, action) => {
+      pending: (state) => {
         state.status = 'loading';
       },
       fulfilled: (state, action) => {
@@ -67,7 +62,7 @@ const restaurantSlice = wrapSliceWithCommonFunctions({
     });
 
     mapAsyncThunkToGlobalAction(builder, editRestaurant, {
-      pending: (state, action) => {
+      pending: (state) => {
         state.status = 'loading';
       },
       fulfilled: (state, action) => {
@@ -82,6 +77,6 @@ const restaurantSlice = wrapSliceWithCommonFunctions({
   },
 });
 
-export const { submitRestaurant, setShowToast } = restaurantSlice.actions;
+export const {} = restaurantSlice.actions;
 
 export default restaurantSlice.reducer;

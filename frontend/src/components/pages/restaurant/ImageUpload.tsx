@@ -13,7 +13,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadedFiles, files }) => 
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      console.log(acceptedFiles);
       onUploadedFiles(acceptedFiles);
 
       toast({

@@ -1,42 +1,44 @@
-import { fetchRestaurantReservations } from '../actions/reservationActions';
+import { createReservation } from '../actions/reservationActions';
 import { DefaultState, CustomRootState } from '../store/state';
 import { wrapSliceWithCommonFunctions } from '../hoc/reducerWrapper';
+import { mapAsyncThunkToGlobalAction } from '../actions';
 
 export interface ReservationState {
-  restaurantId?: number;
-  items: any;
+  data: any;
 }
 
 const InitialState: ReservationState & CustomRootState = {
   ...DefaultState,
-  restaurantId: undefined,
-  items: [],
+  data: undefined,
 };
 
 const reservationSlice = wrapSliceWithCommonFunctions({
   name: 'reservation',
   initialState: InitialState,
   reducers: {
-    submitReservation: (state, action) => {
-      console.log(action.payload);
+    clearData: (state) => {
+      state.data = undefined;
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchRestaurantReservations.pending, (state) => {
+    mapAsyncThunkToGlobalAction(builder, createReservation, {
+      pending: (state) => {
         state.status = 'loading';
-      })
-      .addCase(fetchRestaurantReservations.fulfilled, (state, action) => {
+      },
+      fulfilled: (state, action) => {
         state.status = 'succeeded';
-        state.items = action.payload;
-      })
-      .addCase(fetchRestaurantReservations.rejected, (state, action) => {
+        state.requestStatus = action.requestStatus;
+        state.data = action.payload;
+      },
+      rejected: (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
-      });
+        state.requestStatus = action.requestStatus;
+      },
+    });
   },
 });
 
-export const { submitReservation, setShowToast } = reservationSlice.actions;
+export const { clearData } = reservationSlice.actions;
 
 export default reservationSlice.reducer;

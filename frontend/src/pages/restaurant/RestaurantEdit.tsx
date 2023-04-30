@@ -81,7 +81,6 @@ const RestaurantEditPage: React.FC = () => {
         };
       });
 
-      console.log(updatedFields);
       setFormFields(updatedFields);
     }
   }, [restaurant]);
@@ -106,8 +105,6 @@ const RestaurantEditPage: React.FC = () => {
   };
 
   const handleSubmit = async (submittedData: AddRestaurantFormData) => {
-    console.log(submittedData);
-
     submittedData.images = [...images];
     try {
       await dispatch(
@@ -127,7 +124,7 @@ const RestaurantEditPage: React.FC = () => {
     <StatusHandler status={status} error={error}>
       <Container mt={5}>
         <Text fontSize="2xl" fontWeight="bold">
-          Upload Images
+          {restaurant?.name ?? 'Edit Restaurant'}
         </Text>
         <Form
           fields={formFields}

@@ -1,6 +1,15 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import { get } from '../services/httpRequest';
+import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
+import { post } from '../services/httpRequest';
+import { CreateReservationProps } from '../components/pages/reservation/ReservationForm';
 
-export const fetchRestaurantReservations = createAsyncThunk('reservations/fetchRestaurantReservations', async () => {
-  return get('reservation/restaurant/');
+type CreateReservationArgs = {
+  id: string;
+  data: CreateReservationProps;
+};
+
+export const createReservation: AsyncThunk<any, CreateReservationArgs, {}> = createAsyncThunk<
+  any,
+  CreateReservationArgs
+>('reservation/createReservation', async ({ id, data }) => {
+  return await post(`reservation/${id}`, data);
 });

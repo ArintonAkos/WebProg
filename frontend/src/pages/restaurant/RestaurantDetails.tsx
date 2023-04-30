@@ -10,6 +10,7 @@ import { RootState } from '../../store';
 import Restaurant from '../../models/restaurant';
 import ImageCarousel from '../../components/shared/ImageCarousel';
 import { EditIcon, Icon } from '@chakra-ui/icons';
+import ReservationForm from '../../components/pages/reservation/ReservationForm';
 
 const RestaurantDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -69,6 +70,12 @@ const RestaurantDetails: React.FC = () => {
             </Text>{' '}
             {restaurant?.openingHours}
           </Text>
+        </Flex>
+        <Flex flexDirection="column" w="100%">
+          <Text fontSize="2xl" fontWeight="bold" mb={4}>
+            Make a Reservation
+          </Text>
+          <ReservationForm id={id!} />
         </Flex>
       </VStack>
     </StatusHandler>

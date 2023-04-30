@@ -9,10 +9,8 @@ interface EditRestaurantArgs {
 
 const restaurantToFormData = (restaurant: AddRestaurantFormData) => {
   const formData = new FormData();
-  console.log(restaurant);
 
   for (const key in restaurant) {
-    console.log(key);
     if (key === 'images' && restaurant.images) {
       restaurant.images.forEach((image) => {
         formData.append('images', image);
@@ -24,10 +22,6 @@ const restaurantToFormData = (restaurant: AddRestaurantFormData) => {
     }
   }
 
-  // @ts-ignore
-  for (var pair of formData.entries()) {
-    console.log(pair[0] + ', ' + pair[1]);
-  }
   return formData;
 };
 
@@ -49,11 +43,8 @@ export const createRestaurant: AsyncThunk<any, any, {}> = createAsyncThunk<any, 
 export const editRestaurant: AsyncThunk<any, EditRestaurantArgs, {}> = createAsyncThunk<any, any>(
   'restaurant/editRestaurant',
   async ({ id, restaurant }) => {
-    console.log(restaurant);
-
     const formData = restaurantToFormData(restaurant);
 
-    console.log(formData);
     return await putMultiPart(`restaurant/${id}`, formData);
   },
 );

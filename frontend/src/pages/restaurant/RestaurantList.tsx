@@ -6,18 +6,17 @@ import { shallowEqual, useSelector } from 'react-redux';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import { fetchRestaurants } from '../../actions/restaurantActions';
 import Restaurant from '../../models/restaurant';
-import withStateHandling from '../../hooks/useStateHandling';
+import useStateHandling from '../../hooks/useStateHandling';
 import StatusHandler from '../../components/shared/StatusHandler';
 import { EditIcon, Icon } from '@chakra-ui/icons';
 
 const RestaurantList: React.FC = () => {
   const dispatch = useAppDispatch();
   const restaurants: Restaurant[] = useSelector((state: RootState) => state.restaurant.data, shallowEqual);
-  const { status, error } = withStateHandling('restaurant');
+  const { status, error } = useStateHandling('restaurant');
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('Restaurants');
     dispatch(fetchRestaurants());
   }, [navigate, dispatch]);
 

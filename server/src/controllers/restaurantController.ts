@@ -20,8 +20,6 @@ export const getRestaurants = async (req: Request, res: Response) => {
 
 export const addRestaurant = async (req: Request, res: Response) => {
   try {
-    console.log('req.body:', req.body);
-
     const { name, city, street, number, phone, openingHours } = req.body;
     const restaurant = new Restaurant({ name, city, street, number, phone, openingHours });
 
@@ -56,7 +54,7 @@ export const getRestaurantById = async (req: Request, res: Response) => {
 
 export const editRestaurant = async (req, res) => {
   try {
-    uploadImages(req, res, async (err) => {
+    uploadImages(req, res, async () => {
       const { name, city, street, number, phone, openingHours } = req.body;
 
       try {

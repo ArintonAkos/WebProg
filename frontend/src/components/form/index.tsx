@@ -69,6 +69,7 @@ const Form: React.FC<FormProps> = ({ fields, onSubmit, submitText, portals }) =>
               settings={field.settings}
               value={field.value}
               key={field.name}
+              element={field.element}
             />
           </Fragment>
         ))}
