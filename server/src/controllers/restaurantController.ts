@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Restaurant from '../models/restaurant';
 import { uploadImages } from '../index';
+import { validateOpeningHours } from '../services/restaurantService';
 
 export const getRestaurants = async (req: Request, res: Response) => {
   try {
@@ -21,6 +22,14 @@ export const getRestaurants = async (req: Request, res: Response) => {
 export const addRestaurant = async (req: Request, res: Response) => {
   try {
     const { name, city, street, number, phone, openingHours } = req.body;
+
+    if (!validateOpeningHours(openingHours)) {
+      res.status(401).json({
+        showToast: true,
+        message: 'Opening Hours format should be: H:M - H:M and the starting hour should be before the ending hour!',
+      });
+    }
+
     const restaurant = new Restaurant({ name, city, street, number, phone, openingHours });
 
     await restaurant.save();
@@ -56,6 +65,13 @@ export const editRestaurant = async (req, res) => {
   try {
     uploadImages(req, res, async () => {
       const { name, city, street, number, phone, openingHours } = req.body;
+
+      if (!validateOpeningHours(openingHours)) {
+        res.status(401).json({
+          showToast: true,
+          message: 'Opening Hours format should be: H:M - H:M and the starting hour should be before the ending hour!',
+        });
+      }
 
       try {
         const restaurant = await Restaurant.findById(req.params.id);

@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 
-interface Reservation {
+export interface Reservation {
   name: string;
   restaurantId: string;
   time: Date;

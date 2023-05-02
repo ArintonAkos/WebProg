@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Reservation from '../models/reservation';
+import { validateReservationTime, validateStartTime } from '../services/reservationService';
 
 export const addReservation = async (req: Request, res: Response) => {
   try {
@@ -8,6 +9,13 @@ export const addReservation = async (req: Request, res: Response) => {
 
     const reservationStartTime = new Date(`${date}T${time}`);
     const reservationEndTime = new Date(reservationStartTime.getTime() + 30 * 60 * 1000); // 30 minutes later
+
+    if (!validateStartTime(reservationStartTime)) {
+      res.status(401).json({
+        showToast: true,
+        message: 'Cannot make a reservation in the past!',
+      });
+    }
 
     const existingReservation = await Reservation.findOne({
       restaurantId,
@@ -24,6 +32,13 @@ export const addReservation = async (req: Request, res: Response) => {
       return res
         .status(400)
         .json({ showToast: true, message: 'There is already a reservation for this restaurant at this time.' });
+    }
+
+    if (!(await validateReservationTime(reservationStartTime, reservationEndTime, existingReservation))) {
+      res.status(401).json({
+        showToast: true,
+        message: 'Cannot make a reservation in the past!',
+      });
     }
 
     const reservation = new Reservation({
