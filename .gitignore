@@ -59,7 +59,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+server/src/.env
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)
@@ -91,3 +91,5 @@ Thumbs.db
 .DS_Store
 
 .idea/
+
+images/
