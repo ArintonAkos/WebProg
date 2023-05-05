@@ -13,3 +13,14 @@ export const includesAny = (input: string | undefined, search: string[]): boolea
 
   return search.some((s) => input.includes(s));
 };
+
+export const splitByCapital = (input: string | undefined): Array<String> => {
+  console.log(input);
+
+  if (!input || input.length === 0) {
+    return [];
+  }
+
+  const regex = /(?=[A-Z])/; // positive lookahead for capital letter
+  return input.split(regex);
+};

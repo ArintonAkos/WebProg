@@ -2,7 +2,15 @@ import React, { Fragment, useEffect } from 'react';
 import { Control, useForm } from 'react-hook-form';
 import { SelectOption } from './elements/Select';
 import FormField from './formField';
-import { Button, InputProps, SelectProps, Stack } from '@chakra-ui/react';
+import {
+  Button,
+  CheckboxGroupProps,
+  CheckboxProps,
+  InputProps,
+  SelectProps,
+  Stack,
+  TextareaProps,
+} from '@chakra-ui/react';
 
 export type WithControl = {
   control: Control;
@@ -16,7 +24,7 @@ export type FormFieldProps = {
   options?: SelectOption[];
   helperText?: string;
   placeHolder?: string;
-  settings?: InputProps | SelectProps;
+  settings?: InputProps | SelectProps | CheckboxProps | CheckboxGroupProps | TextareaProps;
   element?: string;
   value?: string;
 };

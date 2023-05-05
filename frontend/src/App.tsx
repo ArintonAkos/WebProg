@@ -8,6 +8,8 @@ import { ToastProvider } from './context/toastContext';
 import RestaurantList from './pages/restaurant/RestaurantList';
 import RestaurantDetails from './pages/restaurant/RestaurantDetails';
 import RestaurantEdit from './pages/restaurant/RestaurantEdit';
+import FormPage from './pages/plus-lab-4/FormPage';
+import FormDataPage from './pages/plus-lab-4/FormDataPage';
 
 export const App = () => (
   <ChakraProvider theme={theme}>
@@ -20,6 +22,8 @@ export const App = () => (
             <Route path="/restaurants/:id" element={<RestaurantDetails />} />
             <Route path="/restaurant/add" element={<AddRestaurantForm />} />
             <Route path="/restaurants/edit/:id" element={<RestaurantEdit />} />
+            <Route path="/form" element={<FormPage />} />
+            <Route path="/form-data" element={<FormDataPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Layout>
