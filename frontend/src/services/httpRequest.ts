@@ -30,7 +30,7 @@ export const httpRequest = async ({ url, method, data = null, headers = {} }: Re
   const response = await fetch(`${API_BASE_URL}/${url}`, options);
 
   if (!response.ok) {
-    let errorMessage = '';
+    let errorMessage: string;
 
     try {
       const body = await response.json();
