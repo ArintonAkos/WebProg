@@ -4,6 +4,8 @@ import restaurantRoutes from './routes/restaurantRoutes';
 import connectToDatabase from './config/database';
 import path from 'path';
 import { upload } from './utils/storage';
+import authRoutes from './routes/authRoutes';
+import userRoutes from './routes/userRoutes';
 
 const app = express();
 const port = 3000;
@@ -29,6 +31,8 @@ app.all('*', (req, res, next) => {
 connectToDatabase().then(() => {
   app.use('/reservation', reservationRoutes);
   app.use('/restaurant', restaurantRoutes);
+  app.use('/auth', authRoutes);
+  app.use('/user', userRoutes);
 
   app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);

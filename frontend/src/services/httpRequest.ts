@@ -1,3 +1,5 @@
+import ResponseError from '../utils/responseError';
+
 export const API_BASE_URL = 'http://localhost:3000';
 
 type Request = {
@@ -28,7 +30,17 @@ export const httpRequest = async ({ url, method, data = null, headers = {} }: Re
   const response = await fetch(`${API_BASE_URL}/${url}`, options);
 
   if (!response.ok) {
-    throw new Error(`An error occurred: ${response.statusText}`);
+    try {
+      const body = await response.json();
+
+      throw new ResponseError(body?.message ?? 'An error occurred. Please try again later.');
+    } catch (e: any) {
+      if (e instanceof ResponseError) {
+        throw e;
+      } else {
+        throw new Error(`An error occurred: ${response.statusText}`);
+      }
+    }
   }
 
   return await response.json();

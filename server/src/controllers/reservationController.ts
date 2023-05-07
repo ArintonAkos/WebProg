@@ -11,6 +11,8 @@ export const addReservation = async (req: Request, res: Response) => {
     const reservationEndTime = new Date(reservationStartTime.getTime() + 30 * 60 * 1000); // 30 minutes later
 
     if (!validateStartTime(reservationStartTime)) {
+      console.log('Invalid start time');
+
       res.status(401).json({
         showToast: true,
         message: 'Cannot make a reservation in the past!',
@@ -28,17 +30,23 @@ export const addReservation = async (req: Request, res: Response) => {
       ],
     });
 
+    console.log('EEEEEEEEEEEEEEEEEEEEEEEE', existingReservation);
     if (existingReservation) {
-      return res
+      res
         .status(400)
         .json({ showToast: true, message: 'There is already a reservation for this restaurant at this time.' });
+
+      return;
     }
 
+    console.log('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB');
     if (!(await validateReservationTime(reservationStartTime, reservationEndTime, existingReservation))) {
       res.status(401).json({
         showToast: true,
         message: 'Cannot make a reservation in the past!',
       });
+
+      return;
     }
 
     const reservation = new Reservation({
@@ -49,8 +57,10 @@ export const addReservation = async (req: Request, res: Response) => {
       restaurantId,
     });
 
+    console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC');
     await reservation.save();
 
+    console.log('Eljutottam idaig!');
     res.status(201).json({ showToast: true, message: 'Reservation created successfully', reservation });
   } catch (error) {
     console.error(error);

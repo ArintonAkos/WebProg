@@ -44,7 +44,7 @@ const RestaurantList: React.FC = () => {
                   </Link>
                   <Button
                     size="sm"
-                    colorScheme="teal"
+                    colorScheme="blue"
                     onClick={() => handleEditClick(restaurant._id!)}
                     leftIcon={<Icon as={EditIcon} />}
                   >

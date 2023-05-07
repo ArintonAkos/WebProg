@@ -15,8 +15,6 @@ export const includesAny = (input: string | undefined, search: string[]): boolea
 };
 
 export const splitByCapital = (input: string | undefined): Array<String> => {
-  console.log(input);
-
   if (!input || input.length === 0) {
     return [];
   }

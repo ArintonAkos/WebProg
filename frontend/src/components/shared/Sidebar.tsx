@@ -1,59 +1,31 @@
-import React from 'react';
-import {
-  Box,
-  VStack,
-  Text,
-  Link,
-  useDisclosure,
-  useMediaQuery,
-  DrawerOverlay,
-  Drawer,
-  DrawerContent,
-  DrawerCloseButton,
-} from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { ReactNode } from 'react';
+import { Box, Drawer, DrawerContent, useDisclosure } from '@chakra-ui/react';
+import SidebarContent from './sidebar/SidebarContent';
+import MobileNav from './sidebar/MobileNav';
 
-const Sidebar: React.FC = () => {
+const Sidebar: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
-
-  const content = (
-    <VStack spacing={4} alignItems="start">
-      <Link as={RouterLink} to="/">
-        <Text fontSize="xl" mb={3}>
-          Dashboard
-        </Text>
-      </Link>
-      <Link as={RouterLink} to="/restaurants">
-        Restaurants
-      </Link>
-      <Link as={RouterLink} to="/restaurant/add">
-        Add Restaurant
-      </Link>
-    </VStack>
-  );
-
-  if (!isLargerThan768) {
-    return (
-      <>
-        <Box as="button" onClick={onOpen} position="fixed" bottom="4" right="4" zIndex="overlay">
-          Open Sidebar
-        </Box>
-        <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
-          <DrawerOverlay>
-            <DrawerContent>
-              <DrawerCloseButton />
-              <Box p="4">{content}</Box>
-            </DrawerContent>
-          </DrawerOverlay>
-        </Drawer>
-      </>
-    );
-  }
 
   return (
-    <Box width="20%" backgroundColor="gray.800" p={4}>
-      {content}
+    <Box minH="100vh" width="100%">
+      <SidebarContent onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
+      <Drawer
+        autoFocus={false}
+        isOpen={isOpen}
+        placement="left"
+        onClose={onClose}
+        returnFocusOnClose={false}
+        onOverlayClick={onClose}
+        size="full"
+      >
+        <DrawerContent>
+          <SidebarContent onClose={onClose} />
+        </DrawerContent>
+      </Drawer>
+      <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
+      <Box ml={{ base: 0, md: 60 }} p="4">
+        {children}
+      </Box>
     </Box>
   );
 };

@@ -7,6 +7,7 @@ import {
   InputRightElement,
   FormHelperText,
   InputProps,
+  FormErrorMessage,
 } from '@chakra-ui/react';
 import { ControllerRenderProps } from 'react-hook-form';
 
@@ -19,6 +20,8 @@ type CustomInputProps = {
   placeHolder?: string;
   settings?: InputProps;
   type?: string;
+  error?: boolean;
+  errorMessage?: string;
 };
 
 const Input: React.FC<CustomInputProps> = ({
@@ -30,15 +33,18 @@ const Input: React.FC<CustomInputProps> = ({
   placeHolder,
   settings,
   type,
+  error,
+  errorMessage,
 }) => {
   return (
-    <FormControl isRequired={isRequired}>
+    <FormControl isRequired={isRequired} isInvalid={error}>
       {label && <FormLabel>{label}</FormLabel>}
       <InputGroup>
         <ChakraInput {...field} placeholder={placeHolder} type={type} {...settings} />
         {icon && <InputRightElement children={icon} />}
       </InputGroup>
       {helperText && <FormHelperText>{helperText}</FormHelperText>}
+      <FormErrorMessage>{errorMessage}</FormErrorMessage>
     </FormControl>
   );
 };

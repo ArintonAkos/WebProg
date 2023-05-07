@@ -10,6 +10,7 @@ import RestaurantDetails from './pages/restaurant/RestaurantDetails';
 import RestaurantEdit from './pages/restaurant/RestaurantEdit';
 import FormPage from './pages/plus-lab-4/FormPage';
 import FormDataPage from './pages/plus-lab-4/FormDataPage';
+import RegisterPage from './pages/auth/RegistrationPage';
 
 export const App = () => (
   <ChakraProvider theme={theme}>
@@ -17,11 +18,12 @@ export const App = () => (
       <Router>
         <Layout>
           <Routes>
-            <Route index path="/" element={<HomePage />} />
-            <Route path="/restaurants" element={<RestaurantList />} />
+            <Route index path="/" element={<RestaurantList />} />
             <Route path="/restaurants/:id" element={<RestaurantDetails />} />
             <Route path="/restaurant/add" element={<AddRestaurantForm />} />
             <Route path="/restaurants/edit/:id" element={<RestaurantEdit />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/auth/register" element={<RegisterPage />} />
             <Route path="/form" element={<FormPage />} />
             <Route path="/form-data" element={<FormDataPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />

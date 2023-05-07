@@ -6,7 +6,7 @@ const HomePage: React.FC = () => {
   const pages = [
     {
       name: 'Restaurants',
-      path: '/restaurants',
+      path: '/',
       image: 'https://source.unsplash.com/random?restaurant',
       description: 'Browse our list of restaurants.',
     },

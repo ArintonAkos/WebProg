@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box } from '@chakra-ui/react';
 import Form, { FormFieldProps } from '../../form';
 import useAppDispatch from '../../../hooks/useAppDispatch';
@@ -8,14 +8,17 @@ import { RootState } from '../../../store';
 import { useNavigate } from 'react-router-dom';
 import { clearData } from '../../../reducers/reservationReducer';
 import useStateHandling from '../../../hooks/useStateHandling';
+import User from '../../../models/user';
 
 const fields: Array<FormFieldProps> = [
   {
     name: 'name',
     label: 'Name',
-    type: 'text',
+    type: 'select',
+    element: 'select',
     required: true,
     placeHolder: 'Arinton Akos',
+    options: [],
   },
   {
     name: 'date',
@@ -61,9 +64,11 @@ export interface CreateReservationProps {
 
 const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
   useStateHandling('reservation');
+  const users: Array<User> | undefined = useSelector((state: RootState) => state.restaurant.data?.users);
   const dispatch = useAppDispatch();
   const data = useSelector((state: RootState) => state.reservation.data);
   const navigate = useNavigate();
+  const [formFields, setFormFields] = useState(fields);
 
   const handleSubmit = async (formData: CreateReservationProps) => {
     dispatch(
@@ -75,17 +80,28 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
   };
 
   useEffect(() => {
+    if (users) {
+      setFormFields((prev) => {
+        const nameField = prev.find((field) => field.name === 'name')!;
+        const otherFields = prev.filter((field) => field.name !== 'name');
+
+        if (nameField) {
+          nameField.options = users.map((user) => ({ label: user.name, value: user.name }));
+        }
+
+        return [nameField, ...otherFields];
+      });
+    }
+  }, [users]);
+
+  useEffect(() => {
     if (data) {
       dispatch(clearData());
       navigate('/');
     }
   }, [data, navigate]);
 
-  return (
-    <Box width="400px">
-      <Form fields={fields} onSubmit={handleSubmit} submitText="Make Reservation" />
-    </Box>
-  );
+  return <Form fields={formFields} onSubmit={handleSubmit} submitText="Make Reservation" />;
 };
 
 export default ReservationForm;

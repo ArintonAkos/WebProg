@@ -1,4 +1,10 @@
-import { createRestaurant, editRestaurant, fetchRestaurant, fetchRestaurants } from '../actions/restaurantActions';
+import {
+  createRestaurant,
+  editRestaurant,
+  fetchRestaurant,
+  fetchRestaurants,
+  uploadImages,
+} from '../actions/restaurantActions';
 import { DefaultState, CustomRootState } from '../store/state';
 import { mapAsyncThunkToGlobalAction } from '../actions';
 import { wrapSliceWithCommonFunctions } from '../hoc/reducerWrapper';
@@ -40,6 +46,7 @@ const restaurantSlice = wrapSliceWithCommonFunctions({
       },
       fulfilled: (state, action) => {
         state.status = 'succeeded';
+
         state.data = action.payload;
       },
       rejected: (state) => {
@@ -67,6 +74,22 @@ const restaurantSlice = wrapSliceWithCommonFunctions({
       },
       fulfilled: (state, action) => {
         state.status = 'succeeded';
+        state.requestStatus = action.requestStatus;
+      },
+      rejected: (state, action) => {
+        state.status = 'failed';
+        state.requestStatus = action.requestStatus;
+      },
+    });
+
+    mapAsyncThunkToGlobalAction(builder, uploadImages, {
+      pending: (state) => {
+        state.status = 'loading';
+      },
+      fulfilled: (state, action) => {
+        state.status = 'succeeded';
+        console.log(action.payload);
+        state.data.restaurant = action.payload.restaurant;
         state.requestStatus = action.requestStatus;
       },
       rejected: (state, action) => {

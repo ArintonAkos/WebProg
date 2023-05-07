@@ -22,12 +22,15 @@ const FormField: React.FC<FormFieldPropsWithControl> = ({
   settings,
   element,
   value,
+  error,
 }) => {
   const renderedObject = (field: ControllerRenderProps) => {
-    console.log(name, settings, options, element);
+    console.log(type);
 
     switch (element) {
       case 'select':
+        console.log(name, 'aaaaaa');
+
         return (
           <Select
             options={options!}
@@ -72,6 +75,8 @@ const FormField: React.FC<FormFieldPropsWithControl> = ({
             placeHolder={placeHolder}
             type={type}
             settings={settings as InputProps}
+            error={!!error}
+            errorMessage={error?.message?.toString()}
           />
         );
     }

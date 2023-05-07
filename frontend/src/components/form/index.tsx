@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
-import { Control, useForm } from 'react-hook-form';
+import { Control, FieldError, FieldErrorsImpl, Merge, useForm } from 'react-hook-form';
 import { SelectOption } from './elements/Select';
 import FormField from './formField';
 import {
@@ -11,6 +11,8 @@ import {
   Stack,
   TextareaProps,
 } from '@chakra-ui/react';
+import Joi from 'joi';
+import { joiResolver } from '@hookform/resolvers/joi';
 
 export type WithControl = {
   control: Control;
@@ -27,6 +29,7 @@ export type FormFieldProps = {
   settings?: InputProps | SelectProps | CheckboxProps | CheckboxGroupProps | TextareaProps;
   element?: string;
   value?: string;
+  error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;
 };
 
 type Portal = {
@@ -39,16 +42,25 @@ type FormProps = {
   submitText?: string;
   onSubmit: (data: any) => any;
   portals?: Portal[];
+  validationSchema?: Joi.Schema;
 };
 
-const Form: React.FC<FormProps> = ({ fields, onSubmit, submitText, portals }) => {
-  const { handleSubmit, control, setValue } = useForm();
+const Form: React.FC<FormProps> = ({ fields, onSubmit, submitText, portals, validationSchema }) => {
+  const resolver = validationSchema ? joiResolver(validationSchema) : undefined;
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: resolver,
+  });
 
   useEffect(() => {
     fields.forEach((field) => {
       setValue(field.name, field.value);
     });
-  }, fields);
+  }, [JSON.stringify(fields)]);
 
   const handleFormSubmit = (data: any) => {
     onSubmit(data);
@@ -78,6 +90,7 @@ const Form: React.FC<FormProps> = ({ fields, onSubmit, submitText, portals }) =>
               value={field.value}
               key={field.name}
               element={field.element}
+              error={errors[field.name]}
             />
           </Fragment>
         ))}

@@ -45,6 +45,7 @@ export const addRestaurant = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error adding restaurant' });
   }
 };
+
 export const getRestaurantById = async (req: Request, res: Response) => {
   try {
     const restaurant = await Restaurant.findById(req.params.id);
@@ -106,6 +107,41 @@ export const editRestaurant = async (req, res) => {
         res.json(updatedRestaurant);
       } catch (err) {
         res.status(500).json({ message: 'Error updating restaurant', error: err });
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Error processing request', error: err });
+  }
+};
+
+export const uploadRestaurantImages = async (req, res) => {
+  try {
+    uploadImages(req, res, async () => {
+      try {
+        const restaurant = await Restaurant.findById(req.params.id);
+
+        if (!restaurant) {
+          return res.status(404).json({ message: 'Restaurant not found' });
+        }
+
+        if (req.files && req.files.length > 0) {
+          const uploadedImages = req.files.map((file) => file.path);
+          restaurant.images.push(...uploadedImages);
+        }
+
+        const updatedRestaurant = await Restaurant.findByIdAndUpdate(req.params.id, restaurant, {
+          new: true,
+        });
+
+        if (!updatedRestaurant) {
+          return res.status(404).json({ message: 'Restaurant not found' });
+        }
+
+        res
+          .status(201)
+          .json({ message: 'Successfully uploaded images!', showToast: true, restaurant: updatedRestaurant });
+      } catch (err) {
+        res.status(500).json({ message: 'Error uploading images!', error: err, showToast: true });
       }
     });
   } catch (err) {

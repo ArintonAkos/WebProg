@@ -11,7 +11,6 @@ import * as formJson from './data/form.json';
 const mapToCheckboxOptions = (data: Array<any>): Array<CheckboxOptions> => {
   const options: Array<CheckboxOptions> = [];
 
-  console.log(data);
   for (let i = 1; i < data[0].length; i++) {
     options.push({
       label: data[0][i],
@@ -19,7 +18,6 @@ const mapToCheckboxOptions = (data: Array<any>): Array<CheckboxOptions> => {
     });
   }
 
-  console.log(options);
   return options;
 };
 
@@ -28,8 +26,6 @@ const toFormElement = (type: String, name: string, data: Array<any>): FormFieldP
     name: name,
     label: data[0],
   };
-
-  console.log(type);
 
   switch (type) {
     case 's':
@@ -77,12 +73,10 @@ const toFormElement = (type: String, name: string, data: Array<any>): FormFieldP
 
 const toFormData = (inputJson: object): Array<FormFieldProps> => {
   const formData: Array<FormFieldProps> = [];
-  console.log(inputJson);
 
   Object.entries(inputJson).forEach(([key, value]) => {
     const [type, ...name] = splitByCapital(key);
 
-    console.log(type, name);
     if (!type || type === 'default') {
       return;
     }
@@ -94,7 +88,6 @@ const toFormData = (inputJson: object): Array<FormFieldProps> => {
     formData.push(formElement);
   });
 
-  console.log(formData);
   return formData;
 };
 

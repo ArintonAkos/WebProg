@@ -33,7 +33,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadedFiles, files }) => 
   });
 
   return (
-    <Container padding={0}>
+    <>
       <Box
         {...getRootProps()}
         border="2px"
@@ -67,7 +67,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadedFiles, files }) => 
           />
         ))}
       </Flex>
-    </Container>
+    </>
   );
 };
 
