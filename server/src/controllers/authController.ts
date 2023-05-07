@@ -1,12 +1,19 @@
 import User from '../models/user';
 
 export const register = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, confirmPassword } = req.body;
+
+  if (password.length < 8) {
+    return res.status(400).json({ message: 'Password must be at least 8 characters long', showToast: true });
+  }
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({ message: 'Passwords do not match', showToast: true });
+  }
 
   try {
-    console.log(name, email);
     let user = await User.findOne({ email });
-    console.log(user);
+
     if (user) {
       return res.status(400).json({ message: 'User already exists' });
     }
