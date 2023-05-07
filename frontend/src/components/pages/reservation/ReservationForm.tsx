@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Box } from '@chakra-ui/react';
 import Form, { FormFieldProps } from '../../form';
 import useAppDispatch from '../../../hooks/useAppDispatch';
 import { createReservation } from '../../../actions/reservationActions';

@@ -51,7 +51,7 @@ const registerFields: FormFieldProps[] = [
 ];
 
 const RegisterPage: React.FC = () => {
-  const { status, error } = useStateHandling('auth');
+  const { status } = useStateHandling('auth');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
