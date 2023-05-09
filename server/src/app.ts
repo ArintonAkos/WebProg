@@ -4,7 +4,6 @@ import restaurantRoutes from './routes/restaurantRoutes';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
 import errorHandler from './middlewares/errorHandler';
-import uploadImages from './middlewares/uploadImages';
 import cors from './middlewares/cors';
 import path from 'path';
 import responseFormatter from './middlewares/responseFormatter';
