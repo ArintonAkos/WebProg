@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import Reservation from '../models/reservation';
+import ReservationModel from '../models/reservation';
 import { validateReservationTime, validateStartTime } from '../services/reservationService';
-import Restaurant from '../models/restaurant';
-import User from '../models/user';
+import RestaurantModel from '../models/restaurant';
+import UserModel from '../models/user';
 
 export const addReservation = async (req: Request, res: Response) => {
   try {
@@ -19,7 +19,7 @@ export const addReservation = async (req: Request, res: Response) => {
       });
     }
 
-    const restaurant = await Restaurant.findById(restaurantId);
+    const restaurant = await RestaurantModel.findById(restaurantId);
 
     if (!restaurant) {
       return res.status(404).json({
@@ -28,14 +28,14 @@ export const addReservation = async (req: Request, res: Response) => {
       });
     }
 
-    if (!(await User.findById(userId))) {
+    if (!(await UserModel.findById(userId))) {
       return res.status(404).json({
         showToast: true,
         message: 'User not found!',
       });
     }
 
-    const existingReservation = await Reservation.findOne({
+    const existingReservation = await ReservationModel.findOne({
       restaurantId,
       $or: [
         { time: { $gte: reservationStartTime, $lt: reservationEndTime } },
@@ -61,7 +61,7 @@ export const addReservation = async (req: Request, res: Response) => {
       });
     }
 
-    const reservation = new Reservation({
+    const reservation = new ReservationModel({
       userId,
       time: reservationStartTime,
       numberOfGuests,
@@ -87,7 +87,7 @@ export const addReservation = async (req: Request, res: Response) => {
 export const getReservationsByRestaurantId = async (req: Request, res: Response) => {
   try {
     const restaurantId = req.params.restaurantId;
-    const reservations = await Reservation.find({ restaurantId });
+    const reservations = await ReservationModel.find({ restaurantId });
 
     res.json({ reservations });
   } catch (error) {

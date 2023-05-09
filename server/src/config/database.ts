@@ -14,4 +14,8 @@ const connectToDatabase = async () => {
   }
 };
 
+export const disconnectFromDatabase = async () => {
+  await mongoose.disconnect();
+};
+
 export default connectToDatabase;

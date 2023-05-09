@@ -39,7 +39,7 @@ const RestaurantDetails: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchRestaurant(id));
-  }, []);
+  }, [dispatch, id]);
 
   const handleEditClick = () => {
     navigate(`/restaurants/edit/${id}`);

@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
 
 export interface Reservation {
   userId: string;
@@ -15,6 +15,6 @@ const reservationSchema = new Schema<Reservation>({
   numberOfGuests: { type: Number, required: true },
 });
 
-const Reservation = model<Reservation>('Reservation', reservationSchema);
+const ReservationModel = model<Reservation>('Reservation', reservationSchema);
 
-export default Reservation;
+export default ReservationModel;

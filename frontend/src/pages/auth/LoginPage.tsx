@@ -49,7 +49,7 @@ const LoginPage: React.FC = () => {
       dispatch(setIdleState());
       navigate('/');
     }
-  }, [status, navigate]);
+  }, [status, navigate, dispatch]);
 
   return (
     <Container mt={5}>

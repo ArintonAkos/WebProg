@@ -72,7 +72,7 @@ const RestaurantEditPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchRestaurant(id));
-  }, [id]);
+  }, [id, dispatch]);
 
   useEffect(() => {
     if (restaurant) {
@@ -109,7 +109,7 @@ const RestaurantEditPage: React.FC = () => {
       dispatch(clearEditedRestaurantData());
       navigate(`/restaurants/${editedRestaurant._id}`);
     }
-  }, [status, restaurant, showToast, navigate]);
+  }, [status, restaurant, showToast, navigate, dispatch, editedRestaurant]);
 
   const handleUploadedFiles = (files: File[]) => {
     setImages([...files]);

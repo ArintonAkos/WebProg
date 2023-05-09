@@ -24,6 +24,7 @@
   },
   "scripts": {
     "frontend": "npm start --prefix frontend/",
-    "backend": "npm start --prefix server/"
+    "backend": "npm start --prefix server/",
+    "seed": "npm run seed --prefix server/"
   }
 }

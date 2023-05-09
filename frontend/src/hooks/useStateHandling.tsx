@@ -25,7 +25,7 @@ const useStateHandling = <K extends RootStateKey>(reducerKey: K) => {
   const error = useSelector(selectError(reducerKey));
   const responseMessage = useSelector(selectRequestStatus(reducerKey));
   const showToast = useCustomToast();
-  const dispatch: Dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (responseMessage?.showToast) {
@@ -42,7 +42,7 @@ const useStateHandling = <K extends RootStateKey>(reducerKey: K) => {
 
       dispatch(action);
     }
-  }, [responseMessage, showToast]);
+  }, [responseMessage, showToast, reducerKey, dispatch]);
 
   return { status, error };
 };

@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import Restaurant from '../models/restaurant';
+import RestaurantModel from '../models/restaurant';
 import { validateOpeningHours } from '../services/restaurantService';
 import uploadImages from '../middlewares/uploadImages';
 import { deleteFiles } from '../utils/storage';
 
 export const getRestaurants = async (req: Request, res: Response) => {
   try {
-    const restaurants = await Restaurant.find();
+    const restaurants = await RestaurantModel.find();
 
     res.status(200).json({
       data: restaurants,
@@ -31,7 +31,7 @@ export const addRestaurant = async (req: Request, res: Response) => {
       });
     }
 
-    const restaurant = new Restaurant({ name, city, street, number, phone, openingHours });
+    const restaurant = new RestaurantModel({ name, city, street, number, phone, openingHours });
 
     await restaurant.save();
 
@@ -49,7 +49,7 @@ export const addRestaurant = async (req: Request, res: Response) => {
 
 export const getRestaurantById = async (req: Request, res: Response) => {
   try {
-    const restaurant = await Restaurant.findById(req.params.id);
+    const restaurant = await RestaurantModel.findById(req.params.id);
 
     if (!restaurant) {
       res.status(404).json({ message: 'Restaurant not found' });
@@ -78,7 +78,7 @@ export const editRestaurant = async (req, res) => {
       }
 
       try {
-        const restaurant = await Restaurant.findById(req.params.id);
+        const restaurant = await RestaurantModel.findById(req.params.id);
 
         if (!restaurant) {
           deleteFiles(req.files, res.params.id);
@@ -100,7 +100,7 @@ export const editRestaurant = async (req, res) => {
           updatedRestaurantData.images.push(...uploadedImages);
         }
 
-        const updatedRestaurant = await Restaurant.findByIdAndUpdate(req.params.id, updatedRestaurantData, {
+        const updatedRestaurant = await RestaurantModel.findByIdAndUpdate(req.params.id, updatedRestaurantData, {
           new: true,
         });
 
@@ -128,7 +128,7 @@ export const uploadRestaurantImages = async (req, res) => {
   try {
     uploadImages(req, res, async () => {
       try {
-        const restaurant = await Restaurant.findById(req.params.id);
+        const restaurant = await RestaurantModel.findById(req.params.id);
 
         if (!restaurant) {
           deleteFiles(req.files, res.params.id);
@@ -140,7 +140,7 @@ export const uploadRestaurantImages = async (req, res) => {
           restaurant.images.push(...uploadedImages);
         }
 
-        const updatedRestaurant = await Restaurant.findByIdAndUpdate(req.params.id, restaurant, {
+        const updatedRestaurant = await RestaurantModel.findByIdAndUpdate(req.params.id, restaurant, {
           new: true,
         });
 

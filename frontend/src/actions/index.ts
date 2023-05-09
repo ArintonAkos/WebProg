@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder, AnyAction, AsyncThunk, Draft } from '@reduxjs/toolkit';
 
-export interface GlobalAction<Payload = unknown, T = string> extends AnyAction {
+export interface GlobalAction<Payload = unknown> extends AnyAction {
   payload: Payload;
 }
 

@@ -97,7 +97,7 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
       dispatch(clearData());
       navigate('/');
     }
-  }, [data, navigate]);
+  }, [data, navigate, dispatch]);
 
   return <Form fields={formFields} onSubmit={handleSubmit} submitText="Make Reservation" />;
 };
