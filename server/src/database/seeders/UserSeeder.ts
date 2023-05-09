@@ -1,6 +1,6 @@
 import UserModel, { User } from '../../models/user';
 import Seeder from './Seeder';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 const userSeeds: User[] = [
   {

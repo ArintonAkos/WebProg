@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { useCustomToast } from './useCustomToast';
 import useAppDispatch from './useAppDispatch';
-import { Dispatch } from 'redux';
 
 type RootStateKey = keyof RootState;
 

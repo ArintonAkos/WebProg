@@ -127,6 +127,8 @@ export const editRestaurant = async (req, res) => {
 export const uploadRestaurantImages = async (req, res) => {
   try {
     uploadImages(req, res, async () => {
+      console.error(req.files);
+
       try {
         const restaurant = await RestaurantModel.findById(req.params.id);
 
@@ -161,6 +163,7 @@ export const uploadRestaurantImages = async (req, res) => {
       }
     });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Error processing request', error: err, type: 'error' });
   }
 };

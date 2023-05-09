@@ -1,7 +1,9 @@
 import UserSeeder from './seeders/UserSeeder';
 import connectToDatabase, { disconnectFromDatabase } from '../config/database';
+import RestaurantSeeder from './seeders/RestaurantSeeder';
 
-const seeders = [UserSeeder];
+const seeders = [UserSeeder, RestaurantSeeder];
+
 const seederPromises = seeders.map(async (seeder) => await seeder.run());
 
 const seedDatabase = async () => {

@@ -2,13 +2,15 @@ import multer, { Multer } from 'multer';
 import * as fs from 'fs';
 
 const getFileName = (file: Multer.File, restaurantId: string) => {
-  return `./images/${restaurantId}/${file.filename}`;
+  return `/images/${restaurantId}/${file.filename}`;
 };
 
 export const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const restaurantId = req.params.id;
-    const dir = `./images/${restaurantId}`;
+    const dir = `/images/${restaurantId}`;
+
+    console.log('Saving file to directory', dir);
 
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });

@@ -5,13 +5,12 @@ import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
 import errorHandler from './middlewares/errorHandler';
 import cors from './middlewares/cors';
-import path from 'path';
 import responseFormatter from './middlewares/responseFormatter';
 
 const app = express();
 
 app.use(responseFormatter);
-app.use('/images', express.static(path.join(__dirname, '../images')));
+app.use('/images', express.static('/images'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors);
