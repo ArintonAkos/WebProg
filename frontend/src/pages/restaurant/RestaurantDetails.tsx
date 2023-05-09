@@ -17,7 +17,6 @@ import useAppDispatch from '../../hooks/useAppDispatch';
 import { fetchRestaurant, uploadImages } from '../../actions/restaurantActions';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import Restaurant from '../../models/restaurant';
 import ImageCarousel from '../../components/shared/ImageCarousel';
 import { EditIcon, Icon } from '@chakra-ui/icons';
 import ReservationForm from '../../components/pages/reservation/ReservationForm';
@@ -34,7 +33,7 @@ const RestaurantDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { status, error } = useStateHandling('restaurant');
   const dispatch = useAppDispatch();
-  const restaurant: Restaurant | undefined = useSelector((state: RootState) => state.restaurant.data?.restaurant);
+  const restaurant = useSelector((state: RootState) => state.restaurant.restaurant.details);
   const navigate = useNavigate();
   const [files, setFiles] = useState<File[]>([]);
 

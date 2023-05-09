@@ -14,3 +14,15 @@ export const registerUser: AsyncThunk<any, CreateUserArgs, {}> = createAsyncThun
     return await post(`auth/register`, { name, email, password, confirmPassword });
   },
 );
+
+type LoginUserArgs = {
+  email: string;
+  password: string;
+};
+
+export const loginUser: AsyncThunk<any, LoginUserArgs, {}> = createAsyncThunk<any, LoginUserArgs>(
+  'auth/loginUser',
+  async ({ email, password }) => {
+    return await post(`auth/login`, { email, password });
+  },
+);

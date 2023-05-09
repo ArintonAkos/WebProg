@@ -1,38 +1,28 @@
-import { Document } from 'mongoose';
-import { Reservation } from '../models/reservation';
 import Restaurant from '../models/restaurant';
 import { getOpeningHours } from './restaurantService';
 
 export const validateStartTime = (startTime: Date) => {
-  const currentDate = new Date();
+  const selectedDate = new Date(startTime.toISOString().slice(0, 10));
 
-  currentDate.setSeconds(0);
-  currentDate.setMilliseconds(0);
+  selectedDate.setSeconds(0);
+  selectedDate.setMilliseconds(0);
 
-  return currentDate.getTime() <= startTime.getTime();
+  return selectedDate.getTime() <= startTime.getTime();
 };
 
 export const validateReservationTime = async (
   reservationStartTime: Date,
   reservationEndTime: Date,
-  existingReservation: Document<{}, any, Reservation> | null,
+  restaurantId: string,
 ): Promise<boolean> => {
-  console.log('A');
-  if (!existingReservation) {
-    return true;
-  }
-
-  const restaurantId = existingReservation.get('restaurantId');
   const restaurant = await Restaurant.findById(restaurantId);
 
-  console.log('B');
   if (!restaurant) {
     return false;
   }
 
   const openingHours = restaurant.get('openingHours');
-  const [start, end] = getOpeningHours(openingHours);
+  const [start, end] = getOpeningHours(openingHours, reservationStartTime);
 
-  console.log('C');
   return !(reservationStartTime < start || reservationEndTime > end);
 };

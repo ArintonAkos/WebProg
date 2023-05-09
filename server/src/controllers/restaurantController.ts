@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import Restaurant from '../models/restaurant';
-import { uploadImages } from '../index';
 import { validateOpeningHours } from '../services/restaurantService';
+import uploadImages from '../middlewares/uploadImages';
+import { deleteFiles } from '../utils/storage';
 
 export const getRestaurants = async (req: Request, res: Response) => {
   try {
@@ -68,8 +69,10 @@ export const editRestaurant = async (req, res) => {
       const { name, city, street, number, phone, openingHours } = req.body;
 
       if (!validateOpeningHours(openingHours)) {
-        res.status(401).json({
+        deleteFiles(req.files, res.params.id);
+        return res.status(400).json({
           showToast: true,
+          type: 'warning',
           message: 'Opening Hours format should be: H:M - H:M and the starting hour should be before the ending hour!',
         });
       }
@@ -78,7 +81,8 @@ export const editRestaurant = async (req, res) => {
         const restaurant = await Restaurant.findById(req.params.id);
 
         if (!restaurant) {
-          return res.status(404).json({ message: 'Restaurant not found' });
+          deleteFiles(req.files, res.params.id);
+          return res.status(404).json({ message: 'Restaurant not found', showToast: true });
         }
 
         const updatedRestaurantData = {
@@ -101,16 +105,22 @@ export const editRestaurant = async (req, res) => {
         });
 
         if (!updatedRestaurant) {
-          return res.status(404).json({ message: 'Restaurant not found' });
+          deleteFiles(req.files, res.params.id);
+          return res.status(404).json({ message: 'Restaurant not found', type: 'error' });
         }
 
-        res.json(updatedRestaurant);
+        res.status(201).json({
+          message: 'Restaurant successfully updated!',
+          showToast: true,
+          restaurant: updatedRestaurant,
+          type: 'success',
+        });
       } catch (err) {
-        res.status(500).json({ message: 'Error updating restaurant', error: err });
+        res.status(500).json({ message: 'Error updating restaurant', error: err, showToast: true, type: 'error' });
       }
     });
   } catch (err) {
-    res.status(500).json({ message: 'Error processing request', error: err });
+    res.status(500).json({ message: 'Error processing request', error: err, showToast: true, type: 'error' });
   }
 };
 
@@ -121,7 +131,8 @@ export const uploadRestaurantImages = async (req, res) => {
         const restaurant = await Restaurant.findById(req.params.id);
 
         if (!restaurant) {
-          return res.status(404).json({ message: 'Restaurant not found' });
+          deleteFiles(req.files, res.params.id);
+          return res.status(404).json({ message: 'Restaurant not found', showToast: true, type: 'warning' });
         }
 
         if (req.files && req.files.length > 0) {
@@ -134,17 +145,22 @@ export const uploadRestaurantImages = async (req, res) => {
         });
 
         if (!updatedRestaurant) {
-          return res.status(404).json({ message: 'Restaurant not found' });
+          deleteFiles(req.files, res.params.id);
+          return res.status(404).json({ message: 'Restaurant not found', type: 'warning', showToast: true });
         }
 
-        res
-          .status(201)
-          .json({ message: 'Successfully uploaded images!', showToast: true, restaurant: updatedRestaurant });
+        res.status(201).json({
+          message: 'Successfully uploaded images!',
+          showToast: true,
+          restaurant: updatedRestaurant,
+          type: 'success',
+        });
       } catch (err) {
-        res.status(500).json({ message: 'Error uploading images!', error: err, showToast: true });
+        deleteFiles(req.files, res.params.id);
+        res.status(500).json({ message: 'Error uploading images!', error: err, showToast: true, type: 'error' });
       }
     });
   } catch (err) {
-    res.status(500).json({ message: 'Error processing request', error: err });
+    res.status(500).json({ message: 'Error processing request', error: err, type: 'error' });
   }
 };

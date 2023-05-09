@@ -1,21 +1,37 @@
 import { Request, Response } from 'express';
 import Reservation from '../models/reservation';
 import { validateReservationTime, validateStartTime } from '../services/reservationService';
+import Restaurant from '../models/restaurant';
+import User from '../models/user';
 
 export const addReservation = async (req: Request, res: Response) => {
   try {
-    const { name, contactInfo, date, time, numberOfGuests } = req.body;
+    const { userId, date, time, numberOfGuests } = req.body;
     const restaurantId = req.params.restaurantId;
 
     const reservationStartTime = new Date(`${date}T${time}`);
     const reservationEndTime = new Date(reservationStartTime.getTime() + 30 * 60 * 1000); // 30 minutes later
 
     if (!validateStartTime(reservationStartTime)) {
-      console.log('Invalid start time');
-
-      res.status(401).json({
+      return res.status(400).json({
         showToast: true,
         message: 'Cannot make a reservation in the past!',
+      });
+    }
+
+    const restaurant = await Restaurant.findById(restaurantId);
+
+    if (!restaurant) {
+      return res.status(404).json({
+        showToast: true,
+        message: 'Restaurant not found!',
+      });
+    }
+
+    if (!(await User.findById(userId))) {
+      return res.status(404).json({
+        showToast: true,
+        message: 'User not found!',
       });
     }
 
@@ -30,41 +46,41 @@ export const addReservation = async (req: Request, res: Response) => {
       ],
     });
 
-    console.log('EEEEEEEEEEEEEEEEEEEEEEEE', existingReservation);
     if (existingReservation) {
-      res
-        .status(400)
-        .json({ showToast: true, message: 'There is already a reservation for this restaurant at this time.' });
-
-      return;
+      return res.status(400).json({
+        showToast: true,
+        message: 'There is already a reservation for this restaurant at this time.',
+      });
     }
 
-    console.log('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB');
-    if (!(await validateReservationTime(reservationStartTime, reservationEndTime, existingReservation))) {
-      res.status(401).json({
+    if (!(await validateReservationTime(reservationStartTime, reservationEndTime, restaurantId))) {
+      return res.status(401).json({
         showToast: true,
-        message: 'Cannot make a reservation in the past!',
+        message:
+          'The restaurant is not open in these hours! Please check the Opening Hours! The last reservation can be made 30 minutes before closing!',
       });
-
-      return;
     }
 
     const reservation = new Reservation({
-      name,
-      contactInfo,
+      userId,
       time: reservationStartTime,
       numberOfGuests,
       restaurantId,
     });
 
-    console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC');
     await reservation.save();
 
-    console.log('Eljutottam idaig!');
-    res.status(201).json({ showToast: true, message: 'Reservation created successfully', reservation });
+    res.status(201).json({
+      showToast: true,
+      message: 'Reservation created successfully',
+      reservation,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ showToast: true, message: 'Error creating reservation' });
+    res.status(500).json({
+      showToast: true,
+      message: 'Error creating reservation',
+    });
   }
 };
 

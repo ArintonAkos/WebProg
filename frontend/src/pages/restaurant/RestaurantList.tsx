@@ -12,7 +12,7 @@ import { EditIcon, Icon } from '@chakra-ui/icons';
 
 const RestaurantList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const restaurants: Restaurant[] = useSelector((state: RootState) => state.restaurant.data, shallowEqual);
+  const restaurants: Restaurant[] = useSelector((state: RootState) => state.restaurant.restaurants, shallowEqual);
   const { status, error } = useStateHandling('restaurant');
   const navigate = useNavigate();
 

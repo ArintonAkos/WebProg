@@ -1,3 +1,4 @@
+// LoginPage.tsx
 import React, { useEffect } from 'react';
 import { Container, Text } from '@chakra-ui/react';
 import Form, { FormFieldProps } from '../../components/form';
@@ -5,28 +6,17 @@ import Joi from 'joi';
 import useStateHandling from '../../hooks/useStateHandling';
 import { useNavigate } from 'react-router-dom';
 import useAppDispatch from '../../hooks/useAppDispatch';
-import { registerUser } from '../../actions/authAction';
+import { loginUser } from '../../actions/authAction';
 import { setIdleState } from '../../reducers/authReducer';
 
-const registrationSchema = Joi.object({
-  name: Joi.string().min(3).max(30).required(),
+const loginSchema = Joi.object({
   email: Joi.string()
     .email({ tlds: { allow: false } })
     .required(),
   password: Joi.string().min(8).required(),
-  confirmPassword: Joi.string().valid(Joi.ref('password')).required().messages({
-    'any.only': 'Passwords do not match',
-  }),
 });
 
-const registerFields: FormFieldProps[] = [
-  {
-    name: 'name',
-    label: 'First and Last Name',
-    type: 'text',
-    required: true,
-    placeHolder: 'Arinton Akos',
-  },
+const loginFields: FormFieldProps[] = [
   {
     name: 'email',
     label: 'Email',
@@ -41,25 +31,17 @@ const registerFields: FormFieldProps[] = [
     type: 'password',
     required: true,
     placeHolder: 'Enter your password',
-    autoComplete: 'new-password',
-  },
-  {
-    name: 'confirmPassword',
-    label: 'Confirm Password',
-    type: 'password',
-    required: true,
-    placeHolder: 'Confirm your password',
-    autoComplete: 'new-password',
+    autoComplete: 'current-password',
   },
 ];
 
-const RegisterPage: React.FC = () => {
+const LoginPage: React.FC = () => {
   const { status } = useStateHandling('auth');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const onSubmit = (data: any) => {
-    dispatch(registerUser(data));
+    dispatch(loginUser(data));
   };
 
   useEffect(() => {
@@ -72,11 +54,11 @@ const RegisterPage: React.FC = () => {
   return (
     <Container mt={5}>
       <Text fontSize="2xl" mb={5}>
-        Registration
+        Login
       </Text>
-      <Form fields={registerFields} onSubmit={onSubmit} submitText="Register" validationSchema={registrationSchema} />
+      <Form fields={loginFields} onSubmit={onSubmit} submitText="Login" validationSchema={loginSchema} />
     </Container>
   );
 };
 
-export default RegisterPage;
+export default LoginPage;

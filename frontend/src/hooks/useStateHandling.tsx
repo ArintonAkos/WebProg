@@ -27,7 +27,6 @@ const useStateHandling = <K extends RootStateKey>(reducerKey: K) => {
   const showToast = useCustomToast();
   const dispatch: Dispatch = useAppDispatch();
 
-  console.log(responseMessage);
   useEffect(() => {
     if (responseMessage?.showToast) {
       showToast({

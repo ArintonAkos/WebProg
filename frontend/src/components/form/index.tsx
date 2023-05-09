@@ -30,6 +30,7 @@ export type FormFieldProps = {
   element?: string;
   value?: string;
   error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;
+  autoComplete?: string;
 };
 
 type Portal = {
@@ -91,6 +92,7 @@ const Form: React.FC<FormProps> = ({ fields, onSubmit, submitText, portals, vali
               key={field.name}
               element={field.element}
               error={errors[field.name]}
+              autoComplete={field.autoComplete}
             />
           </Fragment>
         ))}

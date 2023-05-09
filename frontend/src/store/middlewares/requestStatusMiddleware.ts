@@ -4,13 +4,13 @@ import { Action } from '@reduxjs/toolkit';
 import { capitalizeFirstLetter, includesAny } from '../../utils/stringUtils';
 
 const updateActionMiddleware: Middleware<{}, RootState, Dispatch<Action>> = () => (next) => (action) => {
-  console.log(action);
   if (!includesAny(action.meta?.requestStatus, ['rejected', 'fulfilled'])) {
     return next({ ...action });
   }
 
   if (includesAny(action.meta?.requestStatus, ['rejected'])) {
     action.requestStatus = {
+      ...action.payload,
       type: 'error',
       description: action.error.message,
       showToast: true,

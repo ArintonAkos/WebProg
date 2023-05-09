@@ -1,26 +1,19 @@
 import { ActionReducerMapBuilder, AnyAction, AsyncThunk, Draft } from '@reduxjs/toolkit';
 
-export interface RequestStatus {
-  type?: 'success' | 'error' | 'warning';
-  description?: string;
-  showToast?: boolean;
-  title?: string;
+export interface GlobalAction<Payload = unknown, T = string> extends AnyAction {
+  payload: Payload;
 }
 
-export interface GlobalAction<T = string> extends AnyAction {
-  requestStatus?: RequestStatus;
-}
-
-type AsyncThunkCallbacks<State> = {
+type AsyncThunkCallbacks<State, Returned> = {
   pending?: (state: Draft<State>, action: GlobalAction) => void;
-  fulfilled?: (state: Draft<State>, action: GlobalAction) => void;
+  fulfilled?: (state: Draft<State>, action: GlobalAction<Returned>) => void;
   rejected?: (state: Draft<State>, action: GlobalAction) => void;
 };
 
-export const mapAsyncThunkToGlobalAction = <CustomRootState, ThunkArg>(
+export const mapAsyncThunkToGlobalAction = <CustomRootState, Returned, ThunkArg>(
   builder: ActionReducerMapBuilder<CustomRootState>,
-  asyncThunk: AsyncThunk<any, ThunkArg, {}>,
-  callbacks: AsyncThunkCallbacks<CustomRootState>,
+  asyncThunk: AsyncThunk<Returned, ThunkArg, {}>,
+  callbacks: AsyncThunkCallbacks<CustomRootState, Returned>,
 ) => {
   const { pending, fulfilled, rejected } = callbacks;
 
@@ -36,7 +29,7 @@ export const mapAsyncThunkToGlobalAction = <CustomRootState, ThunkArg>(
   if (fulfilled) {
     builder.addMatcher(
       (action) => action.type === asyncThunk.fulfilled.type,
-      (state, action: GlobalAction) => {
+      (state, action: any) => {
         fulfilled(state, action);
       },
     );

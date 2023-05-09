@@ -8,29 +8,56 @@ import {
 import { DefaultState, CustomRootState } from '../store/state';
 import { mapAsyncThunkToGlobalAction } from '../actions';
 import { wrapSliceWithCommonFunctions } from '../hoc/reducerWrapper';
+import Restaurant from '../models/restaurant';
+import User from '../models/user';
 
-export interface RestaurantState {
-  data: any;
+export interface RestaurantPageData {
+  details?: Restaurant;
+  users: Array<User>;
 }
 
-const InitialState: RestaurantState & CustomRootState = {
+const InitialRestaurantPageData: RestaurantPageData = {
+  details: undefined,
+  users: [],
+};
+
+export interface RestaurantState {
+  restaurants: Array<Restaurant>;
+  restaurant: RestaurantPageData;
+  editRestaurant?: Restaurant;
+}
+
+type RestaurantStateWithRootState = RestaurantState & CustomRootState;
+
+const InitialState: RestaurantStateWithRootState = {
   ...DefaultState,
-  data: undefined,
+  restaurants: [],
+  restaurant: InitialRestaurantPageData,
 };
 
 const restaurantSlice = wrapSliceWithCommonFunctions({
   name: 'restaurant',
   initialState: InitialState,
-  reducers: {},
+  reducers: {
+    clearEditedRestaurantData: (state) => {
+      state.editRestaurant = undefined;
+    },
+    clearData: (state) => {
+      state.restaurants = [];
+      state.restaurant = InitialRestaurantPageData;
+      state.editRestaurant = undefined;
+      state.requestStatus = {};
+    },
+  },
   extraReducers: (builder) => {
     mapAsyncThunkToGlobalAction(builder, fetchRestaurants, {
       pending: (state) => {
         state.status = 'loading';
-        state.data = undefined;
+        state.restaurants = [];
       },
       fulfilled: (state, action) => {
         state.status = 'succeeded';
-        state.data = [...action.payload.data];
+        state.restaurants = [...action.payload.data];
         state.requestStatus = action.requestStatus;
       },
       rejected: (state, action) => {
@@ -39,15 +66,14 @@ const restaurantSlice = wrapSliceWithCommonFunctions({
       },
     });
 
-    mapAsyncThunkToGlobalAction(builder, fetchRestaurant, {
+    mapAsyncThunkToGlobalAction<RestaurantStateWithRootState, RestaurantPageData, any>(builder, fetchRestaurant, {
       pending: (state) => {
         state.status = 'loading';
-        state.data = undefined;
+        state.restaurant = InitialRestaurantPageData;
       },
       fulfilled: (state, action) => {
         state.status = 'succeeded';
-
-        state.data = action.payload;
+        state.restaurant = action.payload;
       },
       rejected: (state) => {
         state.status = 'failed';
@@ -71,10 +97,12 @@ const restaurantSlice = wrapSliceWithCommonFunctions({
     mapAsyncThunkToGlobalAction(builder, editRestaurant, {
       pending: (state) => {
         state.status = 'loading';
+        state.restaurant.details = undefined;
       },
       fulfilled: (state, action) => {
         state.status = 'succeeded';
         state.requestStatus = action.requestStatus;
+        state.editRestaurant = action.payload.restaurant;
       },
       rejected: (state, action) => {
         state.status = 'failed';
@@ -88,8 +116,7 @@ const restaurantSlice = wrapSliceWithCommonFunctions({
       },
       fulfilled: (state, action) => {
         state.status = 'succeeded';
-        console.log(action.payload);
-        state.data.restaurant = action.payload.restaurant;
+        state.restaurant.details = action.payload.restaurant;
         state.requestStatus = action.requestStatus;
       },
       rejected: (state, action) => {
@@ -100,6 +127,6 @@ const restaurantSlice = wrapSliceWithCommonFunctions({
   },
 });
 
-export const {} = restaurantSlice.actions;
+export const { clearEditedRestaurantData } = restaurantSlice.actions;
 
 export default restaurantSlice.reducer;

@@ -11,6 +11,8 @@ import { RootState } from '../../store';
 import { useCustomToast } from '../../hooks/useCustomToast';
 import Form, { FormFieldProps } from '../../components/form';
 import { AddRestaurantFormData } from './AddRestaurantForm';
+import Restaurant from '../../models/restaurant';
+import { clearEditedRestaurantData } from '../../reducers/restaurantReducer';
 
 const fields: Array<FormFieldProps> = [
   {
@@ -62,22 +64,25 @@ const RestaurantEditPage: React.FC = () => {
   const { status, error } = useStateHandling('restaurant');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const restaurant = useSelector((state: RootState) => state.restaurant.data, shallowEqual);
+  const restaurant = useSelector((state: RootState) => state.restaurant.restaurant.details, shallowEqual);
+  const editedRestaurant = useSelector((state: RootState) => state.restaurant.editRestaurant);
   const showToast = useCustomToast();
   const [images, setImages] = useState<Array<File>>([]);
-  const [formFields, setFormFields] = useState<Array<FormFieldProps>>(fields);
+  const [formFields, setFormFields] = useState(fields);
 
   useEffect(() => {
     dispatch(fetchRestaurant(id));
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     if (restaurant) {
       const updatedFields = fields.map((field) => {
+        const fieldName = field.name as keyof Restaurant;
+
         return {
           ...field,
-          placeHolder: restaurant[field.name],
-          value: restaurant[field.name],
+          placeHolder: restaurant[fieldName] as string | undefined,
+          value: restaurant[fieldName] as string | undefined,
         };
       });
 
@@ -85,20 +90,26 @@ const RestaurantEditPage: React.FC = () => {
     }
   }, [restaurant]);
 
-  if (status === 'failed') {
-    navigate('/');
-  }
+  useEffect(() => {
+    if (status === 'failed') {
+      dispatch(clearEditedRestaurantData());
+      navigate('/');
+    }
 
-  if (status === 'succeeded' && !restaurant) {
-    showToast({
-      title: 'Warning',
-      type: 'warning',
-      description: 'Restaurant not found',
-      isClosable: true,
-    });
+    if (status === 'succeeded' && editedRestaurant && !editedRestaurant._id) {
+      showToast({
+        title: 'Warning',
+        type: 'warning',
+        description: 'Restaurant not found',
+        isClosable: true,
+      });
+    }
 
-    navigate('/');
-  }
+    if (status === 'succeeded' && editedRestaurant) {
+      dispatch(clearEditedRestaurantData());
+      navigate(`/restaurants/${editedRestaurant._id}`);
+    }
+  }, [status, restaurant, showToast, navigate]);
 
   const handleUploadedFiles = (files: File[]) => {
     setImages([...files]);
@@ -106,6 +117,7 @@ const RestaurantEditPage: React.FC = () => {
 
   const handleSubmit = async (submittedData: AddRestaurantFormData) => {
     submittedData.images = [...images];
+
     try {
       await dispatch(
         editRestaurant({
@@ -113,8 +125,6 @@ const RestaurantEditPage: React.FC = () => {
           restaurant: submittedData,
         }),
       );
-
-      navigate(`/restaurants/${id}`);
     } catch (error) {
       console.error('Error editing restaurant:', error);
     }
@@ -124,7 +134,7 @@ const RestaurantEditPage: React.FC = () => {
     <StatusHandler status={status} error={error}>
       <Container mt={5}>
         <Text fontSize="2xl" fontWeight="bold">
-          {restaurant?.name ?? 'Edit Restaurant'}
+          Edit Restaurant
         </Text>
         <Form
           fields={formFields}

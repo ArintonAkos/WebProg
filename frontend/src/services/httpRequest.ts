@@ -1,4 +1,4 @@
-import ResponseError from '../utils/responseError';
+import ResponseError from '../types/responseError';
 
 export const API_BASE_URL = 'http://localhost:3000';
 

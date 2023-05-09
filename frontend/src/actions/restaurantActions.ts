@@ -1,6 +1,9 @@
 import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
 import { get, post, postMultiPart, putMultiPart } from '../services/httpRequest';
 import { AddRestaurantFormData } from '../pages/restaurant/AddRestaurantForm';
+import Restaurant from '../models/restaurant';
+import User from '../models/user';
+import { RestaurantPageData } from '../reducers/restaurantReducer';
 
 interface EditRestaurantArgs {
   id: string;
@@ -41,16 +44,18 @@ export const fetchRestaurants = createAsyncThunk<any, void>('restaurant/fetchRes
   return await get('restaurant/');
 });
 
-export const fetchRestaurant = createAsyncThunk<any, any>('restaurant/fetchRestaurant', async (id: any) => {
-  const restaurant = await get(`restaurant/${id}`);
-  console.log(restaurant);
-  const users = await get('user/list');
-  console.log(users);
-  return {
-    restaurant: { ...restaurant },
-    users: [...users],
-  };
-});
+export const fetchRestaurant = createAsyncThunk<RestaurantPageData, any>(
+  'restaurant/fetchRestaurant',
+  async (id: any) => {
+    const restaurant: Restaurant = await get(`restaurant/${id}`);
+    const users: User[] = await get('user/list');
+
+    return {
+      details: { ...restaurant },
+      users: [...users],
+    };
+  },
+);
 
 export const createRestaurant: AsyncThunk<any, any, {}> = createAsyncThunk<any, any>(
   'restaurant/createRestaurant',
@@ -59,11 +64,10 @@ export const createRestaurant: AsyncThunk<any, any, {}> = createAsyncThunk<any, 
   },
 );
 
-export const editRestaurant: AsyncThunk<any, EditRestaurantArgs, {}> = createAsyncThunk<any, any>(
+export const editRestaurant: AsyncThunk<any, any, {}> = createAsyncThunk<any, any>(
   'restaurant/editRestaurant',
-  async ({ id, restaurant }) => {
+  async ({ id, restaurant }: EditRestaurantArgs) => {
     const formData = restaurantToFormData(restaurant);
-
     return await putMultiPart(`restaurant/${id}`, formData);
   },
 );

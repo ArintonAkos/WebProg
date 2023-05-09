@@ -11,12 +11,11 @@ import User from '../../../models/user';
 
 const fields: Array<FormFieldProps> = [
   {
-    name: 'name',
-    label: 'Name',
+    name: 'userId',
+    label: 'Contact Person',
     type: 'select',
     element: 'select',
     required: true,
-    placeHolder: 'Arinton Akos',
     options: [],
   },
   {
@@ -40,16 +39,10 @@ const fields: Array<FormFieldProps> = [
       { label: '1', value: '1' },
       { label: '2', value: '2' },
       { label: '3', value: '3' },
+      { label: '4', value: '4' },
     ],
     value: '1',
     required: true,
-  },
-  {
-    name: 'contactInfo',
-    label: 'Contact Info',
-    type: 'text',
-    required: true,
-    placeHolder: 'Email or phone number',
   },
 ];
 
@@ -63,7 +56,7 @@ export interface CreateReservationProps {
 
 const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
   useStateHandling('reservation');
-  const users: Array<User> | undefined = useSelector((state: RootState) => state.restaurant.data?.users);
+  const users: Array<User> = useSelector((state: RootState) => state.restaurant.restaurant.users);
   const dispatch = useAppDispatch();
   const data = useSelector((state: RootState) => state.reservation.data);
   const navigate = useNavigate();
@@ -79,16 +72,22 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
   };
 
   useEffect(() => {
-    if (users) {
+    if (users.length) {
       setFormFields((prev) => {
-        const nameField = prev.find((field) => field.name === 'name')!;
-        const otherFields = prev.filter((field) => field.name !== 'name');
+        const nameField = prev.find((field) => field.name === 'userId')!;
+        const otherFields = prev.filter((field) => field.name !== 'userId');
 
         if (nameField) {
-          nameField.options = users.map((user) => ({ label: user.name, value: user.name }));
+          nameField.options = users.map((user) => ({ label: user.name, value: user._id }));
+
+          if (nameField.options?.[0]) {
+            nameField.value = nameField.options[0].value;
+          }
+
+          return [nameField, ...otherFields];
         }
 
-        return [nameField, ...otherFields];
+        return otherFields;
       });
     }
   }, [users]);

@@ -23,14 +23,11 @@ const FormField: React.FC<FormFieldPropsWithControl> = ({
   element,
   value,
   error,
+  autoComplete,
 }) => {
   const renderedObject = (field: ControllerRenderProps) => {
-    console.log(type);
-
     switch (element) {
       case 'select':
-        console.log(name, 'aaaaaa');
-
         return (
           <Select
             options={options!}
@@ -77,6 +74,7 @@ const FormField: React.FC<FormFieldPropsWithControl> = ({
             settings={settings as InputProps}
             error={!!error}
             errorMessage={error?.message?.toString()}
+            autoComplete={autoComplete}
           />
         );
     }

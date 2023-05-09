@@ -5,7 +5,7 @@ export const validateOpeningHours = (openingHours: string): boolean => {
     return false;
   }
 
-  const [start, end] = getOpeningHours(openingHours);
+  const [start, end] = getOpeningHours(openingHours.replaceAll(' ', ''));
 
   if (isNaN(start.getTime()) || isNaN(end.getTime())) {
     return false;
@@ -14,12 +14,28 @@ export const validateOpeningHours = (openingHours: string): boolean => {
   return start < end;
 };
 
-export const getOpeningHours = (openingHours: string) => {
-  const [startTime, endTime] = openingHours.split(' - ');
+export const dateTimeToDateString = (dateTime: Date): string => {
+  return dateTime.toISOString().substring(0, 10);
+};
 
-  const currentDate = new Date().toISOString().substring(0, 10);
-  const start = new Date(`${currentDate}T${startTime}`);
-  const end = new Date(`${currentDate}T${endTime}`);
+export const getOpeningHours = (openingHours: string, date: Date = new Date()) => {
+  const [startTime, endTime] = openingHours.split('-');
+
+  const selectedDate = dateTimeToDateString(date);
+
+  const start = new Date(`${selectedDate}T${parseTime(startTime)}`);
+  const end = new Date(`${selectedDate}T${parseTime(endTime)}`);
 
   return [start, end];
+};
+
+const parseTime = (timeString: string): string => {
+  const [hourStr, minuteStr] = timeString.split(':');
+  const hour = parseInt(hourStr, 10);
+  const minute = parseInt(minuteStr, 10);
+
+  const formattedHour = hour.toString().padStart(2, '0');
+  const formattedMinute = minute.toString().padStart(2, '0');
+
+  return `${formattedHour}:${formattedMinute}`;
 };
