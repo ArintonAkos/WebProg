@@ -14,7 +14,5 @@
 
 # Seeding to database
 
-1. Run `docker-compose exec {backend_container_name} npm run seed` in the root directory of this repository.
+1. Run `npm run seed` in the root directory of this repository.
 2. Wait until seeding is done.
-
-Example: `docker-compose exec aaim2111_backend_1 npm run seed`
