@@ -1,7 +1,7 @@
 import Seeder from './Seeder';
-import RestaurantModel, { Restaurant } from '../../models/restaurant';
+import Restaurant, { IRestaurant } from '../../models/restaurant';
 
-const restaurantSeeds: Restaurant[] = [
+const restaurantSeeds: IRestaurant[] = [
   {
     name: 'Nagy Étterem',
     phone: '06 1 123 4567',
@@ -44,4 +44,4 @@ const restaurantSeeds: Restaurant[] = [
   },
 ];
 
-export default new Seeder<Restaurant>(RestaurantModel, restaurantSeeds);
+export default new Seeder<IRestaurant>(Restaurant, restaurantSeeds);

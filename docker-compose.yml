@@ -9,7 +9,9 @@ services:
     environment:
       - REACT_APP_BACKEND_URL=http://localhost:3000
       - PORT=3001
+      - WATCHPACK_POLLING=true
     volumes:
+      - /app/node_modules
       - ./frontend:/app
   backend:
     build: ./server

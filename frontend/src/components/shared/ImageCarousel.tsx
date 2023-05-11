@@ -24,9 +24,9 @@ const CarouselImage: React.FC<{ image: string; index: number }> = ({ image, inde
 const ImageCarousel: React.FC<{ images: string[] }> = ({ images }) => (
   <Box w="full" boxShadow="lg" borderRadius="lg" overflow="hidden">
     <Carousel showStatus={false} showThumbs={false} infiniteLoop>
-      {images.map((image, index) => (
+      {images.map((image_path, index) => (
         <div key={index}>
-          <CarouselImage image={`${API_BASE_URL}/${image}`} index={index} />
+          <CarouselImage image={`${API_BASE_URL}${image_path}`} index={index} />
         </div>
       ))}
     </Carousel>

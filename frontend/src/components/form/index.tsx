@@ -61,7 +61,7 @@ const Form: React.FC<FormProps> = ({ fields, onSubmit, submitText, portals, vali
     fields.forEach((field) => {
       setValue(field.name, field.value);
     });
-  }, [JSON.stringify(fields)]);
+  }, [fields, setValue]);
 
   const handleFormSubmit = (data: any) => {
     onSubmit(data);

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import UserModel from '../models/user';
+import User from '../models/user';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import config from '../config/config';
@@ -16,7 +16,7 @@ export const register = async (req: Request, res: Response) => {
   }
 
   try {
-    let user = await UserModel.findOne({ email });
+    let user = await User.findOne({ email });
 
     if (user) {
       return res.status(400).json({ message: 'User already exists' });
@@ -24,7 +24,7 @@ export const register = async (req: Request, res: Response) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    user = new UserModel({
+    user = new User({
       name,
       email,
       password: passwordHash,
@@ -42,7 +42,7 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  const user = await UserModel.findOne((u) => u.email === email);
+  const user = await User.findOne((u) => u.email === email);
 
   if (!user) {
     return res.status(400).json({ message: 'User not found' });

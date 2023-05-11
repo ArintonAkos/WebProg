@@ -1,4 +1,4 @@
-import RestaurantModel from '../models/restaurant';
+import Restaurant from '../models/restaurant';
 import { getOpeningHours } from './restaurantService';
 
 export const validateStartTime = (startTime: Date) => {
@@ -15,7 +15,7 @@ export const validateReservationTime = async (
   reservationEndTime: Date,
   restaurantId: string,
 ): Promise<boolean> => {
-  const restaurant = await RestaurantModel.findById(restaurantId);
+  const restaurant = await Restaurant.findById(restaurantId);
 
   if (!restaurant) {
     return false;

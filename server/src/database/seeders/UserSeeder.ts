@@ -1,8 +1,8 @@
-import UserModel, { User } from '../../models/user';
+import User, { IUser } from '../../models/user';
 import Seeder from './Seeder';
 import bcrypt from 'bcryptjs';
 
-const userSeeds: User[] = [
+const userSeeds: IUser[] = [
   {
     name: 'István Nagy',
     email: 'nagy.istvan@gmail.com',
@@ -30,4 +30,4 @@ const userSeeds: User[] = [
   },
 ];
 
-export default new Seeder<User>(UserModel, userSeeds);
+export default new Seeder<IUser>(User, userSeeds);

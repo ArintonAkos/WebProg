@@ -2,26 +2,8 @@ import multer, { Multer } from 'multer';
 import * as fs from 'fs';
 
 const getFileName = (file: Multer.File, restaurantId: string) => {
-  return `/images/${restaurantId}/${file.filename}`;
+  return `/images/${restaurantId}/${file.originalname}`;
 };
-
-export const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const restaurantId = req.params.id;
-    const dir = `/images/${restaurantId}`;
-
-    console.log('Saving file to directory', dir);
-
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, getFileName(file, req.params.id));
-  },
-});
 
 export const deleteFiles = (files: Multer.File[] | undefined, dir: string) => {
   if (!files) {
@@ -29,6 +11,7 @@ export const deleteFiles = (files: Multer.File[] | undefined, dir: string) => {
   }
 
   files.forEach((file) => {
+    console.log('File: ', file);
     const filePath = getFileName(file, dir);
 
     if (fs.existsSync(filePath)) {
@@ -37,4 +20,23 @@ export const deleteFiles = (files: Multer.File[] | undefined, dir: string) => {
   });
 };
 
-export const upload = multer({ storage });
+export const uploadRestaurantImagesMulter = (restaurantId: string) => {
+  const dir = `/images/${restaurantId}`;
+
+  console.log(dir);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      console.log(dir);
+      cb(null, dir);
+    },
+    filename: (req, file, cb) => {
+      cb(null, file.originalname);
+    },
+  });
+
+  return multer({ storage }).array('images');
+};

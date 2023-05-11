@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 
-export interface Restaurant {
+export interface IRestaurant {
   name: string;
   phone: string;
   openingHours: string;
@@ -10,7 +10,7 @@ export interface Restaurant {
   images?: string[];
 }
 
-const restaurantSchema = new Schema<Restaurant>({
+const restaurantSchema = new Schema<IRestaurant>({
   name: { type: String, required: true },
   city: { type: String, required: true },
   street: { type: String, required: true },
@@ -24,6 +24,6 @@ const restaurantSchema = new Schema<Restaurant>({
   ],
 });
 
-const RestaurantModel = model<Restaurant>('Restaurant', restaurantSchema);
+const Restaurant = model<IRestaurant>('Restaurant', restaurantSchema);
 
-export default RestaurantModel;
+export default Restaurant;

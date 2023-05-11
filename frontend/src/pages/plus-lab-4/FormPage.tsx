@@ -39,7 +39,7 @@ const toFormElement = (type: String, name: string, data: Array<any>): FormFieldP
       let columnNumber: undefined | number = undefined;
 
       if (splitName.length >= 3) {
-        const [_, row, column] = splitName;
+        const [, row, column] = splitName;
 
         rowNumber = parseInt(row, 10);
         columnNumber = parseInt(column, 10);

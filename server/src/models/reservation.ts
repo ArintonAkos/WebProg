@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 
-export interface Reservation {
+export interface IReservation {
   userId: string;
   restaurantId: string;
   time: Date;
@@ -8,13 +8,13 @@ export interface Reservation {
   contactInfo: string;
 }
 
-const reservationSchema = new Schema<Reservation>({
+const reservationSchema = new Schema<IReservation>({
   userId: { type: String, required: true },
   restaurantId: { type: String, required: true },
   time: { type: Date, required: true },
   numberOfGuests: { type: Number, required: true },
 });
 
-const ReservationModel = model<Reservation>('Reservation', reservationSchema);
+const Reservation = model<IReservation>('Reservation', reservationSchema);
 
-export default ReservationModel;
+export default Reservation;
