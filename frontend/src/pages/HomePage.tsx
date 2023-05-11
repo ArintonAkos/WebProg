@@ -22,7 +22,9 @@ const HomePage: React.FC = () => {
     <VStack spacing={8} alignItems="start">
       <Heading>Home</Heading>
       <SimpleGrid columns={{ base: 1, md: 2 }} spacingX={10} spacingY={10} width="100%">
-        {pages.map((page, index) => -(<RouteCard key={index} {...page} />))}
+        {pages.map((page, index) => (
+          <RouteCard key={index} {...page} />
+        ))}
       </SimpleGrid>
     </VStack>
   );
