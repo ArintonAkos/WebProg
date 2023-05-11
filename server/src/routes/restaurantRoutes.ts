@@ -4,9 +4,9 @@ import {
   editRestaurant,
   getRestaurantById,
   getRestaurants,
-  uploadRestaurantImages,
+  uploadRestaurantImages as uploadImages,
 } from '../controllers/restaurantController';
-import { uploadRestaurantImagesMulter } from '../utils/storage';
+import uploadRestaurantImages from '../middlewares/uploadRestaurantImages';
 
 const router = express.Router();
 
@@ -14,6 +14,6 @@ router.get('/', getRestaurants);
 router.post('/', addRestaurant);
 router.get('/:id', getRestaurantById);
 router.put('/:id', uploadRestaurantImages, editRestaurant);
-router.post('/:id/images', uploadRestaurantImages, uploadRestaurantImages);
+router.post('/:id/images', uploadRestaurantImages, uploadImages);
 
 export default router;

@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import Restaurant from '../models/restaurant';
 import { validateOpeningHours } from '../services/restaurantService';
-import uploadImages from '../middlewares/uploadRestaurantImages';
 import { deleteFiles } from '../utils/storage';
 
 export const getRestaurants = async (req: Request, res: Response) => {
@@ -120,46 +119,35 @@ export const editRestaurant = async (req, res) => {
 
 export const uploadRestaurantImages = async (req, res) => {
   try {
-    console.log('Parameters: ', req.params);
+    const restaurant = await Restaurant.findById(req.params.id);
 
-    uploadImages(req, res, async () => {
-      console.error(req.files, req.params);
+    if (!restaurant) {
+      deleteFiles(req.files, res.params.id);
+      return res.status(404).json({ message: 'Restaurant not found', showToast: true, type: 'warning' });
+    }
 
-      try {
-        const restaurant = await Restaurant.findById(req.params.id);
+    if (req.files && req.files.length > 0) {
+      const uploadedImages = req.files.map((file) => file.path);
+      restaurant.images.push(...uploadedImages);
+    }
 
-        if (!restaurant) {
-          deleteFiles(req.files, res.params.id);
-          return res.status(404).json({ message: 'Restaurant not found', showToast: true, type: 'warning' });
-        }
+    const updatedRestaurant = await Restaurant.findByIdAndUpdate(req.params.id, restaurant, {
+      new: true,
+    });
 
-        if (req.files && req.files.length > 0) {
-          const uploadedImages = req.files.map((file) => file.path);
-          restaurant.images.push(...uploadedImages);
-        }
+    if (!updatedRestaurant) {
+      deleteFiles(req.files, res.params.id);
+      return res.status(404).json({ message: 'Restaurant not found', type: 'warning', showToast: true });
+    }
 
-        const updatedRestaurant = await Restaurant.findByIdAndUpdate(req.params.id, restaurant, {
-          new: true,
-        });
-
-        if (!updatedRestaurant) {
-          deleteFiles(req.files, res.params.id);
-          return res.status(404).json({ message: 'Restaurant not found', type: 'warning', showToast: true });
-        }
-
-        res.status(201).json({
-          message: 'Successfully uploaded images!',
-          showToast: true,
-          restaurant: updatedRestaurant,
-          type: 'success',
-        });
-      } catch (err) {
-        deleteFiles(req.files, res.params.id);
-        res.status(500).json({ message: 'Error uploading images!', error: err, showToast: true, type: 'error' });
-      }
+    res.status(201).json({
+      message: 'Successfully uploaded images!',
+      showToast: true,
+      restaurant: updatedRestaurant,
+      type: 'success',
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Error processing request', error: err, type: 'error' });
+    deleteFiles(req.files, res.params.id);
+    res.status(500).json({ message: 'Error uploading images!', error: err, showToast: true, type: 'error' });
   }
 };

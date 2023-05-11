@@ -2,7 +2,6 @@ import { deleteFiles, uploadRestaurantImagesMulter } from '../utils/storage';
 import Restaurant from '../models/restaurant';
 
 export default async (req, res, next) => {
-  console.log('Parameters: ', req.params);
   const upload = uploadRestaurantImagesMulter(req.params.id);
 
   if (!req.params.id) {
