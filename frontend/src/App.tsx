@@ -12,6 +12,7 @@ import FormPage from './pages/plus-lab-4/FormPage';
 import FormDataPage from './pages/plus-lab-4/FormDataPage';
 import RegisterPage from './pages/auth/RegistrationPage';
 import LoginPage from './pages/auth/LoginPage';
+import NewsDetails from './pages/plus-lab-5/NewsDetails';
 
 export const App = () => (
   <ChakraProvider theme={theme}>
@@ -31,6 +32,8 @@ export const App = () => (
 
             <Route path="/form" element={<FormPage />} />
             <Route path="/form-data" element={<FormDataPage />} />
+
+            <Route path="/news/:id" element={<NewsDetails />} />
 
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
