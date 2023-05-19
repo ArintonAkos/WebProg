@@ -39,7 +39,7 @@ const newsSlice = wrapSliceWithCommonFunctions({
         state.status = 'succeeded';
         state.details = action.payload;
       },
-      rejected: (state, action) => {
+      rejected: (state) => {
         state.status = 'failed';
       },
     });

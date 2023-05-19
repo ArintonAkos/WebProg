@@ -27,8 +27,7 @@ export const getNews = async (req: Request, res: Response) => {
     const selectedSimilarNews = await Promise.all(
       similarNews.map(async (newsSimilarity) => {
         const id = newsSimilarity.news1?._id || newsSimilarity.news2?._id;
-        const news = await News.findById(id);
-        return news;
+        return News.findById(id);
       }),
     );
 
