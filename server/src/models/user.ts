@@ -1,9 +1,10 @@
-import { model, Schema } from 'mongoose';
+import { model, Schema, Types } from 'mongoose';
 
 export interface IUser {
   name: string;
   email: string;
   password: string;
+  roles: [Types.ObjectId];
 }
 
 const userSchema = new Schema<IUser>({
@@ -20,6 +21,12 @@ const userSchema = new Schema<IUser>({
     type: String,
     required: true,
   },
+  roles: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Role',
+    },
+  ],
 });
 
 const User = model<IUser>('User', userSchema);
