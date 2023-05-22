@@ -1,8 +1,9 @@
-import { model, Schema, Types } from 'mongoose';
+import { model, PopulatedDoc, Schema, Types, Document } from 'mongoose';
+import { IPermission } from './permission';
 
 interface IRole {
   name: string;
-  permissions: [Types.ObjectId];
+  permissions: PopulatedDoc<Document<Types.ObjectId> & IPermission>[];
 }
 
 const roleSchema = new Schema<IRole>({
@@ -11,7 +12,7 @@ const roleSchema = new Schema<IRole>({
     required: true,
     unique: true,
   },
-  permissions: [{ type: Schema.Types.ObjectId, ref: 'Permission' }],
+  permissions: [{ type: Types.ObjectId, ref: 'Permission' }],
 });
 
 const Role = model<IRole>('Role', roleSchema);

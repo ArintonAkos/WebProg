@@ -8,14 +8,15 @@ import cors from './middlewares/cors';
 import responseFormatter from './middlewares/responseFormatter';
 import newsRoutes from './routes/newsRoutes';
 import authentication from './middlewares/authentication';
+import ability from './middlewares/ability';
 
 const app = express();
 
-app.use(responseFormatter);
 app.use('/images', express.static('/images'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors);
+app.use(ability);
 app.use(authentication);
 app.use('/reservation', reservationRoutes);
 app.use('/restaurant', restaurantRoutes);
@@ -23,5 +24,6 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/news', newsRoutes);
 app.use(errorHandler);
+app.use(responseFormatter);
 
 export default app;
