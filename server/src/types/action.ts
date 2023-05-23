@@ -4,3 +4,5 @@ enum Action {
   Update = 'update',
   Delete = 'delete',
 }
+
+export default Action;

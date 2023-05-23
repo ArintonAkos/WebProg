@@ -1,18 +1,18 @@
 import UserSeeder from './seeders/UserSeeder';
 import connectToDatabase, { disconnectFromDatabase } from '../config/database';
 import RestaurantSeeder from './seeders/RestaurantSeeder';
-import NewsSeeder from './seeders/NewsSeeder';
-import NewsSimilaritySeeder from './seeders/NewsSimilaritySeeder';
+import RoleSeeder from './seeders/RoleSeeder';
+import PermissionSeeder from './seeders/PermissionSeeder';
 
-const seeders = [UserSeeder, RestaurantSeeder, NewsSeeder, NewsSimilaritySeeder];
-
-const seederPromises = seeders.map(async (seeder) => await seeder.run());
+const seeders = [PermissionSeeder, RoleSeeder, UserSeeder, RestaurantSeeder];
 
 const seedDatabase = async () => {
   try {
     console.log('Database seeding started!');
 
-    await Promise.all(seederPromises);
+    for (const seeder of seeders) {
+      await seeder.run();
+    }
 
     console.log('Database seeded!');
 

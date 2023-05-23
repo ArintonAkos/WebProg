@@ -3,3 +3,5 @@ enum Subject {
   Reservation = 'Reservation',
   Restaurant = 'Restaurant',
 }
+
+export default Subject;

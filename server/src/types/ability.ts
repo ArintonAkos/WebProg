@@ -1,4 +1,6 @@
 import { createMongoAbility, ExtractSubjectType } from '@casl/ability';
+import Subject from './subjects';
+import Action from './action';
 
 export type DefinedSubjects = ExtractSubjectType<Subject>;
 
