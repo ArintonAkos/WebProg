@@ -1,4 +1,5 @@
 import ResponseError from '../types/responseError';
+import store from '../store';
 
 export const API_BASE_URL = 'http://localhost:3000';
 
@@ -9,11 +10,37 @@ type Request = {
   headers?: object;
 };
 
+type AuthHeader = {
+  Authorization?: string;
+  'x-refresh-token'?: string;
+};
+
+const getAuthHeader = (): AuthHeader => {
+  const { token, refreshToken } = store.getState().auth.user;
+  let authHeader = {};
+
+  if (token) {
+    authHeader = {
+      Authorization: `Bearer ${token}`,
+    };
+  }
+
+  if (refreshToken) {
+    authHeader = {
+      ...authHeader,
+      'x-refresh-token': refreshToken,
+    };
+  }
+
+  return authHeader;
+};
+
 export const httpRequest = async ({ url, method, data = null, headers = {} }: Request) => {
   const options: RequestInit = {
     method,
     headers: {
       ...headers,
+      ...getAuthHeader(),
     },
   };
 

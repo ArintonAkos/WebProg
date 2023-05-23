@@ -2,19 +2,29 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config/config';
 import TokenService from '../services/tokenService';
 import User from '../models/user';
+import { NextFunction, Response } from 'express';
+import Request from '../types/request.types';
+import RoleRepository from '../redis/repositories/RoleRepository';
+import { IPopulatedUser, IUser } from '../types/user.types';
 
-const authentication = async (req, res, next) => {
+const authentication = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
 
   if (authHeader) {
     const token = authHeader.split(' ')[1];
 
+    if (!token) {
+      req.user = await getGuest();
+
+      return next();
+    }
+
     try {
       const userData = jwt.verify(token, config.jwtSecret) as JwtPayload;
+      const user = await getUser(userData?.id);
 
-      const user = await User.findById(userData?.id);
-      if (!user) {
-        return res.status(404).json({ error: 'User not found.' });
+      if (user instanceof ErrorMessage) {
+        return res.status(user.status).json(user.json);
       }
 
       req.user = user;
@@ -29,11 +39,12 @@ const authentication = async (req, res, next) => {
         }
 
         try {
-          const userData = jwt.verify(refreshToken, config.refreshTokenSecret) as JwtPayload;
+          const userData = jwt.verify(refreshToken as string, config.refreshTokenSecret) as JwtPayload;
 
-          const user = await User.findById(userData?.id);
-          if (!user) {
-            return res.status(404).json({ error: 'User not found.' });
+          const user = await getUser(userData?.id);
+
+          if (user instanceof ErrorMessage) {
+            return res.status(user.status).json(user.json);
           }
 
           const { newToken, newRefreshToken } = TokenService.generateTokens(userData);
@@ -51,8 +62,59 @@ const authentication = async (req, res, next) => {
       }
     }
   } else {
-    return res.status(401).json({ error: 'Authorization header must be provided.' });
+    req.user = await getGuest();
+
+    return next();
   }
+};
+
+class ErrorMessage {
+  status: number;
+  json: Object;
+
+  constructor(status: number, json: Object) {
+    this.status = status;
+    this.json = json;
+  }
+}
+
+const getGuest = async (): Promise<IPopulatedUser> => {
+  const guestRole = await RoleRepository.getRole('Guest');
+
+  return {
+    name: 'Guest',
+    email: '',
+    password: '',
+    roles: guestRole ? [guestRole] : [],
+  } as IPopulatedUser;
+};
+
+const getUser = async (userId?: string): Promise<IPopulatedUser | ErrorMessage> => {
+  const user = await User.findById(userId).populate('roles').exec();
+
+  if (!user) {
+    return {
+      status: 404,
+      json: { error: 'User not found.' },
+    };
+  }
+
+  if (isPopulatedUser(user)) {
+    return user;
+  } else {
+    return {
+      status: 500,
+      json: { error: 'User is not populated.' },
+    };
+  }
+};
+
+const isPopulatedUser = (user: IUser | IPopulatedUser): user is IPopulatedUser => {
+  return (
+    (user as IPopulatedUser).roles !== undefined &&
+    (user as IPopulatedUser).roles.length > 0 &&
+    typeof (user as IPopulatedUser).roles[0] !== 'string'
+  );
 };
 
 export default authentication;

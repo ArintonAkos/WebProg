@@ -1,7 +1,8 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import Restaurant from '../models/restaurant';
 import { validateOpeningHours } from '../services/restaurantService';
 import { deleteFiles } from '../utils/storage';
+import Request from '../types/request.types';
 
 export const getRestaurants = async (req: Request, res: Response) => {
   try {

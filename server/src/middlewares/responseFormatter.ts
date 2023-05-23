@@ -1,4 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
+import Request from '../types/request.types';
 
 const responseFormatter = (req: Request, res: Response, next: NextFunction) => {
   const originalJson = res.json;

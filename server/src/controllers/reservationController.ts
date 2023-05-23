@@ -1,8 +1,9 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import Reservation from '../models/reservation';
 import { validateReservationTime, validateStartTime } from '../services/reservationService';
 import Restaurant from '../models/restaurant';
 import User from '../models/user';
+import Request from '../types/request.types';
 
 export const addReservation = async (req: Request, res: Response) => {
   try {

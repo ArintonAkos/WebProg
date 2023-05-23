@@ -1,33 +1,37 @@
-import { NextFunction, Request, Response } from 'express';
-import Role from '../models/role';
+import { NextFunction, Response } from 'express';
 import { createMongoAbility } from '@casl/ability';
 import { Types } from 'mongoose';
+import Action from '../types/action.types';
+import Subject from '../types/subject.types';
+import Request from '../types/request.types';
+import PermissionRepository from '../redis/repositories/PermissionRepository';
 
 const ability = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
     return next(new Error('No user attached to request'));
   }
 
-  const userRoles = await Role.find({ _id: { $in: req.user.roles } })
-    .populate('permissions')
-    .exec();
+  console.log(req.user);
+  const userAbilities = await Promise.all(
+    req.user.roles.map(async (role) => {
+      const rolePermissions = await PermissionRepository.getPermissionsForRole(role.name);
 
-  const userAbilities = userRoles.reduce((abilities, role) => {
-    const roleAbilities = role.permissions.map((permission) => {
-      if (permission instanceof Types.ObjectId) {
-        throw new Error('Permissions should be populated');
-      }
+      return rolePermissions.map((permission) => {
+        if (permission instanceof Types.ObjectId) {
+          throw new Error('Permissions should be populated');
+        }
 
-      return {
-        action: permission.name as Action,
-        subject: permission.subject as Subject,
-      };
-    });
+        return {
+          action: permission.name as Action,
+          subject: permission.subject as Subject,
+        };
+      });
+    }),
+  );
 
-    return [...abilities, ...roleAbilities];
-  }, [] as Array<{ action: Action; subject: Subject }>);
+  const abilities = userAbilities.flat();
 
-  req.ability = createMongoAbility(userAbilities);
+  req.ability = createMongoAbility(abilities);
 
   return next();
 };

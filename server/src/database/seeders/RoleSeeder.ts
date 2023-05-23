@@ -1,8 +1,13 @@
 import Seeder from './Seeder';
 import Role, { IRole } from '../../models/role';
 import Permission from '../../models/permission';
+import RoleRepository from '../../redis/repositories/RoleRepository';
 
 const roleSeeds: IRole[] = [
+  {
+    name: 'Guest',
+    permissions: [],
+  },
   {
     name: 'User',
     permissions: [],
@@ -21,10 +26,11 @@ const onComplete = async () => {
   const roles = await Role.find({});
   const permissions = await Permission.find({});
 
-  console.log(permissions);
-
   for (const role of roles) {
     switch (role.name) {
+      case 'Guest':
+        role.permissions = getPermissionsForRole(permissions, ['read']);
+        break;
       case 'User':
         role.permissions = getPermissionsForRole(permissions, ['read']);
         break;
@@ -40,18 +46,11 @@ const onComplete = async () => {
 
     await role.save();
   }
+
+  await RoleRepository.clearAll();
 };
 
 const getPermissionsForRole = (permissions, actions) => {
-  console.log(
-    permissions
-      .filter((permission) => {
-        const [action, _] = permission.name.split(' ');
-        return actions.includes(action);
-      })
-      .map((permission) => permission._id),
-  );
-
   return permissions
     .filter((permission) => {
       const [action, _] = permission.name.split(' ');

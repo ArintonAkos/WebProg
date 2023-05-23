@@ -1,7 +1,8 @@
-import User, { IUser } from '../../models/user';
+import User from '../../models/user';
 import Seeder from './Seeder';
 import bcrypt from 'bcryptjs';
 import Role from '../../models/role';
+import { IUser } from '../../types/user.types';
 
 const onComplete = async () => {
   const roles = await Role.find();

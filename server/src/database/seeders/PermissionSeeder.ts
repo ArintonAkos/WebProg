@@ -1,7 +1,8 @@
 import Permission, { IPermission } from '../../models/permission';
 import Seeder from './Seeder';
-import Action from '../../types/action';
-import Subject from '../../types/subjects';
+import Action from '../../types/action.types';
+import Subject from '../../types/subject.types';
+import PermissionRepository from '../../redis/repositories/PermissionRepository';
 
 const permissions: IPermission[] = [];
 
@@ -17,4 +18,8 @@ for (const action in Action) {
   }
 }
 
-export default new Seeder<IPermission>(Permission, permissions);
+const onComplete = async () => {
+  await PermissionRepository.clearAll();
+};
+
+export default new Seeder<IPermission>(Permission, permissions, onComplete);

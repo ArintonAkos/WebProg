@@ -12,4 +12,6 @@ export default {
   refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET || 'refresh-token-secret',
   jwtExpiry: process.env.JWT_EXPIRY || '1h',
   refreshTokenExpiry: process.env.REFRESH_TOKEN || '7d',
+  redisHost: process.env.REDIS_HOST || 'localhost',
+  redisPort: process.env.REDIS_PORT || 6379,
 };

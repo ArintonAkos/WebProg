@@ -1,6 +1,7 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import News from '../models/news';
 import NewsSimilarity from '../models/news_similarity';
+import Request from '../types/request.types';
 
 export const getNews = async (req: Request, res: Response) => {
   try {
