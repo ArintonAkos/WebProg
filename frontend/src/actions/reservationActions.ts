@@ -1,6 +1,6 @@
 import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
 import { post } from '../services/httpRequest';
-import { CreateReservationProps } from '../components/pages/reservation/ReservationForm';
+import { CreateReservationProps } from '../components/pages/reservation/ReservationForm.data';
 
 type CreateReservationArgs = {
   id: string;

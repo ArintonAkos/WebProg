@@ -1,4 +1,3 @@
-// LoginPage.tsx
 import React, { useEffect } from 'react';
 import { Container, Text } from '@chakra-ui/react';
 import Form, { FormFieldProps } from '../../components/form';

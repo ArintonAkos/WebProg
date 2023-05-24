@@ -10,7 +10,7 @@ type CreateUserArgs = {
 
 export const registerUser: AsyncThunk<any, CreateUserArgs, {}> = createAsyncThunk<any, CreateUserArgs>(
   'auth/registerUser',
-  async ({ name, email, password, confirmPassword }) => {
+  async ({ name, email, password, confirmPassword }, thunkAPI) => {
     return await post(`auth/register`, { name, email, password, confirmPassword });
   },
 );

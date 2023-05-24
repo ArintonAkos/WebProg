@@ -1,6 +1,0 @@
-{
-  "sNev": ["Név:", "Géza"],
-  "taLeiras_10_30": ["Leírás:", "Ez az alapértelmezett leírás"],
-  "cbVezet": ["Vezet valamilyen járművet?", false],
-  "cgAutok": [["VW", "Toyota", "Audi"], [true, false, false]]
-}

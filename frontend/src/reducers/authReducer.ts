@@ -4,19 +4,21 @@ import { mapAsyncThunkToGlobalAction } from '../actions';
 import { loginUser, registerUser } from '../actions/authAction';
 import User from '../models/user';
 
+export interface UserData {
+  token?: string;
+  refreshToken?: string;
+  user?: User;
+}
+
 export interface AuthState {
-  user: {
-    token?: string;
-    refreshToken?: string;
-    user?: User;
-  };
+  userData: UserData;
   data: any;
 }
 
 const InitialState: AuthState & CustomRootState = {
   ...DefaultState,
   data: undefined,
-  user: {
+  userData: {
     token: undefined,
     refreshToken: undefined,
     user: undefined,
@@ -32,8 +34,8 @@ const authSlice = wrapSliceWithCommonFunctions({
       state.requestStatus = undefined;
     },
     updateTokens: (state, action: { payload: { token: string; refreshToken: string } }) => {
-      state.user.token = action.payload.token;
-      state.user.refreshToken = action.payload.refreshToken;
+      state.userData.token = action.payload.token;
+      state.userData.refreshToken = action.payload.refreshToken;
     },
   },
   extraReducers: (builder) => {

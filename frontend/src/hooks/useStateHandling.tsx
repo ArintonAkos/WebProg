@@ -3,21 +3,22 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { useCustomToast } from './useCustomToast';
 import useAppDispatch from './useAppDispatch';
+import { CustomRootState } from '../store/state';
 
 type RootStateKey = keyof RootState;
 
 const selectStatus =
   <K extends RootStateKey>(reducer: K) =>
   (state: RootState) =>
-    state[reducer]!.status;
+    (state[reducer] as CustomRootState)!.status;
 const selectError =
   <K extends RootStateKey>(reducer: K) =>
   (state: RootState) =>
-    state[reducer]!.error;
+    (state[reducer] as CustomRootState)!.error;
 const selectRequestStatus =
   <K extends RootStateKey>(reducer: K) =>
   (state: RootState) =>
-    state[reducer]!.requestStatus;
+    (state[reducer] as CustomRootState)!.requestStatus;
 
 const useStateHandling = <K extends RootStateKey>(reducerKey: K) => {
   const status = useSelector(selectStatus(reducerKey));

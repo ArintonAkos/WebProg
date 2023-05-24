@@ -10,37 +10,18 @@ type Request = {
   headers?: object;
 };
 
-type AuthHeader = {
+export type AuthHeader = {
   Authorization?: string;
   'x-refresh-token'?: string;
 };
 
-const getAuthHeader = (): AuthHeader => {
-  const { token, refreshToken } = store.getState().auth.user;
-  let authHeader = {};
-
-  if (token) {
-    authHeader = {
-      Authorization: `Bearer ${token}`,
-    };
-  }
-
-  if (refreshToken) {
-    authHeader = {
-      ...authHeader,
-      'x-refresh-token': refreshToken,
-    };
-  }
-
-  return authHeader;
-};
-
 export const httpRequest = async ({ url, method, data = null, headers = {} }: Request) => {
+  console.log(headers);
+
   const options: RequestInit = {
     method,
     headers: {
       ...headers,
-      ...getAuthHeader(),
     },
   };
 

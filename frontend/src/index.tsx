@@ -5,8 +5,9 @@ import { App } from './App';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
-import store from './store';
+import store, { persistor } from './store';
 import theme from './theme/theme';
+import { PersistGate } from 'redux-persist/integration/react';
 
 const container = document.getElementById('root');
 if (!container) throw new Error('Failed to find the root element');
@@ -18,10 +19,12 @@ if (localStorage.getItem('chakra-ui-color-mode') !== theme.config.initialColorMo
 
 root.render(
   <Provider store={store}>
-    <React.StrictMode>
-      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <App />
-    </React.StrictMode>
+    <PersistGate loading={null} persistor={persistor}>
+      <React.StrictMode>
+        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+        <App />
+      </React.StrictMode>
+    </PersistGate>
   </Provider>,
 );
 
