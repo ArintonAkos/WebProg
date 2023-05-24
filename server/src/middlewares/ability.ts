@@ -11,7 +11,6 @@ const ability = async (req: Request, res: Response, next: NextFunction) => {
     return next(new Error('No user attached to request'));
   }
 
-  console.log(req.user);
   const userAbilities = await Promise.all(
     req.user.roles.map(async (role) => {
       const rolePermissions = await PermissionRepository.getPermissionsForRole(role.name);

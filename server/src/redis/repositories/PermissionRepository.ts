@@ -12,7 +12,10 @@ class PermissionRepository extends BaseRepository<IPermission> {
   }
 
   async getPermissions(): Promise<IPermission[]> {
-    return this.fetchFromRedisOrDB(() => this.fetchAll(), this.generateRedisKey);
+    const fetchAllCallback = () => this.fetchAll();
+    const generateRedisKeyCallback = (item: IPermission) => this.generateRedisKey(item);
+
+    return this.fetchFromRedisOrDB(fetchAllCallback.bind(this), generateRedisKeyCallback.bind(this));
   }
 
   async clearPermission(permissionName: string): Promise<void> {

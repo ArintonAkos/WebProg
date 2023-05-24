@@ -6,6 +6,7 @@ import { NextFunction, Response } from 'express';
 import Request from '../types/request.types';
 import RoleRepository from '../redis/repositories/RoleRepository';
 import { IPopulatedUser, IUser } from '../types/user.types';
+import PermissionRepository from '../redis/repositories/PermissionRepository';
 
 const authentication = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
@@ -80,12 +81,13 @@ class ErrorMessage {
 
 const getGuest = async (): Promise<IPopulatedUser> => {
   const guestRole = await RoleRepository.getRole('Guest');
+  const guestPermissions = await PermissionRepository.getPermissionsForRole('Guest');
 
   return {
     name: 'Guest',
     email: '',
-    password: '',
     roles: guestRole ? [guestRole] : [],
+    permissions: guestPermissions ? guestPermissions : [],
   } as IPopulatedUser;
 };
 

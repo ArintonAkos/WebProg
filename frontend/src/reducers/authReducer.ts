@@ -61,6 +61,13 @@ const authSlice = wrapSliceWithCommonFunctions({
       fulfilled: (state, action) => {
         state.status = 'succeeded';
         state.requestStatus = action.requestStatus;
+
+        console.log(action);
+        if (action.payload) {
+          state.userData.token = action.payload.token;
+          state.userData.refreshToken = action.payload.refreshToken;
+          state.userData.user = action.payload.user;
+        }
       },
       rejected: (state, action) => {
         state.status = 'failed';

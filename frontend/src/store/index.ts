@@ -2,11 +2,20 @@ import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from '../reducers';
 import updateActionMiddleware from './middlewares/requestStatusMiddleware';
 import authMiddleware from './middlewares/authMiddleware';
-import { persistStore } from 'redux-persist';
 import { PersistedState } from 'redux-persist/es/types';
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['auth'],
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       thunk: true,

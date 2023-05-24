@@ -3,11 +3,6 @@ import { RootState } from '../index';
 import { Action } from '@reduxjs/toolkit';
 import { AuthHeader } from '../../services/httpRequest';
 
-const InitialUser = {
-  token: '',
-  refreshToken: '',
-};
-
 const authMiddleware: Middleware<{}, RootState, Dispatch<Action>> = (store) => (next) => async (action) => {
   if (typeof action === 'function') {
     const { token, refreshToken } = store.getState().auth.userData;

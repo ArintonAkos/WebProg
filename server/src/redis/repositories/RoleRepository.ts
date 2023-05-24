@@ -11,11 +11,16 @@ class RoleRepository extends BaseRepository<IRole> {
   }
 
   async getRoles(): Promise<IRole[]> {
-    return this.fetchFromRedisOrDB(() => this.fetchAll(), this.generateRedisKey);
+    const fetchAllCallback = () => this.fetchAll();
+    const generateRedisKeyCallback = (item: IRole) => this.generateRedisKey(item);
+
+    return this.fetchFromRedisOrDB(fetchAllCallback.bind(this), generateRedisKeyCallback.bind(this));
   }
 
   async getRole(roleName: string): Promise<IRole | null> {
-    return this.get(this.generateRedisKey({ name: roleName } as IRole));
+    const roles = await this.getRoles();
+
+    return roles?.find((r) => r.name === roleName);
   }
 
   async clearRole(roleName: string): Promise<void> {

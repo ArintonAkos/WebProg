@@ -1,5 +1,4 @@
 import ResponseError from '../types/responseError';
-import store from '../store';
 
 export const API_BASE_URL = 'http://localhost:3000';
 
@@ -16,8 +15,6 @@ export type AuthHeader = {
 };
 
 export const httpRequest = async ({ url, method, data = null, headers = {} }: Request) => {
-  console.log(headers);
-
   const options: RequestInit = {
     method,
     headers: {

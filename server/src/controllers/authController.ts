@@ -4,6 +4,10 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import config from '../config/config';
 import Request from '../types/request.types';
+import { IRole } from '../models/role';
+import { IPopulatedUser, IPopulatedUserDocument } from '../types/user.types';
+import { IPermission } from '../models/permission';
+import RoleRepository from '../redis/repositories/RoleRepository';
 
 export const register = async (req: Request, res: Response) => {
   const { name, email, password, confirmPassword } = req.body;
@@ -24,11 +28,13 @@ export const register = async (req: Request, res: Response) => {
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
+    const userRole = await RoleRepository.getRole('User');
 
     user = new User({
       name,
       email,
       password: passwordHash,
+      roles: [userRole],
     });
 
     await user.save();
@@ -43,7 +49,13 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne((u) => u.email === email);
+  const user: IPopulatedUserDocument | undefined = await User.findOne({ email }).populate({
+    path: 'roles',
+    populate: {
+      path: 'permissions',
+      model: 'Permission',
+    },
+  });
 
   if (!user) {
     return res.status(400).json({ message: 'User not found' });
@@ -59,7 +71,9 @@ export const login = async (req: Request, res: Response) => {
         expiresIn: config.refreshTokenExpiry,
       });
 
-      res.json({ token, refreshToken });
+      const publicUser = userToPublicUser(user);
+
+      res.json({ token, refreshToken, user: publicUser });
     } else {
       res.status(400).json({ message: 'Invalid password' });
     }
@@ -68,7 +82,7 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const refreshToken = (req: Request, res: Response) => {
+export const refreshToken = async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
 
   if (!refreshToken) {
@@ -78,6 +92,18 @@ export const refreshToken = (req: Request, res: Response) => {
   try {
     const decoded = jwt.verify(refreshToken, config.refreshTokenSecret) as any;
 
+    const user: IPopulatedUserDocument | undefined = await User.findOne({ name: decoded.name }).populate({
+      path: 'roles',
+      populate: {
+        path: 'permissions',
+        model: 'Permission',
+      },
+    });
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
     const newToken = jwt.sign({ name: decoded.name }, config.jwtSecret, {
       expiresIn: config.jwtExpiry,
     });
@@ -86,8 +112,30 @@ export const refreshToken = (req: Request, res: Response) => {
       expiresIn: config.refreshTokenExpiry,
     });
 
-    res.json({ token: newToken, refreshToken: newRefreshToken });
+    const publicUser = userToPublicUser(user as IPopulatedUserDocument);
+
+    res.json({
+      token: newToken,
+      refreshToken: newRefreshToken,
+      user: publicUser,
+    });
   } catch (err) {
     res.status(403).send('Invalid refresh token');
   }
+};
+
+const userToPublicUser = (user: IPopulatedUserDocument): IPopulatedUser => {
+  const permissionsSet = new Set<IPermission>();
+  user.roles.forEach((role) => {
+    role.permissions.forEach((permission) => {
+      permissionsSet.add(permission);
+    });
+  });
+
+  return {
+    name: user.name,
+    email: user.email,
+    roles: user.roles as IRole[],
+    permissions: Array.from(permissionsSet),
+  };
 };
