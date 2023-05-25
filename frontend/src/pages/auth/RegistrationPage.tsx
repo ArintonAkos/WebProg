@@ -3,10 +3,12 @@ import { Container, Text } from '@chakra-ui/react';
 import Form, { FormFieldProps } from '../../components/form';
 import Joi from 'joi';
 import useStateHandling from '../../hooks/useStateHandling';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import { registerUser } from '../../actions/authAction';
 import { setIdleState } from '../../reducers/authReducer';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 const registrationSchema = Joi.object({
   name: Joi.string().min(3).max(30).required(),
@@ -54,8 +56,14 @@ const registerFields: FormFieldProps[] = [
 ];
 
 const RegisterPage: React.FC = () => {
-  const { status } = useStateHandling('auth');
   const navigate = useNavigate();
+  const user = useSelector((state: RootState) => state.auth.userData.user);
+
+  if (user) {
+    navigate('/');
+  }
+
+  const { status } = useStateHandling('auth');
   const dispatch = useAppDispatch();
 
   const onSubmit = (data: any) => {
@@ -68,6 +76,10 @@ const RegisterPage: React.FC = () => {
       navigate('/');
     }
   }, [status, navigate, dispatch]);
+
+  if (user) {
+    return <Navigate to={'/'} />;
+  }
 
   return (
     <Container mt={5}>

@@ -2,11 +2,15 @@ import { Flex, FlexProps, IconButton, Link, Text, useColorModeValue } from '@cha
 import { FiMenu } from 'react-icons/fi';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../store';
 
 interface MobileProps extends FlexProps {
   onOpen: () => void;
 }
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+  const user = useSelector((state: RootState) => state.auth.userData.user);
+
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -25,6 +29,11 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
           Dashboard
         </Text>
       </Link>
+      {user && (
+        <Text fontSize="xl" ml="8" fontFamily="monospace">
+          Hi, {user.name}
+        </Text>
+      )}
     </Flex>
   );
 };

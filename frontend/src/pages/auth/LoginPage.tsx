@@ -3,10 +3,12 @@ import { Container, Text } from '@chakra-ui/react';
 import Form, { FormFieldProps } from '../../components/form';
 import Joi from 'joi';
 import useStateHandling from '../../hooks/useStateHandling';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import { loginUser } from '../../actions/authAction';
 import { setIdleState } from '../../reducers/authReducer';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 const loginSchema = Joi.object({
   email: Joi.string()
@@ -35,8 +37,9 @@ const loginFields: FormFieldProps[] = [
 ];
 
 const LoginPage: React.FC = () => {
-  const { status } = useStateHandling('auth');
   const navigate = useNavigate();
+  const user = useSelector((state: RootState) => state.auth.userData.user);
+  const { status } = useStateHandling('auth');
   const dispatch = useAppDispatch();
 
   const onSubmit = (data: any) => {
@@ -49,6 +52,10 @@ const LoginPage: React.FC = () => {
       navigate('/');
     }
   }, [status, navigate, dispatch]);
+
+  if (user) {
+    return <Navigate to={'/'} />;
+  }
 
   return (
     <Container mt={5}>
