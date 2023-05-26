@@ -75,6 +75,14 @@ export const put = (url: string, data: object | undefined = undefined, headers: 
     headers: headers,
   });
 
+export const deleteRequest = (url: string, headers: object | undefined = undefined) =>
+  httpRequest({
+    url: url,
+    method: 'DELETE',
+    data: null,
+    headers: headers,
+  });
+
 export const postMultiPart = (
   url: string,
   data: FormData | undefined = undefined,

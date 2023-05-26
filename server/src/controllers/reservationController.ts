@@ -96,3 +96,43 @@ export const getReservationsByRestaurantId = async (req: Request, res: Response)
     res.status(500).json({ message: 'Error retrieving reservations' });
   }
 };
+
+export const deleteReservation = async (req: Request, res: Response) => {
+  try {
+    const reservationId = req.params.id;
+    const reservation = await Reservation.findById(reservationId);
+
+    if (!reservation) {
+      return res.status(404).json({
+        showToast: true,
+        message: 'Reservation not found!',
+      });
+    }
+
+    await reservation.deleteOne();
+
+    res.status(200).json({
+      showToast: true,
+      message: 'Reservation deleted successfully',
+      type: 'warning',
+      id: reservationId,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      showToast: true,
+      message: 'Error deleting reservation',
+    });
+  }
+};
+
+export const getAllReservations = async (req: Request, res: Response) => {
+  try {
+    const reservations = await Reservation.find({});
+
+    res.json({ reservations });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error retrieving reservations' });
+  }
+};

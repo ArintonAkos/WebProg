@@ -6,6 +6,7 @@ export interface IReservation {
   time: Date;
   numberOfGuests: number;
   contactInfo: string;
+  status: 'pending' | 'accepted' | 'rejected';
 }
 
 const reservationSchema = new Schema<IReservation>({
@@ -13,6 +14,7 @@ const reservationSchema = new Schema<IReservation>({
   restaurantId: { type: String, required: true },
   time: { type: Date, required: true },
   numberOfGuests: { type: Number, required: true },
+  status: { type: String, default: 'pending', enum: ['pending', 'accepted', 'rejected'], required: true },
 });
 
 const Reservation = model<IReservation>('Reservation', reservationSchema);

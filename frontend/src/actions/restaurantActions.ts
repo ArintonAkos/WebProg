@@ -41,8 +41,6 @@ const restaurantToFormData = (restaurant: AddRestaurantFormData | UploadImagesFo
 };
 
 export const fetchRestaurants = createAsyncThunk<any, void>('restaurant/fetchRestaurants', async () => {
-  console.log('gettings called');
-
   return await get('restaurant/');
 });
 

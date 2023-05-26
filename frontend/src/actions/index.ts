@@ -10,7 +10,7 @@ type AsyncThunkCallbacks<State, Returned> = {
   rejected?: (state: Draft<State>, action: GlobalAction) => void;
 };
 
-export const mapAsyncThunkToGlobalAction = <CustomRootState, Returned, ThunkArg>(
+export const mapAsyncThunkToGlobalAction = <CustomRootState, Returned, ThunkArg = any>(
   builder: ActionReducerMapBuilder<CustomRootState>,
   asyncThunk: AsyncThunk<Returned, ThunkArg, {}>,
   callbacks: AsyncThunkCallbacks<CustomRootState, Returned>,
