@@ -38,6 +38,17 @@ const reservationSlice = wrapSliceWithCommonFunctions({
         state.status = 'loading';
         state.reservations = [];
       },
+      fulfilled: (state, action) => {
+        console.log(action);
+        state.status = 'succeeded';
+        state.requestStatus = action.requestStatus;
+        state.reservations = action.payload.reservations;
+      },
+      rejected: (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+        state.requestStatus = action.requestStatus;
+      },
     });
 
     mapAsyncThunkToGlobalAction<ReservationStateWithRootState, CreateReservationData>(builder, createReservation, {
@@ -47,7 +58,7 @@ const reservationSlice = wrapSliceWithCommonFunctions({
       fulfilled: (state, action) => {
         state.status = 'succeeded';
         state.requestStatus = action.requestStatus;
-        state.reservations.push(action.reservation);
+        state.reservations.push(action.payload.reservation);
       },
       rejected: (state, action) => {
         state.status = 'failed';
@@ -62,8 +73,9 @@ const reservationSlice = wrapSliceWithCommonFunctions({
       },
       fulfilled: (state, action) => {
         state.status = 'succeeded';
+
         state.requestStatus = action.requestStatus;
-        state.reservations = state.reservations.filter((r) => r._id !== action.id);
+        state.reservations = state.reservations.filter((r) => r._id !== action.payload.id);
       },
       rejected: (state, action) => {
         state.status = 'failed';

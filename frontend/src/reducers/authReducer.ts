@@ -37,6 +37,11 @@ const authSlice = wrapSliceWithCommonFunctions({
       state.userData.token = action.payload.token;
       state.userData.refreshToken = action.payload.refreshToken;
     },
+    logoutUser: (state) => {
+      state.userData.token = undefined;
+      state.userData.refreshToken = undefined;
+      state.userData.user = undefined;
+    },
   },
   extraReducers: (builder) => {
     mapAsyncThunkToGlobalAction(builder, registerUser, {
@@ -78,6 +83,6 @@ const authSlice = wrapSliceWithCommonFunctions({
   },
 });
 
-export const { setIdleState, updateTokens } = authSlice.actions;
+export const { setIdleState, updateTokens, logoutUser } = authSlice.actions;
 
 export default authSlice.reducer;

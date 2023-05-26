@@ -24,6 +24,8 @@ const ReservationsList = () => {
     return <Navigate to={'/auth/login'} />;
   }
 
+  console.log(reservations);
+
   return (
     <StatusHandler status={status} error={error}>
       <VStack spacing={8} alignItems="start">

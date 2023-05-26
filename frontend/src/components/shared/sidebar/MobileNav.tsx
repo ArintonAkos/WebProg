@@ -10,6 +10,8 @@ interface MobileProps extends FlexProps {
 }
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   const user = useSelector((state: RootState) => state.auth.userData.user);
+  const bg = useColorModeValue('white', 'gray.900');
+  const borderBottomColor = useColorModeValue('gray.200', 'gray.700');
 
   return (
     <Flex
@@ -17,23 +19,18 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       px={{ base: 4, md: 24 }}
       height="20"
       alignItems="center"
-      bg={useColorModeValue('white', 'gray.900')}
+      bg={bg}
       borderBottomWidth="1px"
-      borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
+      borderBottomColor={borderBottomColor}
       justifyContent="flex-start"
       {...rest}
     >
       <IconButton variant="outline" onClick={onOpen} aria-label="open menu" icon={<FiMenu />} />
       <Link as={RouterLink} to="/home">
-        <Text fontSize="2xl" ml="8" fontFamily="monospace" fontWeight="bold">
+        <Text fontSize="2xl" ml="4" fontFamily="monospace" fontWeight="bold">
           Dashboard
         </Text>
       </Link>
-      {user && (
-        <Text fontSize="xl" ml="8" fontFamily="monospace">
-          Hi, {user.name}
-        </Text>
-      )}
     </Flex>
   );
 };
