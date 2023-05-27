@@ -1,4 +1,6 @@
 import {
+  changeReservationStatus,
+  ChangeReservationStatusData,
   createReservation,
   CreateReservationData,
   deleteReservation,
@@ -13,16 +15,18 @@ import {
 import { DefaultState, CustomRootState } from '../store/state';
 import { wrapSliceWithCommonFunctions } from '../hoc/reducerWrapper';
 import { mapAsyncThunkToGlobalAction } from '../actions';
-import Reservation from '../models/reservation';
+import Reservation, { PopulatedReservation } from '../models/reservation';
 
 export interface ReservationState {
   reservations: Reservation[];
+  populatedReservations: PopulatedReservation[];
   data: any;
 }
 
 const InitialState: ReservationState & CustomRootState = {
   ...DefaultState,
   reservations: [],
+  populatedReservations: [],
   data: undefined,
 };
 
@@ -111,17 +115,38 @@ const reservationSlice = wrapSliceWithCommonFunctions({
       {
         pending: (state) => {
           state.status = 'loading';
-          state.reservations = [];
+          state.populatedReservations = [];
         },
         fulfilled: (state, action) => {
           state.status = 'succeeded';
           state.requestStatus = action.requestStatus;
-          state.reservations = action.payload.reservations;
+          state.populatedReservations = action.payload.reservations;
         },
         rejected: (state, action) => {
           state.status = 'failed';
           state.error = action.error.message;
           state.requestStatus = action.requestStatus;
+        },
+      },
+    );
+
+    mapAsyncThunkToGlobalAction<ReservationStateWithRootState, ChangeReservationStatusData>(
+      builder,
+      changeReservationStatus,
+      {
+        pending: (state) => {
+          state.status = 'loading';
+        },
+        fulfilled: (state, action) => {
+          const { _id, status } = action.payload.reservation;
+
+          state.status = 'succeeded';
+          state.populatedReservations = state.populatedReservations.map((r) => {
+            return r._id === _id ? { ...r, status } : r;
+          });
+        },
+        rejected: (state, action) => {
+          state.status = 'loading';
         },
       },
     );

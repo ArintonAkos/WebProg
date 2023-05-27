@@ -1,4 +1,4 @@
-import ResponseError from '../types/responseError';
+import ResponseError from '../types/ResponseError';
 import { RootState } from '../store';
 
 export const API_BASE_URL = 'http://localhost:3000';

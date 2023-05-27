@@ -1,31 +1,55 @@
 import * as React from 'react';
-import { Box, Button, ChakraProvider, Heading, IconButton, Text, VStack } from '@chakra-ui/react';
+import { Box, Heading, IconButton, VStack } from '@chakra-ui/react';
 import { createColumnHelper } from '@tanstack/react-table';
 import { DataTable } from '../../components/shared/table/DataTable';
-import Reservation from '../../models/reservation';
+import Reservation, { PopulatedReservation } from '../../models/reservation';
 import StatusHandler from '../../components/shared/StatusHandler';
 import useStateHandling from '../../hooks/useStateHandling';
-import { fetchReservations } from '../../actions/reservationActions';
+import { changeReservationStatus, getManagedReservations } from '../../actions/reservationActions';
 import { useEffect, useMemo } from 'react';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import { RootState } from '../../store';
 import { useSelector } from 'react-redux';
-import { CheckIcon, DeleteIcon } from '@chakra-ui/icons';
+import { CheckIcon, CloseIcon, DeleteIcon } from '@chakra-ui/icons';
 
-const columnHelper = createColumnHelper<Reservation>();
+const columnHelper = createColumnHelper<PopulatedReservation>();
 
 const ManageReservations: React.FC = () => {
+  useStateHandling('reservation');
+
   const { status, error } = useStateHandling('reservation');
   const dispatch = useAppDispatch();
-  const reservations = useSelector((state: RootState) => state.reservation.reservations);
+  const reservations = useSelector((state: RootState) => state.reservation.populatedReservations);
 
   useEffect(() => {
-    dispatch(fetchReservations());
+    dispatch(getManagedReservations());
   }, []);
+
+  const handleAccept = (reservation: PopulatedReservation) => {
+    dispatch(
+      changeReservationStatus({
+        id: reservation._id,
+        data: {
+          status: 'accepted',
+        },
+      }),
+    );
+  };
+
+  const handleReject = (reservation: PopulatedReservation) => {
+    dispatch(
+      changeReservationStatus({
+        id: reservation._id,
+        data: {
+          status: 'rejected',
+        },
+      }),
+    );
+  };
 
   const columns = useMemo(
     () => [
-      columnHelper.accessor('restaurantId', {
+      columnHelper.accessor('restaurantId.name', {
         cell: (info) => info.getValue(),
         header: 'Restaurant',
       }),
@@ -47,10 +71,10 @@ const ManageReservations: React.FC = () => {
       }),
       columnHelper.display({
         id: 'manage',
-        cell: () => (
+        cell: ({ row }) => (
           <Box>
-            <IconButton aria-label="Accept" icon={<CheckIcon />} onClick={() => {}} />
-            <IconButton aria-label="Delete" icon={<DeleteIcon />} onClick={() => {}} ml={4} />
+            <IconButton aria-label="Accept" icon={<CheckIcon />} onClick={() => handleAccept(row.original)} />
+            <IconButton aria-label="Delete" icon={<CloseIcon />} onClick={() => handleReject(row.original)} ml={4} />
           </Box>
         ),
       }),
@@ -62,7 +86,9 @@ const ManageReservations: React.FC = () => {
     <StatusHandler status={status} error={error}>
       <VStack spacing={8} alignItems="start">
         <Heading>Manage Reservations</Heading>
-        <DataTable columns={columns} data={reservations} />
+        <Box width="100%" overflowX="auto">
+          <DataTable columns={columns} data={reservations} />
+        </Box>
       </VStack>
     </StatusHandler>
   );

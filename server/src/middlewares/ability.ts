@@ -7,8 +7,6 @@ import Request from '../types/request.types';
 import PermissionRepository from '../redis/repositories/PermissionRepository';
 
 const ability = async (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.user);
-
   if (!req.user) {
     return next(new Error('No user attached to request'));
   }

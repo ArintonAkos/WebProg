@@ -90,7 +90,7 @@ export const getReservationsByRestaurantId = async (req: Request, res: Response)
     const restaurantId = req.params.restaurantId;
     const reservations = await Reservation.find({ restaurantId });
 
-    res.json({ reservations });
+    res.status(200).json({ reservations });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error retrieving reservations' });
@@ -139,6 +139,7 @@ export const getAllReservations = async (req: Request, res: Response) => {
 
 export const getManagedReservations = async (req: Request, res: Response) => {
   try {
+    console.log('AAAAAAAAAAAAAAAAAAAAAAA');
     if (!req.user) {
       return res.status(401).json({
         showToast: true,
@@ -146,9 +147,16 @@ export const getManagedReservations = async (req: Request, res: Response) => {
       });
     }
 
+    console.log(req.user);
+    const restaurantIds = req.user.adminRestaurants.map((adminRestaurant) => adminRestaurant._id);
+    console.log('Restaurant ids: ', restaurantIds);
     const reservations = await Reservation.find({
-      restaurantId: { $in: req.user.adminRestaurants },
-    }).populate('restaurantId');
+      restaurantId: { $in: restaurantIds },
+    })
+      .populate('restaurantId')
+      .exec();
+
+    console.log('AAAAAAAAAAAAAAAAAAAAA', reservations);
 
     res.json({ reservations });
   } catch (error) {

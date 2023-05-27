@@ -1,7 +1,8 @@
 import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
 import { CreateReservationProps } from '../components/pages/reservation/ReservationForm.data';
-import Reservation from '../models/reservation';
+import Reservation, { PopulatedReservation } from '../models/reservation';
 import createAuthClient from '../services/createAuthClient';
+import BaseResponse from '../types/BaseResponse';
 
 type CreateReservationArgs = {
   id: string;
@@ -14,15 +15,15 @@ type DeleteReservationArgs = {
 
 export type FetchReservationsData = {
   reservations: Reservation[];
-};
+} & BaseResponse;
 
 export type CreateReservationData = {
   reservation: Reservation;
-};
+} & BaseResponse;
 
 export type DeleteReservationData = {
   id: string;
-};
+} & BaseResponse;
 
 type UpdateReservationArgs = {
   id: string;
@@ -31,14 +32,24 @@ type UpdateReservationArgs = {
 
 export type UpdateReservationData = {
   reservation: Reservation;
-};
-
-type GetManagedReservationsArgs = {
-  userId: string;
-};
+} & BaseResponse;
 
 export type GetManagedReservationsData = {
-  reservations: Reservation[];
+  reservations: PopulatedReservation[];
+} & BaseResponse;
+
+export type ChangeReservationStatusData = {
+  reservation: {
+    status: 'pending' | 'accepted' | 'rejected';
+    _id: string;
+  };
+};
+
+export type ChangeReservationStatusArgs = {
+  id: string;
+  data: {
+    status: 'accepted' | 'rejected';
+  };
 };
 
 export const fetchReservations: AsyncThunk<FetchReservationsData, void, {}> = createAsyncThunk<any, void>(
@@ -77,11 +88,24 @@ export const updateReservation: AsyncThunk<UpdateReservationData, UpdateReservat
   return (await put(`reservation/${id}`, data)) as UpdateReservationData;
 });
 
-export const getManagedReservations: AsyncThunk<GetManagedReservationsData, any, {}> = createAsyncThunk<
-  any,
-  GetManagedReservationsArgs
->('reservation/getManagedReservations', async (_, thunkAPI) => {
-  const { get } = createAuthClient(thunkAPI);
+export const getManagedReservations: AsyncThunk<GetManagedReservationsData, void, {}> = createAsyncThunk<any, void>(
+  'reservation/getManagedReservations',
+  async (_, thunkAPI) => {
+    const { get } = createAuthClient(thunkAPI);
 
-  return (await get(`reservation/managed`)) as GetManagedReservationsData;
-});
+    return (await get(`reservation/managed`)) as GetManagedReservationsData;
+  },
+);
+
+export const changeReservationStatus: AsyncThunk<ChangeReservationStatusData, ChangeReservationStatusArgs, {}> =
+  createAsyncThunk<ChangeReservationStatusData, ChangeReservationStatusArgs>(
+    'reservation/changeReservationStatus',
+    async ({ id, data }, thunkAPI) => {
+      const { put } = createAuthClient(thunkAPI);
+
+      const response = await put(`reservation/${id}`, data);
+
+      console.log(response);
+      return response as ChangeReservationStatusData;
+    },
+  );

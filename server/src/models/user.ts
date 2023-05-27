@@ -1,4 +1,4 @@
-import { model, Schema, Types } from 'mongoose';
+import { model, Schema } from 'mongoose';
 import { IUser } from '../types/user.types';
 
 const userSchema = new Schema<IUser>({
@@ -23,7 +23,7 @@ const userSchema = new Schema<IUser>({
   ],
   adminRestaurants: [
     {
-      type: String,
+      type: Schema.Types.ObjectId,
       ref: 'Restaurant',
     },
   ],

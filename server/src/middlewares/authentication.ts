@@ -11,11 +11,9 @@ import PermissionRepository from '../redis/repositories/PermissionRepository';
 const authentication = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
 
-  console.log('Authentication', authHeader);
   if (authHeader) {
     const token = authHeader.split(' ')[1];
 
-    console.log('A token: ', token, authHeader);
     if (!token) {
       req.user = await getGuest();
 
@@ -26,34 +24,27 @@ const authentication = async (req: Request, res: Response, next: NextFunction) =
       const userData = jwt.verify(token, config.jwtSecret) as JwtPayload;
       const user = await getUser(userData?.id);
 
-      console.log('User data: ', userData);
       if (user instanceof ErrorMessage) {
-        console.log('A');
         return res.status(user.status).json(user.json);
       }
 
       req.user = user;
 
-      console.log('B', user);
       next();
     } catch (err) {
       if (err instanceof jwt.TokenExpiredError) {
         const refreshToken = req.headers['x-refresh-token'];
 
         if (!refreshToken) {
-          console.log('C');
           return res.status(403).json({ error: 'Refresh token not provided.' });
         }
 
         try {
           const userData = jwt.verify(refreshToken as string, config.refreshTokenSecret) as JwtPayload;
 
-          console.log('UserData: userData');
           const user = await getUser(userData?.id);
 
-          console.log('A felhasznalo: ', user);
           if (user instanceof ErrorMessage) {
-            console.log('Bejottem ide is1123');
             return res.status(user.status).json(user.json);
           }
 
@@ -63,7 +54,6 @@ const authentication = async (req: Request, res: Response, next: NextFunction) =
           req.headers['x-refresh-token'] = newRefreshToken;
           req.user = user;
 
-          console.log('D');
           next();
         } catch (err) {
           return res.status(403).json({ error: 'Invalid refresh token.' });
@@ -75,7 +65,6 @@ const authentication = async (req: Request, res: Response, next: NextFunction) =
   } else {
     req.user = await getGuest();
 
-    console.log('Bejottema guestbe');
     return next();
   }
 };
@@ -104,7 +93,6 @@ const getGuest = async (): Promise<IPopulatedUser> => {
 };
 
 const getUser = async (userId?: string): Promise<IPopulatedUser | ErrorMessage> => {
-  console.log('Get user: ', userId);
   const user = await User.findById(userId).populate('roles').populate('adminRestaurants').exec();
 
   if (!user) {

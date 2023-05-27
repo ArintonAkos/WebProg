@@ -15,6 +15,7 @@ app.use('/images', express.static('/images'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors);
+app.use(responseFormatter);
 app.use(authentication);
 app.use(ability);
 app.use('/reservation', reservationRoutes);
@@ -22,6 +23,5 @@ app.use('/restaurant', restaurantRoutes);
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use(errorHandler);
-app.use(responseFormatter);
 
 export default app;

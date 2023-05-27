@@ -1,6 +1,7 @@
 import { Schema, model, Types } from 'mongoose';
 
 export interface IReservation {
+  _id: Types.ObjectId;
   userId: string;
   restaurantId: Types.ObjectId;
   time: Date;
