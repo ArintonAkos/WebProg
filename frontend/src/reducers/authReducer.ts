@@ -3,6 +3,8 @@ import { wrapSliceWithCommonFunctions } from '../hoc/reducerWrapper';
 import { mapAsyncThunkToGlobalAction } from '../actions';
 import { loginUser, registerUser } from '../actions/authAction';
 import User from '../models/user';
+import { AuthHeader } from '../services/createAuthClient';
+import { PayloadAction } from '@reduxjs/toolkit/src/createAction';
 
 export interface UserData {
   token?: string;
@@ -67,7 +69,6 @@ const authSlice = wrapSliceWithCommonFunctions({
         state.status = 'succeeded';
         state.requestStatus = action.requestStatus;
 
-        console.log(action);
         if (action.payload) {
           state.userData.token = action.payload.token;
           state.userData.refreshToken = action.payload.refreshToken;

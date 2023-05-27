@@ -12,6 +12,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@casl/ability": "^6.5.0",
     "@chakra-ui/icons": "^2.0.18",
     "@chakra-ui/react": "^2.5.5",
     "@emotion/react": "^11.10.6",

@@ -21,6 +21,12 @@ const userSchema = new Schema<IUser>({
       ref: 'Role',
     },
   ],
+  adminRestaurants: [
+    {
+      type: String,
+      ref: 'Restaurant',
+    },
+  ],
 });
 
 const User = model<IUser>('User', userSchema);

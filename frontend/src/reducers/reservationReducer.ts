@@ -5,6 +5,10 @@ import {
   DeleteReservationData,
   fetchReservations,
   FetchReservationsData,
+  getManagedReservations,
+  GetManagedReservationsData,
+  updateReservation,
+  UpdateReservationData,
 } from '../actions/reservationActions';
 import { DefaultState, CustomRootState } from '../store/state';
 import { wrapSliceWithCommonFunctions } from '../hoc/reducerWrapper';
@@ -39,7 +43,6 @@ const reservationSlice = wrapSliceWithCommonFunctions({
         state.reservations = [];
       },
       fulfilled: (state, action) => {
-        console.log(action);
         state.status = 'succeeded';
         state.requestStatus = action.requestStatus;
         state.reservations = action.payload.reservations;
@@ -83,6 +86,45 @@ const reservationSlice = wrapSliceWithCommonFunctions({
         state.requestStatus = action.requestStatus;
       },
     });
+
+    mapAsyncThunkToGlobalAction<ReservationStateWithRootState, UpdateReservationData>(builder, updateReservation, {
+      pending: (state) => {
+        state.status = 'loading';
+      },
+      fulfilled: (state, action) => {
+        state.status = 'succeeded';
+        state.requestStatus = action.requestStatus;
+        state.reservations = state.reservations.map((r) =>
+          r._id === action.payload.reservation._id ? action.payload.reservation : r,
+        );
+      },
+      rejected: (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+        state.requestStatus = action.requestStatus;
+      },
+    });
+
+    mapAsyncThunkToGlobalAction<ReservationStateWithRootState, GetManagedReservationsData>(
+      builder,
+      getManagedReservations,
+      {
+        pending: (state) => {
+          state.status = 'loading';
+          state.reservations = [];
+        },
+        fulfilled: (state, action) => {
+          state.status = 'succeeded';
+          state.requestStatus = action.requestStatus;
+          state.reservations = action.payload.reservations;
+        },
+        rejected: (state, action) => {
+          state.status = 'failed';
+          state.error = action.error.message;
+          state.requestStatus = action.requestStatus;
+        },
+      },
+    );
   },
 });
 

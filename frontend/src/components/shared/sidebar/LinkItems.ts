@@ -1,42 +1,72 @@
 import { IconType } from 'react-icons';
-import { BiLogIn, BiPlus, BiRestaurant, BiUserPlus } from 'react-icons/all';
+import { BiCustomize, BiLogIn, BiLogOut, BiPlus, BiRestaurant, BiTable, BiUserPlus } from 'react-icons/all';
+import { Link } from 'react-router-dom';
 
 export interface LinkItemProps {
   name: string;
   icon: IconType;
   to: string;
   requiredPermission?: string;
-  group?: LinkItemGroup;
   subItems?: Array<LinkItemProps>;
+  authRequired?: boolean;
 }
 
-export type LinkItemGroup = 'default' | 'Restaurants';
+export interface Group {
+  name: LinkItemGroup;
+  items: LinkItemProps[];
+  authRequired?: boolean;
+}
 
-export const LinkItems: Array<LinkItemProps> = [
+export type LinkItemGroup = 'default' | 'Restaurants' | 'Reservations' | 'Profile' | 'User';
+
+export const LinkItems: Array<Group> = [
   {
     name: 'Restaurants',
-    icon: BiRestaurant,
-    to: '/',
-    requiredPermission: 'read Restaurant',
-    group: 'Restaurants',
-    subItems: [
+    items: [
+      {
+        name: 'Restaurants',
+        icon: BiRestaurant,
+        to: '/',
+        requiredPermission: 'read Restaurant',
+      },
       {
         name: 'Add Restaurant',
         icon: BiPlus,
         to: '/restaurant/add',
         requiredPermission: 'create Restaurant',
-      },
-      {
-        name: 'Reservations',
-        icon: BiRestaurant,
-        to: '/reservations',
-        requiredPermission: 'read Reservation',
+        authRequired: true,
       },
     ],
   },
-];
-
-export const UnAuthLinkItems: Array<LinkItemProps> = [
-  { name: 'Login', icon: BiLogIn, to: '/auth/login' },
-  { name: 'Registration', icon: BiUserPlus, to: '/auth/register' },
+  {
+    name: 'Reservations',
+    items: [
+      {
+        name: 'Reservations',
+        icon: BiTable,
+        to: '/reservations',
+        requiredPermission: 'read Reservation',
+        authRequired: true,
+      },
+      {
+        name: 'Manage Reservations',
+        icon: BiCustomize,
+        to: '/reservations/manage',
+        requiredPermission: 'update Reservation',
+        authRequired: true,
+      },
+    ],
+  },
+  {
+    name: 'Profile',
+    authRequired: true,
+    items: [{ name: 'Logout', icon: BiLogOut, to: '/auth/logout', authRequired: true }],
+  },
+  {
+    name: 'User',
+    items: [
+      { name: 'Login', icon: BiLogIn, to: '/auth/login', authRequired: false },
+      { name: 'Registration', icon: BiUserPlus, to: '/auth/register', authRequired: false },
+    ],
+  },
 ];

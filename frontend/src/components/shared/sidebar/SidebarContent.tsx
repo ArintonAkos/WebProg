@@ -1,12 +1,11 @@
 import { Box, Stack, useColorModeValue, Text, BoxProps, CloseButton, Link, Flex } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store';
-import NavItem from './NavItem';
-import { LinkItemProps, LinkItems, UnAuthLinkItems } from './LinkItems';
-import { IoIosLogIn, IoIosLogOut } from 'react-icons/io';
+import { Group, LinkItems } from './LinkItems';
 import React from 'react';
-import SubItem from './SubItem';
 import { Link as RouterLink } from 'react-router-dom';
+import defineAbilityFor from '../../../ability/defineAbilityFor';
+import NavItem from './NavItem';
 
 interface SidebarProps extends BoxProps {
   onClose: () => void;
@@ -14,8 +13,17 @@ interface SidebarProps extends BoxProps {
 
 const SidebarContent: React.FC<SidebarProps> = ({ onClose, ...rest }: SidebarProps) => {
   const user = useSelector((state: RootState) => state.auth.userData.user);
+  const permissions = user?.permissions;
+  const { can } = defineAbilityFor(user);
 
-  let linkItems: LinkItemProps[] = user ? [] : UnAuthLinkItems;
+  const filteredLinkItems = LinkItems.map((group) => ({
+    ...group,
+    items: group.items.filter(
+      (item) => item.authRequired === undefined || (user && item.authRequired) || (!user && !item.authRequired),
+    ),
+  }));
+
+  const linkItems = filteredLinkItems.filter((group) => group.items.length > 0);
 
   const bg = useColorModeValue('gray.100', 'gray.900');
   const color = useColorModeValue('gray.900', 'white');
@@ -42,77 +50,28 @@ const SidebarContent: React.FC<SidebarProps> = ({ onClose, ...rest }: SidebarPro
           </Link>
           <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
         </Flex>
-        {LinkItems.map((link: LinkItemProps) => {
-          if (link.group) {
-            return (
-              <React.Fragment key={link.group}>
-                <Text fontWeight="bold" color={color} pl={4} fontSize="l">
-                  {link.group}
-                </Text>
-                <NavItem
-                  icon={link.icon}
-                  to={link.to}
-                  name={link.name}
-                  onClose={onClose}
-                  color={color}
-                  bgColor={itemBgColor}
-                  subItems={link.subItems}
-                >
-                  {link.name}
-                </NavItem>
-              </React.Fragment>
-            );
-          } else {
-            return (
+        {linkItems.map((item: Group) => (
+          <React.Fragment key={item.name}>
+            <Text fontWeight="bold" color={color} pl={4} fontSize="l">
+              {item.name}
+            </Text>
+            {item.items.map((navItem) => (
               <NavItem
-                key={link.name}
-                icon={link.icon}
-                to={link.to}
-                name={link.name}
+                icon={navItem.icon}
+                to={navItem.to}
+                name={navItem.name}
                 onClose={onClose}
                 color={color}
                 bgColor={itemBgColor}
+                key={navItem.name}
+                subItems={navItem.subItems}
               >
-                {link.name}
+                {navItem.name}
               </NavItem>
-            );
-          }
-        })}
+            ))}
+          </React.Fragment>
+        ))}
       </Stack>
-      {user && (
-        <Stack spacing={6} mt={8}>
-          <Text fontWeight="bold" color={color} ml={4}>
-            User
-          </Text>
-          <NavItem
-            icon={IoIosLogOut}
-            to="/auth/logout"
-            name="Logout"
-            onClose={onClose}
-            color={color}
-            bgColor={itemBgColor}
-          >
-            Logout
-          </NavItem>
-        </Stack>
-      )}
-      {!user && (
-        <Stack spacing={6} mt={8}>
-          <Text fontWeight="bold" color={color} ml={4}>
-            User
-          </Text>
-          <NavItem
-            icon={IoIosLogIn}
-            to="/auth/login"
-            name="Login"
-            onClose={onClose}
-            color={color}
-            bgColor={itemBgColor}
-          >
-            Login
-          </NavItem>
-        </Stack>
-      )}
     </Box>
   );
 };

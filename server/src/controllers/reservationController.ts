@@ -136,3 +136,50 @@ export const getAllReservations = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error retrieving reservations' });
   }
 };
+
+export const getManagedReservations = async (req: Request, res: Response) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        showToast: true,
+        message: 'User not found!',
+      });
+    }
+
+    const reservations = await Reservation.find({
+      restaurantId: { $in: req.user.adminRestaurants },
+    }).populate('restaurantId');
+
+    res.json({ reservations });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error retrieving reservations' });
+  }
+};
+
+export const updateReservation = async (req: Request, res: Response) => {
+  try {
+    const reservationId = req.params.id;
+    const updateData = req.body;
+    const reservation = await Reservation.findByIdAndUpdate(reservationId, updateData, { new: true });
+
+    if (!reservation) {
+      return res.status(404).json({
+        showToast: true,
+        message: 'Reservation not found!',
+      });
+    }
+
+    res.status(200).json({
+      showToast: true,
+      message: 'Reservation updated successfully',
+      reservation,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      showToast: true,
+      message: 'Error updating reservation',
+    });
+  }
+};

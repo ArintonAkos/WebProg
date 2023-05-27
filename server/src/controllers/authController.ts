@@ -49,13 +49,15 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  const user: IPopulatedUserDocument | undefined = await User.findOne({ email }).populate({
-    path: 'roles',
-    populate: {
-      path: 'permissions',
-      model: 'Permission',
-    },
-  });
+  const user: IPopulatedUserDocument | undefined = await User.findOne({ email })
+    .populate({
+      path: 'roles',
+      populate: {
+        path: 'permissions',
+        model: 'Permission',
+      },
+    })
+    .populate('adminRestaurants');
 
   if (!user) {
     return res.status(400).json({ message: 'User not found' });
@@ -63,11 +65,11 @@ export const login = async (req: Request, res: Response) => {
 
   try {
     if (await bcrypt.compare(password, user.password)) {
-      const token = jwt.sign({ name: user.name }, config.jwtSecret, {
+      const token = jwt.sign({ name: user.name, email: user.email, id: user._id }, config.jwtSecret, {
         expiresIn: config.jwtExpiry,
       });
 
-      const refreshToken = jwt.sign({ name: user.name }, config.refreshTokenSecret, {
+      const refreshToken = jwt.sign({ name: user.name, email: user.email, id: user._id }, config.refreshTokenSecret, {
         expiresIn: config.refreshTokenExpiry,
       });
 
@@ -92,25 +94,31 @@ export const refreshToken = async (req: Request, res: Response) => {
   try {
     const decoded = jwt.verify(refreshToken, config.refreshTokenSecret) as any;
 
-    const user: IPopulatedUserDocument | undefined = await User.findOne({ name: decoded.name }).populate({
-      path: 'roles',
-      populate: {
-        path: 'permissions',
-        model: 'Permission',
-      },
-    });
+    const user: IPopulatedUserDocument | undefined = await User.findOne({ name: decoded.name })
+      .populate({
+        path: 'roles',
+        populate: {
+          path: 'permissions',
+          model: 'Permission',
+        },
+      })
+      .populate('adminRestaurants');
 
     if (!user) {
       return res.status(404).send('User not found');
     }
 
-    const newToken = jwt.sign({ name: decoded.name }, config.jwtSecret, {
+    const newToken = jwt.sign({ name: decoded.name, email: user.email, id: user._id }, config.jwtSecret, {
       expiresIn: config.jwtExpiry,
     });
 
-    const newRefreshToken = jwt.sign({ name: decoded.name }, config.refreshTokenSecret, {
-      expiresIn: config.refreshTokenExpiry,
-    });
+    const newRefreshToken = jwt.sign(
+      { name: decoded.name, email: user.email, id: user._id },
+      config.refreshTokenSecret,
+      {
+        expiresIn: config.refreshTokenExpiry,
+      },
+    );
 
     const publicUser = userToPublicUser(user as IPopulatedUserDocument);
 
@@ -137,5 +145,6 @@ const userToPublicUser = (user: IPopulatedUserDocument): IPopulatedUser => {
     email: user.email,
     roles: user.roles as IRole[],
     permissions: Array.from(permissionsSet),
+    adminRestaurants: user.adminRestaurants,
   };
 };

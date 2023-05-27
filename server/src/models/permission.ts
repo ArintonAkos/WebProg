@@ -4,6 +4,7 @@ export interface IPermission {
   name: string;
   description: string;
   subject: string;
+  action: string;
 }
 
 const permissionSchema = new mongoose.Schema<IPermission>({
@@ -17,6 +18,10 @@ const permissionSchema = new mongoose.Schema<IPermission>({
     required: false,
   },
   subject: {
+    type: String,
+    required: true,
+  },
+  action: {
     type: String,
     required: true,
   },

@@ -1,5 +1,5 @@
 import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
-import { post } from '../services/httpRequest';
+import createAuthClient from '../services/createAuthClient';
 
 type CreateUserArgs = {
   name: string;
@@ -10,7 +10,9 @@ type CreateUserArgs = {
 
 export const registerUser: AsyncThunk<any, CreateUserArgs, {}> = createAsyncThunk<any, CreateUserArgs>(
   'auth/registerUser',
-  async ({ name, email, password, confirmPassword }) => {
+  async ({ name, email, password, confirmPassword }, thunkAPI) => {
+    const { post } = createAuthClient(thunkAPI);
+
     return await post(`auth/register`, { name, email, password, confirmPassword });
   },
 );
@@ -22,7 +24,9 @@ type LoginUserArgs = {
 
 export const loginUser: AsyncThunk<any, LoginUserArgs, {}> = createAsyncThunk<any, LoginUserArgs>(
   'auth/loginUser',
-  async ({ email, password }) => {
+  async ({ email, password }, thunkAPI) => {
+    const { post } = createAuthClient(thunkAPI);
+
     return await post(`auth/login`, { email, password });
   },
 );

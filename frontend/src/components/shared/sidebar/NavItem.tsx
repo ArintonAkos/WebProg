@@ -19,8 +19,6 @@ const NavItem = ({ icon, children, to, subItems, onClose, bgColor, ...rest }: Na
   const location = useLocation();
   const isActive = location.pathname === to;
 
-  console.log(location.pathname, to);
-
   const fallbackBg = useColorModeValue('gray.100', 'gray.900');
   const hoverBg = useColorModeValue('gray.200', 'blue.700');
   const bg = isActive ? hoverBg : bgColor ?? fallbackBg;

@@ -1,7 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from '../reducers';
 import updateActionMiddleware from './middlewares/requestStatusMiddleware';
-import authMiddleware from './middlewares/authMiddleware';
 import { PersistedState } from 'redux-persist/es/types';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
@@ -22,7 +21,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST'],
       },
-    }).concat(updateActionMiddleware, authMiddleware) as any,
+    }).concat(updateActionMiddleware) as any,
 });
 
 export default store;

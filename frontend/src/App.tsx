@@ -12,6 +12,7 @@ import RegisterPage from './pages/auth/RegistrationPage';
 import LoginPage from './pages/auth/LoginPage';
 import ReservationList from './pages/reservation/ReservationList';
 import LogoutPage from './pages/auth/LogoutPage';
+import ManageReservations from './pages/reservation/ManageReservations';
 
 export const App = () => (
   <ChakraProvider theme={theme}>
@@ -27,6 +28,7 @@ export const App = () => (
             <Route path="/restaurants/edit/:id" element={<RestaurantEdit />} />
 
             <Route path="/reservations/" element={<ReservationList />} />
+            <Route path="/reservations/manage" element={<ManageReservations />} />
 
             <Route path="/auth/register" element={<RegisterPage />} />
             <Route path="/auth/login" element={<LoginPage />} />

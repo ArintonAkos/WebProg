@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Image, Skeleton } from '@chakra-ui/react';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import { API_BASE_URL } from '../../services/httpRequest';
+import { API_BASE_URL } from '../../services/createAuthClient';
 
 const CarouselImage: React.FC<{ image: string; index: number }> = ({ image, index }) => {
   const [imageLoaded, setImageLoaded] = useState(false);

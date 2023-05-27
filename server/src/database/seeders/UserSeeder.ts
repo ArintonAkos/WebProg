@@ -18,30 +18,35 @@ const onComplete = async () => {
       email: 'nagy.istvan@gmail.com',
       password: bcrypt.hashSync('jelszo1', 10),
       roles: [roleIds['User']],
+      adminRestaurants: [],
     },
     {
       name: 'Erzsébet Tóth',
       email: 'toth.erzsebet@gmail.com',
       password: bcrypt.hashSync('jelszo2', 10),
       roles: [roleIds['Admin']],
+      adminRestaurants: [],
     },
     {
       name: 'Péter Szabó',
       email: 'szabo.peter@gmail.com',
       password: bcrypt.hashSync('jelszo3', 10),
       roles: [roleIds['Moderator']],
+      adminRestaurants: [],
     },
     {
       name: 'Mária Kovács',
       email: 'kovacs.maria@gmail.com',
       password: bcrypt.hashSync('jelszo4', 10),
       roles: [roleIds['User']],
+      adminRestaurants: [],
     },
     {
       name: 'József Horváth',
       email: 'horvath.jozsef@gmail.com',
       password: bcrypt.hashSync('jelszo5', 10),
       roles: [roleIds['User']],
+      adminRestaurants: [],
     },
   ];
 

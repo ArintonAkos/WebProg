@@ -23,7 +23,8 @@ class PermissionRepository extends BaseRepository<IPermission> {
   }
 
   async getPermissionsForRole(roleName: string): Promise<IPermission[]> {
-    return (await RoleRepository.getRole(roleName)).permissions as IPermission[];
+    const role = await RoleRepository.getRole(roleName);
+    return (role?.permissions ?? []) as IPermission[];
   }
 }
 
