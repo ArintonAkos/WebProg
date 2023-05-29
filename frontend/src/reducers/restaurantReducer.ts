@@ -8,7 +8,7 @@ import {
 import { DefaultState, CustomRootState } from '../store/state';
 import { mapAsyncThunkToGlobalAction } from '../actions';
 import { wrapSliceWithCommonFunctions } from '../hoc/reducerWrapper';
-import Restaurant from '../models/restaurant';
+import Restaurant, { MinimalRestaurantData } from '../models/restaurant';
 import User from '../models/user';
 
 export interface RestaurantPageData {
@@ -22,7 +22,7 @@ const InitialRestaurantPageData: RestaurantPageData = {
 };
 
 export interface RestaurantState {
-  restaurants: Array<Restaurant>;
+  restaurants: Array<Restaurant | MinimalRestaurantData>;
   restaurant: RestaurantPageData;
   editRestaurant?: Restaurant;
 }
@@ -74,6 +74,14 @@ const restaurantSlice = wrapSliceWithCommonFunctions({
       fulfilled: (state, action) => {
         state.status = 'succeeded';
         state.restaurant = action.payload;
+
+        state.restaurants = (state.restaurants ?? []).map((restaurant) => {
+          if (restaurant._id === action.payload.details?._id) {
+            return action.payload.details!;
+          }
+
+          return restaurant;
+        });
       },
       rejected: (state) => {
         state.status = 'failed';

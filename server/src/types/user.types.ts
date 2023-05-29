@@ -19,6 +19,7 @@ export interface IPopulatedUserDocument extends Omit<IUser, 'roles' | 'adminRest
 }
 
 export interface IPopulatedUser {
+  id: Types.ObjectId;
   name: string;
   email: string;
   roles: IRole[];

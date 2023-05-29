@@ -2,7 +2,7 @@ import { Schema, model, Types } from 'mongoose';
 
 export interface IReservation {
   _id: Types.ObjectId;
-  userId: string;
+  userId: Types.ObjectId;
   restaurantId: Types.ObjectId;
   time: Date;
   numberOfGuests: number;
@@ -11,7 +11,7 @@ export interface IReservation {
 }
 
 const reservationSchema = new Schema<IReservation>({
-  userId: { type: String, required: true },
+  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   restaurantId: { type: Schema.Types.ObjectId, ref: 'Restaurant', required: true },
   time: { type: Date, required: true },
   numberOfGuests: { type: Number, required: true },

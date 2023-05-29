@@ -7,6 +7,7 @@ import Request from '../types/request.types';
 import RoleRepository from '../redis/repositories/RoleRepository';
 import { IPopulatedUser, IUser } from '../types/user.types';
 import PermissionRepository from '../redis/repositories/PermissionRepository';
+import { Types } from 'mongoose';
 
 const authentication = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
@@ -84,6 +85,7 @@ const getGuest = async (): Promise<IPopulatedUser> => {
   const guestPermissions = await PermissionRepository.getPermissionsForRole('Guest');
 
   return {
+    id: new Types.ObjectId(''),
     name: 'Guest',
     email: '',
     roles: guestRole ? [guestRole] : [],

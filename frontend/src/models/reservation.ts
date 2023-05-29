@@ -1,3 +1,6 @@
+import Restaurant from './restaurant';
+import User from './user';
+
 interface BaseReservation {
   _id: string;
   name: string;
@@ -8,11 +11,8 @@ interface BaseReservation {
 }
 
 interface Reservation extends BaseReservation {
-  restaurantId: string;
-}
-
-export interface PopulatedReservation extends BaseReservation {
-  restaurantId: Reservation;
+  userId: User;
+  restaurantId: Restaurant;
 }
 
 export default Reservation;

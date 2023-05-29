@@ -15,18 +15,16 @@ import {
 import { DefaultState, CustomRootState } from '../store/state';
 import { wrapSliceWithCommonFunctions } from '../hoc/reducerWrapper';
 import { mapAsyncThunkToGlobalAction } from '../actions';
-import Reservation, { PopulatedReservation } from '../models/reservation';
+import Reservation from '../models/reservation';
 
 export interface ReservationState {
   reservations: Reservation[];
-  populatedReservations: PopulatedReservation[];
   data: any;
 }
 
 const InitialState: ReservationState & CustomRootState = {
   ...DefaultState,
   reservations: [],
-  populatedReservations: [],
   data: undefined,
 };
 
@@ -115,12 +113,12 @@ const reservationSlice = wrapSliceWithCommonFunctions({
       {
         pending: (state) => {
           state.status = 'loading';
-          state.populatedReservations = [];
+          state.reservations = [];
         },
         fulfilled: (state, action) => {
           state.status = 'succeeded';
           state.requestStatus = action.requestStatus;
-          state.populatedReservations = action.payload.reservations;
+          state.reservations = action.payload.reservations;
         },
         rejected: (state, action) => {
           state.status = 'failed';
@@ -141,11 +139,11 @@ const reservationSlice = wrapSliceWithCommonFunctions({
           const { _id, status } = action.payload.reservation;
 
           state.status = 'succeeded';
-          state.populatedReservations = state.populatedReservations.map((r) => {
+          state.reservations = state.reservations.map((r) => {
             return r._id === _id ? { ...r, status } : r;
           });
         },
-        rejected: (state, action) => {
+        rejected: (state) => {
           state.status = 'loading';
         },
       },

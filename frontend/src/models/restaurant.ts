@@ -9,4 +9,12 @@ interface Restaurant {
   _id?: string;
 }
 
+export interface MinimalRestaurantData {
+  _id: string;
+  name: string;
+  openingHours: string;
+  city: string;
+  images?: string[];
+}
+
 export default Restaurant;

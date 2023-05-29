@@ -9,10 +9,11 @@ import Restaurant from '../../models/restaurant';
 import useStateHandling from '../../hooks/useStateHandling';
 import StatusHandler from '../../components/shared/StatusHandler';
 import { EditIcon, Icon } from '@chakra-ui/icons';
+import RestaurantCard from './RestaurantCard';
 
 const RestaurantList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const restaurants: Restaurant[] = useSelector((state: RootState) => state.restaurant.restaurants, shallowEqual);
+  const restaurants = useSelector((state: RootState) => state.restaurant.restaurants, shallowEqual);
   const { status, error } = useStateHandling('restaurant');
   const navigate = useNavigate();
 
@@ -34,25 +35,7 @@ const RestaurantList: React.FC = () => {
           spacingY={{ base: 4, md: 10 }}
           width={{ base: '100%', md: '80%' }}
         >
-          {restaurants?.length > 0 &&
-            restaurants.map((restaurant: Restaurant) => (
-              <Box key={restaurant._id!} borderWidth="1px" borderRadius="lg" overflow="hidden" p={6}>
-                <VStack alignItems="start" spacing={2}>
-                  <Link to={`/restaurants/${restaurant._id!}`}>
-                    <Heading size="md">{restaurant.name}</Heading>
-                    <Box>{restaurant.city}</Box>
-                  </Link>
-                  <Button
-                    size="sm"
-                    colorScheme="blue"
-                    onClick={() => handleEditClick(restaurant._id!)}
-                    leftIcon={<Icon as={EditIcon} />}
-                  >
-                    Edit
-                  </Button>
-                </VStack>
-              </Box>
-            ))}
+          {restaurants?.length > 0 && restaurants.map((restaurant) => <RestaurantCard restaurant={restaurant} />)}
         </SimpleGrid>
       </VStack>
     </StatusHandler>

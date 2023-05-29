@@ -141,6 +141,7 @@ const userToPublicUser = (user: IPopulatedUserDocument): IPopulatedUser => {
   });
 
   return {
+    id: user._id,
     name: user.name,
     email: user.email,
     roles: user.roles as IRole[],

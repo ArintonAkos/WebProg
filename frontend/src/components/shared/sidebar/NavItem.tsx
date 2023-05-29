@@ -1,9 +1,8 @@
 import { Flex, FlexProps, Icon, Link, useColorModeValue } from '@chakra-ui/react';
 import { IconType } from 'react-icons';
-import React, { useState } from 'react';
+import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { LinkItemProps } from './LinkItems';
-import { FiChevronDown, FiChevronUp } from 'react-icons/all';
 import SubItem from './SubItem';
 
 interface NavItemProps extends FlexProps {

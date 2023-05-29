@@ -88,7 +88,7 @@ export const addReservation = async (req: Request, res: Response) => {
 export const getReservationsByRestaurantId = async (req: Request, res: Response) => {
   try {
     const restaurantId = req.params.restaurantId;
-    const reservations = await Reservation.find({ restaurantId });
+    const reservations = await Reservation.find({ restaurantId }).populate('userId').populate('restaurantId').exec();
 
     res.status(200).json({ reservations });
   } catch (error) {
@@ -100,12 +100,19 @@ export const getReservationsByRestaurantId = async (req: Request, res: Response)
 export const deleteReservation = async (req: Request, res: Response) => {
   try {
     const reservationId = req.params.id;
-    const reservation = await Reservation.findById(reservationId);
+    const reservation = await Reservation.findById(reservationId).populate('restaurantId').populate('userId').exec();
 
     if (!reservation) {
       return res.status(404).json({
         showToast: true,
         message: 'Reservation not found!',
+      });
+    }
+
+    if (req.user.id !== reservation.userId) {
+      return res.status(403).json({
+        showToast: true,
+        message: 'You do not have permission to delete this reservation',
       });
     }
 
@@ -128,7 +135,8 @@ export const deleteReservation = async (req: Request, res: Response) => {
 
 export const getAllReservations = async (req: Request, res: Response) => {
   try {
-    const reservations = await Reservation.find({});
+    const userId = req.user.id;
+    const reservations = await Reservation.find({ userId }).populate('userId').populate('restaurantId').exec();
 
     res.json({ reservations });
   } catch (error) {
@@ -136,10 +144,8 @@ export const getAllReservations = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error retrieving reservations' });
   }
 };
-
 export const getManagedReservations = async (req: Request, res: Response) => {
   try {
-    console.log('AAAAAAAAAAAAAAAAAAAAAAA');
     if (!req.user) {
       return res.status(401).json({
         showToast: true,
@@ -147,16 +153,13 @@ export const getManagedReservations = async (req: Request, res: Response) => {
       });
     }
 
-    console.log(req.user);
     const restaurantIds = req.user.adminRestaurants.map((adminRestaurant) => adminRestaurant._id);
-    console.log('Restaurant ids: ', restaurantIds);
     const reservations = await Reservation.find({
       restaurantId: { $in: restaurantIds },
     })
       .populate('restaurantId')
+      .populate('userId')
       .exec();
-
-    console.log('AAAAAAAAAAAAAAAAAAAAA', reservations);
 
     res.json({ reservations });
   } catch (error) {
@@ -178,10 +181,15 @@ export const updateReservation = async (req: Request, res: Response) => {
       });
     }
 
+    const populatedReservation = await Reservation.findById(reservation._id)
+      .populate('userId')
+      .populate('restaurantId')
+      .exec();
+
     res.status(200).json({
       showToast: true,
       message: 'Reservation updated successfully',
-      reservation,
+      reservation: populatedReservation,
     });
   } catch (error) {
     console.error(error);

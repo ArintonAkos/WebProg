@@ -1,6 +1,6 @@
 import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
 import { CreateReservationProps } from '../components/pages/reservation/ReservationForm.data';
-import Reservation, { PopulatedReservation } from '../models/reservation';
+import Reservation from '../models/reservation';
 import createAuthClient from '../services/createAuthClient';
 import BaseResponse from '../types/BaseResponse';
 
@@ -35,7 +35,7 @@ export type UpdateReservationData = {
 } & BaseResponse;
 
 export type GetManagedReservationsData = {
-  reservations: PopulatedReservation[];
+  reservations: Reservation[];
 } & BaseResponse;
 
 export type ChangeReservationStatusData = {

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Box, Heading, IconButton, VStack } from '@chakra-ui/react';
 import { createColumnHelper } from '@tanstack/react-table';
 import { DataTable } from '../../components/shared/table/DataTable';
-import Reservation, { PopulatedReservation } from '../../models/reservation';
+import Reservation from '../../models/reservation';
 import StatusHandler from '../../components/shared/StatusHandler';
 import useStateHandling from '../../hooks/useStateHandling';
 import { changeReservationStatus, getManagedReservations } from '../../actions/reservationActions';
@@ -12,20 +12,20 @@ import { RootState } from '../../store';
 import { useSelector } from 'react-redux';
 import { CheckIcon, CloseIcon, DeleteIcon } from '@chakra-ui/icons';
 
-const columnHelper = createColumnHelper<PopulatedReservation>();
+const columnHelper = createColumnHelper<Reservation>();
 
 const ManageReservations: React.FC = () => {
   useStateHandling('reservation');
 
   const { status, error } = useStateHandling('reservation');
   const dispatch = useAppDispatch();
-  const reservations = useSelector((state: RootState) => state.reservation.populatedReservations);
+  const reservations = useSelector((state: RootState) => state.reservation.reservations);
 
   useEffect(() => {
     dispatch(getManagedReservations());
   }, []);
 
-  const handleAccept = (reservation: PopulatedReservation) => {
+  const handleAccept = (reservation: Reservation) => {
     dispatch(
       changeReservationStatus({
         id: reservation._id,
@@ -36,7 +36,7 @@ const ManageReservations: React.FC = () => {
     );
   };
 
-  const handleReject = (reservation: PopulatedReservation) => {
+  const handleReject = (reservation: Reservation) => {
     dispatch(
       changeReservationStatus({
         id: reservation._id,

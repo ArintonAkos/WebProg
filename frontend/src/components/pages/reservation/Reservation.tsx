@@ -20,7 +20,7 @@ const Reservation: React.FC<ReservationProps> = ({ reservation }) => {
       <Text fontWeight="bold" fontSize="xl">
         Reservation for: {reservation.name}
       </Text>
-      <Text fontSize="md">Restaurant ID: {reservation.restaurantId}</Text>
+      <Text fontSize="md">Restaurant ID: {reservation.restaurantId.name}</Text>
       <Text fontSize="md">Time: {new Date(reservation.time).toLocaleString()}</Text>
       <Text fontSize="md">Number of Guests: {reservation.numberOfGuests}</Text>
       <Text fontSize="md">Contact Info: {reservation.contactInfo}</Text>
