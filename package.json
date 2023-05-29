@@ -2,7 +2,6 @@
   "name": "webprog-lab",
   "version": "1.0.0",
   "devDependencies": {
-    "@types/node": "^18.15.13",
     "eslint": "8.37.0",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-config-prettier": "8.8.0",
@@ -10,15 +9,6 @@
     "eslint-plugin-prettier": "4.2.1",
     "prettier": "2.8.7",
     "typescript": "^5.0.4"
-  },
-  "dependencies": {
-    "@casl/ability": "^6.5.0",
-    "@chakra-ui/icons": "^2.0.18",
-    "@chakra-ui/react": "^2.5.5",
-    "@emotion/react": "^11.10.6",
-    "@emotion/styled": "^11.10.6",
-    "framer-motion": "^10.12.4",
-    "redux-persist": "^6.0.0"
   },
   "scripts": {
     "frontend": "npm start --prefix frontend/",

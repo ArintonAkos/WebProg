@@ -1,4 +1,4 @@
-import { model, PopulatedDoc, Schema, Types, Document } from 'mongoose';
+import { Document, model, PopulatedDoc, Schema, Types } from 'mongoose';
 import { IPermission } from './permission';
 
 export interface IRole {

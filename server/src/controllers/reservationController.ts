@@ -124,7 +124,7 @@ export const deleteReservation = async (req: Request, res: Response) => {
     res.status(200).json({
       showToast: true,
       message: 'Reservation deleted successfully',
-      type: 'warning',
+      type: 'success',
       id: reservationId,
     });
   } catch (error) {
@@ -156,7 +156,7 @@ export const getManagedReservations = async (req: Request, res: Response) => {
       });
     }
 
-    const restaurantIds = req.user.adminRestaurants.map((adminRestaurant) => adminRestaurant._id);
+    const restaurantIds = (req.user.adminRestaurants ?? []).map((adminRestaurant) => adminRestaurant._id);
     const reservations = await Reservation.find({
       restaurantId: { $in: restaurantIds },
     })

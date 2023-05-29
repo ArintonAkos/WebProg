@@ -1,4 +1,4 @@
-import { Schema, model, Types } from 'mongoose';
+import { model, Schema, Types } from 'mongoose';
 
 export interface IRestaurant {
   _id?: Types.ObjectId;

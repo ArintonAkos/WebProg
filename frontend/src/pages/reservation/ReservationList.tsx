@@ -14,7 +14,7 @@ const ReservationsList = () => {
   const user = useSelector((state: RootState) => state.auth.userData.user);
   const dispatch = useAppDispatch();
   const reservations = useSelector((state: RootState) => state.reservation.reservations);
-  const { status, error } = useStateHandling('restaurant');
+  const { status, error } = useStateHandling('reservation');
 
   useEffect(() => {
     dispatch(fetchReservations());
