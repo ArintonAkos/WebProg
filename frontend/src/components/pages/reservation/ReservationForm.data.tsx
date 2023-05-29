@@ -1,11 +1,10 @@
 import { FormFieldProps } from '../../form';
 
 export interface CreateReservationProps {
-  name: string;
+  userId: string;
   date: string;
   time: string;
   numberOfGuests: number;
-  contactInfo: string;
 }
 
 export const fields: Array<FormFieldProps> = [

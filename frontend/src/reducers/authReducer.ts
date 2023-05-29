@@ -3,8 +3,6 @@ import { wrapSliceWithCommonFunctions } from '../hoc/reducerWrapper';
 import { mapAsyncThunkToGlobalAction } from '../actions';
 import { loginUser, registerUser } from '../actions/authAction';
 import User from '../models/user';
-import { AuthHeader } from '../services/createAuthClient';
-import { PayloadAction } from '@reduxjs/toolkit/src/createAction';
 
 export interface UserData {
   token?: string;

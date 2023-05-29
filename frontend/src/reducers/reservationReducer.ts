@@ -12,7 +12,7 @@ import {
   updateReservation,
   UpdateReservationData,
 } from '../actions/reservationActions';
-import { DefaultState, CustomRootState } from '../store/state';
+import { CustomRootState, DefaultState } from '../store/state';
 import { wrapSliceWithCommonFunctions } from '../hoc/reducerWrapper';
 import { mapAsyncThunkToGlobalAction } from '../actions';
 import Reservation from '../models/reservation';

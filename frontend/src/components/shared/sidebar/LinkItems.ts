@@ -1,6 +1,5 @@
 import { IconType } from 'react-icons';
 import { BiCustomize, BiLogIn, BiLogOut, BiPlus, BiRestaurant, BiTable, BiUserPlus } from 'react-icons/all';
-import { Link } from 'react-router-dom';
 
 export interface LinkItemProps {
   name: string;

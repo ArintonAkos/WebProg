@@ -1,4 +1,4 @@
-import { Middleware, Dispatch } from 'redux';
+import { Dispatch, Middleware } from 'redux';
 import { RootState } from '../index';
 import { Action } from '@reduxjs/toolkit';
 import { capitalizeFirstLetter, includesAny } from '../../utils/stringUtils';

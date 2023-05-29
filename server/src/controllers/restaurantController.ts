@@ -6,7 +6,7 @@ import Request from '../types/request.types';
 
 export const getRestaurants = async (req: Request, res: Response) => {
   try {
-    const restaurants = await Restaurant.find({}, '_id name city');
+    const restaurants = await Restaurant.find({}, '_id name city images openingHours');
 
     res.status(200).json({
       data: restaurants,

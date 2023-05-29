@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
 import {
   Accordion,
-  AccordionItem,
   AccordionButton,
+  AccordionItem,
   AccordionPanel,
-  Image,
   Box,
-  Text,
   Button,
   Icon,
+  Image,
   Skeleton,
+  Text,
+  VStack,
 } from '@chakra-ui/react';
 import Restaurant, { MinimalRestaurantData } from '../../models/restaurant';
 import { fetchRestaurant } from '../../actions/restaurantActions';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import { EditIcon } from '@chakra-ui/icons';
 import { Link, useNavigate } from 'react-router-dom';
+import Loading from '../../components/shared/Loading';
+import { API_BASE_URL } from '../../services/createAuthClient';
 
 interface RestaurantCardProps {
   restaurant: Restaurant | MinimalRestaurantData;
@@ -25,38 +28,54 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const handleDetailsClick = async () => {
-    setIsLoading(true);
-    await dispatch(fetchRestaurant(restaurant._id));
-    setIsLoading(false);
+    if (!('street' in restaurant)) {
+      setIsLoading(true);
+      await dispatch(fetchRestaurant(restaurant._id));
+      setIsLoading(false);
+    }
   };
 
   const handleEditClick = () => {
     navigate(`/restaurants/edit/${restaurant._id}`);
   };
 
+  const image = restaurant.images?.[0] ? `${API_BASE_URL}${restaurant.images[0]}` : '/img-not-available.png';
+
   return (
     <Box borderWidth="1px" borderRadius="lg" overflow="hidden">
-      <Skeleton isLoaded={!isLoading}>
-        <Image src={restaurant.images?.[0]} alt={restaurant.name} fallbackSrc="/img-not-available.png" />
+      <Skeleton isLoaded={imageLoaded}>
+        <Image src={image} alt="Image" objectFit="cover" h="400px" w="full" onLoad={() => setImageLoaded(true)} />
       </Skeleton>
 
       <Box p="6">
-        <Box display="flex" alignItems="baseline">
+        <Box display="flex" alignItems="baseline" flexDirection="column">
           <Box
             color="gray.500"
             fontWeight="semibold"
             letterSpacing="wide"
-            fontSize="xs"
+            fontSize="lg"
             textTransform="uppercase"
             ml="2"
           >
             <Link to={`/restaurants/${restaurant._id}`}>{restaurant.name}</Link>
           </Box>
-          <Button size="sm" colorScheme="blue" onClick={handleEditClick} leftIcon={<Icon as={EditIcon} />}>
-            Edit
-          </Button>
+          <VStack alignItems="start">
+            <Text>City: {restaurant.city}</Text>
+            <Text>Opening Hours: {restaurant.openingHours}</Text>
+
+            <Button
+              size="sm"
+              width="100%"
+              colorScheme="blue"
+              onClick={handleEditClick}
+              leftIcon={<Icon as={EditIcon} />}
+            >
+              Edit
+            </Button>
+          </VStack>
         </Box>
       </Box>
 
@@ -64,7 +83,8 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) => {
         <AccordionItem>
           <AccordionButton onClick={handleDetailsClick}>{isLoading ? 'Loading...' : 'More Details'}</AccordionButton>
           <AccordionPanel>
-            {'street' in restaurant && (
+            {isLoading && <Loading />}
+            {!isLoading && 'street' in restaurant && (
               <>
                 <Text>City: {restaurant.city}</Text>
                 <Text>Street: {restaurant.street}</Text>

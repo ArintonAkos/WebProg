@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, AlertIcon, AlertTitle, AlertDescription, Box } from '@chakra-ui/react';
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Box } from '@chakra-ui/react';
 
 const Info: React.FC<{ title: string; description: string }> = ({ title, description }) => {
   return (

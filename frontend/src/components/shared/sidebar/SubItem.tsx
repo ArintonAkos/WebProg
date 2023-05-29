@@ -1,5 +1,4 @@
 import { Flex, Icon, Link, useColorModeValue } from '@chakra-ui/react';
-import { IconType } from 'react-icons';
 import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { LinkItemProps } from './LinkItems';

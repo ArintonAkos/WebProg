@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  Heading,
-  VStack,
-  Text,
-  Flex,
   Box,
-  ButtonGroup,
   Button,
-  useBreakpointValue,
+  ButtonGroup,
+  Flex,
+  Heading,
   ResponsiveValue,
+  Text,
+  useBreakpointValue,
+  VStack,
 } from '@chakra-ui/react';
 import useStateHandling from '../../hooks/useStateHandling';
 import StatusHandler from '../../components/shared/StatusHandler';

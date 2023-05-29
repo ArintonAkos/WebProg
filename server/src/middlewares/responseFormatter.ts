@@ -5,7 +5,6 @@ const responseFormatter = (req: Request, res: Response, next: NextFunction) => {
   const originalJson = res.json;
 
   res.json = function (data) {
-    console.log(data);
     if (!data?.type) {
       if (Math.floor(res.statusCode / 100) === 2) {
         data.type = 'success';
@@ -14,7 +13,6 @@ const responseFormatter = (req: Request, res: Response, next: NextFunction) => {
       }
     }
 
-    console.log(data);
     return originalJson.call(this, data);
   };
 

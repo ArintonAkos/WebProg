@@ -85,7 +85,7 @@ const getGuest = async (): Promise<IPopulatedUser> => {
   const guestPermissions = await PermissionRepository.getPermissionsForRole('Guest');
 
   return {
-    id: new Types.ObjectId(''),
+    id: new Types.ObjectId(),
     name: 'Guest',
     email: '',
     roles: guestRole ? [guestRole] : [],
@@ -102,7 +102,10 @@ const getUser = async (userId?: string): Promise<IPopulatedUser | ErrorMessage> 
   }
 
   if (isPopulatedUser(user)) {
-    return user;
+    return {
+      ...user,
+      id: new Types.ObjectId(user._id),
+    };
   } else {
     return new ErrorMessage(500, { error: 'User is not populated.' });
   }

@@ -30,17 +30,17 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
   useEffect(() => {
     if (users.length) {
       setFormFields((prev) => {
-        const nameField = prev.find((field) => field.name === 'userId')!;
+        const userIdField = prev.find((field) => field.name === 'userId')!;
         const otherFields = prev.filter((field) => field.name !== 'userId');
 
-        if (nameField) {
-          nameField.options = users.map((user) => ({ label: user.name, value: user._id }));
+        if (userIdField) {
+          userIdField.options = users.map((user) => ({ label: user.name, value: user._id }));
 
-          if (nameField.options?.[0]) {
-            nameField.value = nameField.options[0].value;
+          if (userIdField.options?.[0]) {
+            userIdField.value = userIdField.options[0].value;
           }
 
-          return [nameField, ...otherFields];
+          return [userIdField, ...otherFields];
         }
 
         return otherFields;

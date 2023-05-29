@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, chakra } from '@chakra-ui/react';
+import { chakra, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 import {
-  useReactTable,
+  ColumnDef,
   flexRender,
   getCoreRowModel,
-  ColumnDef,
-  SortingState,
   getSortedRowModel,
+  SortingState,
+  useReactTable,
 } from '@tanstack/react-table';
 
 export type DataTableProps<Data extends object> = {

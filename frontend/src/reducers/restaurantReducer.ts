@@ -5,7 +5,7 @@ import {
   fetchRestaurants,
   uploadImages,
 } from '../actions/restaurantActions';
-import { DefaultState, CustomRootState } from '../store/state';
+import { CustomRootState, DefaultState } from '../store/state';
 import { mapAsyncThunkToGlobalAction } from '../actions';
 import { wrapSliceWithCommonFunctions } from '../hoc/reducerWrapper';
 import Restaurant, { MinimalRestaurantData } from '../models/restaurant';
@@ -50,7 +50,7 @@ const restaurantSlice = wrapSliceWithCommonFunctions({
     },
   },
   extraReducers: (builder) => {
-    mapAsyncThunkToGlobalAction(builder, fetchRestaurants, {
+    mapAsyncThunkToGlobalAction<RestaurantStateWithRootState, any, any>(builder, fetchRestaurants, {
       pending: (state) => {
         state.status = 'loading';
         state.restaurants = [];

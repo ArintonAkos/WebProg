@@ -76,7 +76,7 @@ export const deleteReservation: AsyncThunk<DeleteReservationData, DeleteReservat
 >('reservation/delete', async ({ id }, thunkAPI) => {
   const { deleteRequest } = createAuthClient(thunkAPI);
 
-  return (await deleteRequest(`/api/reservations/${id}`)) as DeleteReservationData;
+  return (await deleteRequest(`reservation/${id}`)) as DeleteReservationData;
 });
 
 export const updateReservation: AsyncThunk<UpdateReservationData, UpdateReservationArgs, {}> = createAsyncThunk<
@@ -105,7 +105,6 @@ export const changeReservationStatus: AsyncThunk<ChangeReservationStatusData, Ch
 
       const response = await put(`reservation/${id}`, data);
 
-      console.log(response);
       return response as ChangeReservationStatusData;
     },
   );

@@ -109,7 +109,10 @@ export const deleteReservation = async (req: Request, res: Response) => {
       });
     }
 
-    if (req.user.id !== reservation.userId) {
+    const userId = req.user.id.toString();
+    const reservationUserId = reservation.userId._id.toString();
+
+    if (userId !== reservationUserId) {
       return res.status(403).json({
         showToast: true,
         message: 'You do not have permission to delete this reservation',

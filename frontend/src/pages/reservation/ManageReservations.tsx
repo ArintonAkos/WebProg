@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useMemo } from 'react';
 import { Box, Heading, IconButton, VStack } from '@chakra-ui/react';
 import { createColumnHelper } from '@tanstack/react-table';
 import { DataTable } from '../../components/shared/table/DataTable';
@@ -6,11 +7,10 @@ import Reservation from '../../models/reservation';
 import StatusHandler from '../../components/shared/StatusHandler';
 import useStateHandling from '../../hooks/useStateHandling';
 import { changeReservationStatus, getManagedReservations } from '../../actions/reservationActions';
-import { useEffect, useMemo } from 'react';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import { RootState } from '../../store';
 import { useSelector } from 'react-redux';
-import { CheckIcon, CloseIcon, DeleteIcon } from '@chakra-ui/icons';
+import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
 
 const columnHelper = createColumnHelper<Reservation>();
 
@@ -23,29 +23,35 @@ const ManageReservations: React.FC = () => {
 
   useEffect(() => {
     dispatch(getManagedReservations());
-  }, []);
+  }, [dispatch]);
 
-  const handleAccept = (reservation: Reservation) => {
-    dispatch(
-      changeReservationStatus({
-        id: reservation._id,
-        data: {
-          status: 'accepted',
-        },
-      }),
-    );
-  };
+  const handleAccept = useMemo(
+    () => (reservation: Reservation) => {
+      dispatch(
+        changeReservationStatus({
+          id: reservation._id,
+          data: {
+            status: 'accepted',
+          },
+        }),
+      );
+    },
+    [dispatch],
+  );
 
-  const handleReject = (reservation: Reservation) => {
-    dispatch(
-      changeReservationStatus({
-        id: reservation._id,
-        data: {
-          status: 'rejected',
-        },
-      }),
-    );
-  };
+  const handleReject = useMemo(
+    () => (reservation: Reservation) => {
+      dispatch(
+        changeReservationStatus({
+          id: reservation._id,
+          data: {
+            status: 'rejected',
+          },
+        }),
+      );
+    },
+    [dispatch],
+  );
 
   const columns = useMemo(
     () => [
@@ -79,7 +85,7 @@ const ManageReservations: React.FC = () => {
         ),
       }),
     ],
-    [],
+    [handleAccept, handleReject],
   );
 
   return (
