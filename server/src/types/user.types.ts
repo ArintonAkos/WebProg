@@ -8,6 +8,7 @@ export interface IUser {
   _id?: Types.ObjectId;
   name: string;
   email: string;
+  phone: string;
   password: string;
   roles: Types.ObjectId[];
   adminRestaurants: Types.ObjectId[];

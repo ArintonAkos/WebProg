@@ -8,9 +8,10 @@ import { IRole } from '../models/role';
 import { IPopulatedUser, IPopulatedUserDocument } from '../types/user.types';
 import { IPermission } from '../models/permission';
 import RoleRepository from '../redis/repositories/RoleRepository';
+import { RegisterUserRequest } from '../requests/authRequestTypes';
 
-export const register = async (req: Request, res: Response) => {
-  const { name, email, password, confirmPassword } = req.body;
+export const register = async (req: RegisterUserRequest, res: Response) => {
+  const { name, email, password, confirmPassword, phone } = req.body;
 
   if (password.length < 8) {
     return res.status(400).json({ message: 'Password must be at least 8 characters long', showToast: true });
@@ -33,6 +34,7 @@ export const register = async (req: Request, res: Response) => {
     user = new User({
       name,
       email,
+      phone,
       password: passwordHash,
       roles: [userRole],
     });

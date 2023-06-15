@@ -4,10 +4,11 @@ import { validateReservationTime, validateStartTime } from '../services/reservat
 import Restaurant from '../models/restaurant';
 import User from '../models/user';
 import Request from '../types/request.types';
+import { AddReservationRequest } from '../requests/reservationRequestTypes';
 
-export const addReservation = async (req: Request, res: Response) => {
+export const addReservation = async (req: AddReservationRequest, res: Response) => {
   try {
-    const { userId, date, time, numberOfGuests } = req.body;
+    const { email, phone, date, time, tableIds, numberOfGuests } = req.body;
     const restaurantId = req.params.restaurantId;
 
     const reservationStartTime = new Date(`${date}T${time}`);
@@ -29,31 +30,6 @@ export const addReservation = async (req: Request, res: Response) => {
       });
     }
 
-    if (!(await User.findById(userId))) {
-      return res.status(404).json({
-        showToast: true,
-        message: 'User not found!',
-      });
-    }
-
-    const existingReservation = await Reservation.findOne({
-      restaurantId,
-      $or: [
-        { time: { $gte: reservationStartTime, $lt: reservationEndTime } },
-        {
-          time: { $lt: reservationStartTime },
-          $expr: { $gt: [{ $add: ['$time', 30 * 60 * 1000] }, reservationStartTime] },
-        },
-      ],
-    });
-
-    if (existingReservation) {
-      return res.status(400).json({
-        showToast: true,
-        message: 'There is already a reservation for this restaurant at this time.',
-      });
-    }
-
     if (!(await validateReservationTime(reservationStartTime, reservationEndTime, restaurantId))) {
       return res.status(401).json({
         showToast: true,
@@ -62,11 +38,41 @@ export const addReservation = async (req: Request, res: Response) => {
       });
     }
 
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        showToast: true,
+        message: 'User not found!',
+      });
+    }
+
+    for (let i = 0; i < tableIds.length; i++) {
+      const existingTableReservation = await Reservation.findOne({
+        restaurantId,
+        tables: { $in: [tableIds[i]] },
+        $or: [
+          { time: { $gte: reservationStartTime, $lt: reservationEndTime } },
+          {
+            time: { $lt: reservationStartTime },
+            $expr: { $gt: [{ $add: ['$time', 30 * 60 * 1000] }, reservationStartTime] },
+          },
+        ],
+      });
+
+      if (existingTableReservation) {
+        return res.status(400).json({
+          showToast: true,
+          message: `Table ${tableIds[i]} is already reserved for this time interval.`,
+        });
+      }
+    }
+
     const reservation = new Reservation({
-      userId,
-      time: reservationStartTime,
-      numberOfGuests,
+      userId: user.id,
       restaurantId,
+      time: reservationStartTime,
+      numberOfGuests: numberOfGuests,
+      tables: tableIds,
     });
 
     await reservation.save();
