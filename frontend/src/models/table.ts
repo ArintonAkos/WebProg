@@ -1,6 +1,6 @@
 import Restaurant from './restaurant';
 
-interface BaseTable {
+export interface BaseTable {
   _id: string;
   number: number;
   seats: number;

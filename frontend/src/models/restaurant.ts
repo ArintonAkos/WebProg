@@ -1,12 +1,15 @@
+import Table from './table';
+
 interface Restaurant {
+  _id: string;
   name: string;
   phone: string;
   openingHours: string;
   city: string;
   street: string;
   number: number;
+  tables: Table[];
   images?: string[];
-  _id?: string;
 }
 
 export interface MinimalRestaurantData {

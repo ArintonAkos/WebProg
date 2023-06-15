@@ -4,10 +4,11 @@ import { Box, Button, Flex, useBreakpointValue } from '@chakra-ui/react';
 interface TableProps {
   id: string;
   reserved: boolean;
+  selected: boolean;
   onClick: (tableId: string) => void;
 }
 
-const Table: React.FC<TableProps> = ({ id, reserved, onClick }) => {
+const Table: React.FC<TableProps> = ({ id, reserved, selected, onClick }) => {
   const handleClick: MouseEventHandler<HTMLButtonElement> = () => {
     onClick(id);
   };
@@ -19,7 +20,7 @@ const Table: React.FC<TableProps> = ({ id, reserved, onClick }) => {
       <Button
         width={size}
         height={size}
-        bg={reserved ? 'red.500' : 'green.500'}
+        bg={reserved ? 'red.500' : selected ? 'gray.500' : 'green.500'}
         color="white"
         onClick={handleClick}
         isDisabled={reserved}

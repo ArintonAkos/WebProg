@@ -22,6 +22,7 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
   const methods = useForm<ReservationFormFields>({
     resolver: joiResolver(createReservationSchema),
   });
+  const tables = useSelector((state: RootState) => state.restaurant.restaurant.details?.tables ?? []);
 
   const dateValue = methods.watch('date');
   const timeValue = methods.watch('time');
@@ -69,6 +70,7 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
   }, [data, navigate, dispatch]);
 
   const handleTableClick = (tableId: string) => {
+    console.log(tableId);
     setTableIds((prev) => {
       const index = prev.indexOf(tableId);
 
@@ -87,7 +89,7 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
         element: (
           <>
             <FormLabel>Table</FormLabel>
-            <Tables onTableClick={handleTableClick} />
+            <Tables onTableClick={handleTableClick} tables={tables} selectedTableIds={tableIds} />
           </>
         ),
       },

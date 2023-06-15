@@ -13,12 +13,10 @@ import User from '../models/user';
 
 export interface RestaurantPageData {
   details?: Restaurant;
-  users: Array<User>;
 }
 
 const InitialRestaurantPageData: RestaurantPageData = {
   details: undefined,
-  users: [],
 };
 
 export interface RestaurantState {

@@ -46,7 +46,6 @@ type FormProps = {
 };
 
 const Form: React.FC<FormProps> = ({ fields, onSubmit, submitText, portals, methods }) => {
-  // const resolver = validationSchema ? joiResolver(validationSchema) : undefined;
   const {
     handleSubmit,
     control,
