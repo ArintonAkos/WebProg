@@ -31,6 +31,7 @@ export type FormFieldProps = {
   value?: string;
   error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;
   autoComplete?: string;
+  disabled?: boolean;
 };
 
 type Portal = {

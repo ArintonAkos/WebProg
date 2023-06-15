@@ -73,6 +73,8 @@ export const addReservation = async (req: AddReservationRequest, res: Response) 
       time: reservationStartTime,
       numberOfGuests: numberOfGuests,
       tables: tableIds,
+      phone,
+      email,
     });
 
     await reservation.save();
@@ -116,7 +118,7 @@ export const deleteReservation = async (req: Request, res: Response) => {
     }
 
     const userId = req.user.id.toString();
-    const reservationUserId = reservation.userId._id.toString();
+    const reservationUserId = reservation.user._id.toString();
 
     if (userId !== reservationUserId) {
       return res.status(403).json({

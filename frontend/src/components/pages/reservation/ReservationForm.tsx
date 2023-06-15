@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Form from '../../form';
 import useAppDispatch from '../../../hooks/useAppDispatch';
 import { createReservation } from '../../../actions/reservationActions';
@@ -7,16 +7,25 @@ import { RootState } from '../../../store';
 import { useNavigate } from 'react-router-dom';
 import { clearData } from '../../../reducers/reservationReducer';
 import useStateHandling from '../../../hooks/useStateHandling';
-import User from '../../../models/user';
-import { CreateReservationProps, fields } from './ReservationForm.data';
+import { CreateReservationProps, createFields } from './ReservationForm.data';
+import { Text } from '@chakra-ui/react';
+import Tables from './Tables';
 
 const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
   useStateHandling('reservation');
-  const users: Array<User> = useSelector((state: RootState) => state.restaurant.restaurant.users);
   const dispatch = useAppDispatch();
   const data = useSelector((state: RootState) => state.reservation.data);
+  const user = useSelector((state: RootState) => state.auth.userData.user);
+  const formFields = useMemo(() => {
+    return createFields({
+      isAuthenticated: !!user,
+      email: user?.email,
+      phone: user?.phone,
+    });
+  }, [user]);
+
+  const [tableIds, setTableIds] = useState<string[]>([]);
   const navigate = useNavigate();
-  const [formFields, setFormFields] = useState(fields);
 
   const handleSubmit = async (formData: CreateReservationProps) => {
     dispatch(
@@ -28,34 +37,35 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
   };
 
   useEffect(() => {
-    if (users.length) {
-      setFormFields((prev) => {
-        const userIdField = prev.find((field) => field.name === 'userId')!;
-        const otherFields = prev.filter((field) => field.name !== 'userId');
-
-        if (userIdField) {
-          userIdField.options = users.map((user) => ({ label: user.name, value: user._id }));
-
-          if (userIdField.options?.[0]) {
-            userIdField.value = userIdField.options[0].value;
-          }
-
-          return [userIdField, ...otherFields];
-        }
-
-        return otherFields;
-      });
-    }
-  }, [users]);
-
-  useEffect(() => {
     if (data) {
       dispatch(clearData());
       navigate('/');
     }
   }, [data, navigate, dispatch]);
 
-  return <Form fields={formFields} onSubmit={handleSubmit} submitText="Make Reservation" />;
+  const handleTableClick = (tableId: string) => {
+    // setTableIds([tableId]);
+  };
+
+  return (
+    <>
+      <Text fontSize="2xl" fontWeight="bold" mb={4}>
+        Make a Reservation
+      </Text>
+      <Form
+        fields={formFields}
+        onSubmit={handleSubmit}
+        submitText="Make Reservation"
+        portals={[
+          {
+            index: 0,
+            element: <Tables onTableClick={handleTableClick} />,
+          },
+        ]}
+      />
+      ;
+    </>
+  );
 };
 
 export default ReservationForm;

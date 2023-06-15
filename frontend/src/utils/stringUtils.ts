@@ -14,7 +14,7 @@ export const includesAny = (input: string | undefined, search: string[]): boolea
   return search.some((s) => input.includes(s));
 };
 
-export const splitByCapital = (input: string | undefined): Array<String> => {
+export const splitByCapital = (input: string | undefined): Array<string> => {
   if (!input || input.length === 0) {
     return [];
   }

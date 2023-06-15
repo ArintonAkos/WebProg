@@ -55,7 +55,7 @@ const ManageReservations: React.FC = () => {
 
   const columns = useMemo(
     () => [
-      columnHelper.accessor('restaurantId.name', {
+      columnHelper.accessor('restaurant.name', {
         cell: (info) => info.getValue(),
         header: 'Restaurant',
       }),
@@ -67,9 +67,13 @@ const ManageReservations: React.FC = () => {
         cell: (info) => info.getValue(),
         header: 'Number of Guests',
       }),
-      columnHelper.accessor('contactInfo', {
+      columnHelper.accessor('email', {
         cell: (info) => info.getValue(),
-        header: 'Contact Info',
+        header: 'Email',
+      }),
+      columnHelper.accessor('phone', {
+        cell: (info) => info.getValue(),
+        header: 'Phone',
       }),
       columnHelper.accessor('status', {
         cell: (info) => info.getValue(),

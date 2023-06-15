@@ -1,18 +1,21 @@
 import Restaurant from './restaurant';
 import User from './user';
+import Table from './table';
 
 interface BaseReservation {
   _id: string;
   name: string;
   time: Date;
   numberOfGuests: number;
-  contactInfo: string;
+  phone: string;
+  email: string;
   status: 'pending' | 'accepted' | 'rejected';
 }
 
 interface Reservation extends BaseReservation {
-  userId: User;
-  restaurantId: Restaurant;
+  user: User;
+  restaurant: Restaurant;
+  tables: Array<Table>;
 }
 
 export default Reservation;

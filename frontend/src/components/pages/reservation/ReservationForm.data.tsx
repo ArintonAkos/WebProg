@@ -1,45 +1,54 @@
 import { FormFieldProps } from '../../form';
 
 export interface CreateReservationProps {
-  userId: string;
+  email: string;
+  name: string;
   date: string;
   time: string;
-  numberOfGuests: number;
+  tableIds: Array<string>;
 }
 
-export const fields: Array<FormFieldProps> = [
-  {
-    name: 'userId',
-    label: 'Contact Person',
-    type: 'select',
-    element: 'select',
-    required: true,
-    options: [],
-  },
-  {
-    name: 'date',
-    label: 'Date',
-    type: 'date',
-    required: true,
-  },
-  {
-    name: 'time',
-    label: 'Time',
-    type: 'time',
-    required: true,
-  },
-  {
-    name: 'numberOfGuests',
-    label: 'Number of Guests',
-    type: 'select',
-    element: 'select',
-    options: [
-      { label: '1', value: '1' },
-      { label: '2', value: '2' },
-      { label: '3', value: '3' },
-      { label: '4', value: '4' },
-    ],
-    value: '1',
-    required: true,
-  },
-];
+export type CreateFieldsProps = {
+  isAuthenticated: boolean;
+  email?: string;
+  phone?: string;
+};
+
+export const createFields = ({ isAuthenticated, email, phone }: CreateFieldsProps): FormFieldProps[] => {
+  return [
+    {
+      name: 'email',
+      label: 'Email',
+      type: 'text',
+      value: email,
+      required: true,
+      disabled: isAuthenticated,
+    },
+    {
+      name: 'Phone',
+      label: 'Phone',
+      type: 'text',
+      value: phone,
+      required: true,
+    },
+    {
+      name: 'date',
+      label: 'Date',
+      type: 'date',
+      required: true,
+    },
+    {
+      name: 'time',
+      label: 'Time',
+      type: 'time',
+      required: true,
+    },
+    {
+      name: 'numberOfGuests',
+      label: 'Number of Guests',
+      type: 'text',
+      required: true,
+      value: '1',
+    },
+  ];
+};

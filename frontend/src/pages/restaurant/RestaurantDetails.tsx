@@ -112,9 +112,6 @@ const RestaurantDetails: React.FC = () => {
         </Flex>
         <Flex w="100%" direction={flexDirection} justifyContent="space-between" alignItems="flex-start">
           <Flex direction="column" flex={1} width="100%">
-            <Text fontSize="2xl" fontWeight="bold" mb={4}>
-              Make a Reservation
-            </Text>
             <ReservationForm id={id!} />
           </Flex>
           <Flex pl={leftPadding} direction="column" mt={topMargin} flex={1} width="100%">

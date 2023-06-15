@@ -2,9 +2,10 @@ import { Role } from './role';
 import { Permission } from './permission';
 
 interface User {
+  _id: string;
   name: string;
   email: string;
-  _id: string;
+  phone: string;
   roles: Role[];
   permissions: Permission[];
 }
