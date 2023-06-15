@@ -4,6 +4,7 @@ import updateActionMiddleware from './middlewares/requestStatusMiddleware';
 import { PersistedState } from 'redux-persist/es/types';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import authenticationMiddleware from './middlewares/authenticationMiddleware';
 
 const persistConfig = {
   key: 'root',
