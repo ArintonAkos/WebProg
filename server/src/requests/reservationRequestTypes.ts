@@ -15,3 +15,16 @@ export interface AddReservationRequest extends Request {
     restaurantId: string;
   };
 }
+
+interface GetReservedTablesProps {
+  date: string;
+  time: string;
+  [key: string]: string;
+}
+
+export interface GetReservedTablesRequest extends Request {
+  query: GetReservedTablesProps;
+  params: {
+    restaurantId: string;
+  };
+}

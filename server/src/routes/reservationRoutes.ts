@@ -5,6 +5,7 @@ import {
   getAllReservations,
   getManagedReservations,
   getReservationsByRestaurantId,
+  getReservedTablesByRestaurantId,
   updateReservation,
 } from '../controllers/reservationController';
 import { Types } from 'mongoose';
@@ -22,6 +23,7 @@ const validateRestaurantId = (req, res, next) => {
 
 router.post('/:restaurantId', addReservation);
 router.get('/:restaurantId', validateRestaurantId, getReservationsByRestaurantId);
+router.get('/reserved-tables/:restaurantId', validateRestaurantId, getReservedTablesByRestaurantId);
 router.delete('/:id', deleteReservation);
 router.put('/:id', updateReservation);
 router.get('/', getAllReservations);

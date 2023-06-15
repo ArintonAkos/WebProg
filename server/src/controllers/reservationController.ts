@@ -4,7 +4,7 @@ import { validateReservationTime, validateStartTime } from '../services/reservat
 import Restaurant from '../models/restaurant';
 import User from '../models/user';
 import Request from '../types/request.types';
-import { AddReservationRequest } from '../requests/reservationRequestTypes';
+import { AddReservationRequest, GetReservedTablesRequest } from '../requests/reservationRequestTypes';
 
 export const addReservation = async (req: AddReservationRequest, res: Response) => {
   try {
@@ -206,5 +206,35 @@ export const updateReservation = async (req: Request, res: Response) => {
       showToast: true,
       message: 'Error updating reservation',
     });
+  }
+};
+
+export const getReservedTablesByRestaurantId = async (req: GetReservedTablesRequest, res: Response) => {
+  try {
+    const restaurantId = req.params.restaurantId;
+    const { date, time } = req.query;
+
+    const reservationStartTime = new Date(`${date}T${time}`);
+    const reservationEndTime = new Date(reservationStartTime.getTime() + 30 * 60 * 1000);
+
+    const reservations = await Reservation.find({
+      restaurantId,
+      $or: [
+        { time: { $gte: reservationStartTime, $lt: reservationEndTime } },
+        {
+          time: { $lt: reservationStartTime },
+          $expr: { $gt: [{ $add: ['$time', 30 * 60 * 1000] }, reservationStartTime] },
+        },
+      ],
+    })
+      .populate('tables')
+      .exec();
+
+    const reservedTables = reservations.flatMap((reservation) => reservation.tables);
+
+    res.status(200).json({ reservedTables });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error retrieving reserved tables' });
   }
 };
