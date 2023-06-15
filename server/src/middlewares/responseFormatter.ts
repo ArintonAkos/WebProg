@@ -13,6 +13,10 @@ const responseFormatter = (req: Request, res: Response, next: NextFunction) => {
       }
     }
 
+    if (req.newTokens) {
+      data.tokens = req.newTokens;
+    }
+
     return originalJson.call(this, data);
   };
 

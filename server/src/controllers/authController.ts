@@ -9,6 +9,7 @@ import { IPopulatedUser, IPopulatedUserDocument } from '../types/user.types';
 import { IPermission } from '../models/permission';
 import RoleRepository from '../redis/repositories/RoleRepository';
 import { RegisterUserRequest } from '../requests/authRequestTypes';
+import RefreshToken from '../models/refreshToken';
 
 export const register = async (req: RegisterUserRequest, res: Response) => {
   const { name, email, password, confirmPassword, phone } = req.body;
@@ -75,6 +76,9 @@ export const login = async (req: Request, res: Response) => {
         expiresIn: config.refreshTokenExpiry,
       });
 
+      const newRefreshToken = new RefreshToken({ user: user._id, token: refreshToken });
+      await newRefreshToken.save();
+
       const publicUser = userToPublicUser(user);
 
       res.json({ token, refreshToken, user: publicUser });
@@ -95,6 +99,11 @@ export const refreshToken = async (req: Request, res: Response) => {
 
   try {
     const decoded = jwt.verify(refreshToken, config.refreshTokenSecret) as any;
+
+    const storedRefreshToken = await RefreshToken.findOne({ token: refreshToken });
+    if (!storedRefreshToken) {
+      return res.status(403).send('Invalid refresh token');
+    }
 
     const user: IPopulatedUserDocument | undefined = await User.findOne({ name: decoded.name })
       .populate({
@@ -121,6 +130,9 @@ export const refreshToken = async (req: Request, res: Response) => {
         expiresIn: config.refreshTokenExpiry,
       },
     );
+
+    storedRefreshToken.token = newRefreshToken;
+    await storedRefreshToken.save();
 
     const publicUser = userToPublicUser(user as IPopulatedUserDocument);
 

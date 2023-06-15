@@ -53,6 +53,10 @@ const authentication = async (req: Request, res: Response, next: NextFunction) =
 
           req.headers.authorization = `Bearer ${newToken}`;
           req.headers['x-refresh-token'] = newRefreshToken;
+          req.newTokens = {
+            token: newToken,
+            refreshToken: newRefreshToken,
+          };
           req.user = user;
 
           next();

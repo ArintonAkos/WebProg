@@ -21,7 +21,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST'],
       },
-    }).concat(updateActionMiddleware) as any,
+    }).concat(updateActionMiddleware, authenticationMiddleware) as any,
 });
 
 export default store;
