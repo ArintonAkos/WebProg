@@ -7,7 +7,7 @@ import { RootState } from '../../../store';
 import { useNavigate } from 'react-router-dom';
 import { clearData } from '../../../reducers/reservationReducer';
 import useStateHandling from '../../../hooks/useStateHandling';
-import { CreateReservationProps, createFields } from './ReservationForm.data';
+import { CreateReservationProps, createFields, ReservationFormFields } from './ReservationForm.data';
 import { Text } from '@chakra-ui/react';
 import Tables from './Tables';
 
@@ -27,11 +27,14 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
   const [tableIds, setTableIds] = useState<string[]>([]);
   const navigate = useNavigate();
 
-  const handleSubmit = async (formData: CreateReservationProps) => {
+  const handleSubmit = async (formData: ReservationFormFields) => {
     dispatch(
       createReservation({
         id,
-        data: formData,
+        data: {
+          ...formData,
+          tableIds,
+        },
       }),
     );
   };

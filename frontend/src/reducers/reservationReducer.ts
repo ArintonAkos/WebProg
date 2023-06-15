@@ -7,6 +7,8 @@ import {
   DeleteReservationData,
   fetchReservations,
   FetchReservationsData,
+  fetchReservedTables,
+  FetchReservedTablesData,
   getManagedReservations,
   GetManagedReservationsData,
   updateReservation,
@@ -16,15 +18,18 @@ import { CustomRootState, DefaultState } from '../store/state';
 import { wrapSliceWithCommonFunctions } from '../hoc/reducerWrapper';
 import { mapAsyncThunkToGlobalAction } from '../actions';
 import Reservation from '../models/reservation';
+import Table from '../models/table';
 
 export interface ReservationState {
   reservations: Reservation[];
+  reservedTables: Table[];
   data: any;
 }
 
 const InitialState: ReservationState & CustomRootState = {
   ...DefaultState,
   reservations: [],
+  reservedTables: [],
   data: undefined,
 };
 
@@ -148,6 +153,23 @@ const reservationSlice = wrapSliceWithCommonFunctions({
         },
       },
     );
+
+    mapAsyncThunkToGlobalAction<ReservationStateWithRootState, FetchReservedTablesData>(builder, fetchReservedTables, {
+      pending: (state) => {
+        state.status = 'loading';
+        state.reservedTables = [];
+      },
+      fulfilled: (state, action) => {
+        state.status = 'succeeded';
+        state.requestStatus = action.requestStatus;
+        state.reservedTables = action.payload.reservedTables;
+      },
+      rejected: (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+        state.requestStatus = action.requestStatus;
+      },
+    });
   },
 });
 

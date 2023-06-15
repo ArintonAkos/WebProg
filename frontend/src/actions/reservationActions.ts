@@ -3,6 +3,7 @@ import { CreateReservationProps } from '../components/pages/reservation/Reservat
 import Reservation from '../models/reservation';
 import createAuthClient from '../services/createAuthClient';
 import BaseResponse from '../types/BaseResponse';
+import Table from '../models/table';
 
 type CreateReservationArgs = {
   id: string;
@@ -51,6 +52,16 @@ export type ChangeReservationStatusArgs = {
     status: 'accepted' | 'rejected';
   };
 };
+
+export type FetchReservedTablesArgs = {
+  restaurantId: string;
+  date: string;
+  time: string;
+};
+
+export type FetchReservedTablesData = {
+  reservedTables: Table[];
+} & BaseResponse;
 
 export const fetchReservations: AsyncThunk<FetchReservationsData, void, {}> = createAsyncThunk<any, void>(
   'reservations/getReservations',
@@ -108,3 +119,14 @@ export const changeReservationStatus: AsyncThunk<ChangeReservationStatusData, Ch
       return response as ChangeReservationStatusData;
     },
   );
+
+export const fetchReservedTables: AsyncThunk<FetchReservedTablesData, FetchReservedTablesArgs, {}> = createAsyncThunk<
+  FetchReservedTablesData,
+  FetchReservedTablesArgs
+>('reservation/fetchReservedTables', async ({ restaurantId, date, time }, thunkAPI) => {
+  const { get } = createAuthClient(thunkAPI);
+
+  return (await get(
+    `reservation/reserved-tables/${restaurantId}?date=${date}&time=${time}`,
+  )) as FetchReservedTablesData;
+});

@@ -14,6 +14,14 @@ export type CreateFieldsProps = {
   phone?: string;
 };
 
+export type ReservationFormFields = {
+  email: string;
+  name: string;
+  date: string;
+  time: string;
+  tableIds: Array<string>;
+};
+
 export const createFields = ({ isAuthenticated, email, phone }: CreateFieldsProps): FormFieldProps[] => {
   return [
     {
