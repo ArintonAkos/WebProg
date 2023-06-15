@@ -11,8 +11,12 @@ const authenticationMiddleware: Middleware<{}, RootState> =
     if (action.type.endsWith('/fulfilled')) {
       const payload: any = action.payload;
 
-      if (payload && payload.accessToken && payload.refreshToken) {
-        dispatch(updateTokens({ token: payload.accessToken, refreshToken: payload.refreshToken }));
+      if (payload?.data?.tokens) {
+        const { accessToken, refreshToken } = payload.data.tokens;
+
+        if (accessToken && refreshToken) {
+          dispatch(updateTokens({ token: accessToken, refreshToken }));
+        }
       }
     }
 
