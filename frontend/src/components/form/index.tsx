@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
-import { Control, FieldError, FieldErrorsImpl, Merge, useForm } from 'react-hook-form';
+import { Control, FieldError, FieldErrorsImpl, Merge, UseFormReturn } from 'react-hook-form';
 import { SelectOption } from './elements/Select';
 import FormField from './formField';
 import {
@@ -11,8 +11,6 @@ import {
   Stack,
   TextareaProps,
 } from '@chakra-ui/react';
-import Joi from 'joi';
-import { joiResolver } from '@hookform/resolvers/joi';
 
 export type WithControl = {
   control: Control;
@@ -28,7 +26,7 @@ export type FormFieldProps = {
   placeHolder?: string;
   settings?: InputProps | SelectProps | CheckboxProps | CheckboxGroupProps | TextareaProps;
   element?: string;
-  value?: string;
+  value?: any;
   error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;
   autoComplete?: string;
   disabled?: boolean;
@@ -42,21 +40,19 @@ type Portal = {
 type FormProps = {
   fields: FormFieldProps[];
   submitText?: string;
-  onSubmit: (data: any) => any;
+  onSubmit: (value: any) => void;
   portals?: Portal[];
-  validationSchema?: Joi.Schema;
+  methods: UseFormReturn<any>;
 };
 
-const Form: React.FC<FormProps> = ({ fields, onSubmit, submitText, portals, validationSchema }) => {
-  const resolver = validationSchema ? joiResolver(validationSchema) : undefined;
+const Form: React.FC<FormProps> = ({ fields, onSubmit, submitText, portals, methods }) => {
+  // const resolver = validationSchema ? joiResolver(validationSchema) : undefined;
   const {
     handleSubmit,
     control,
     setValue,
     formState: { errors },
-  } = useForm({
-    resolver: resolver,
-  });
+  } = methods;
 
   useEffect(() => {
     fields.forEach((field) => {
@@ -70,14 +66,16 @@ const Form: React.FC<FormProps> = ({ fields, onSubmit, submitText, portals, vali
 
   const getPortalElement = (index: number) => {
     const filteredPortals = portals?.filter((portal) => portal.index === index);
-    return filteredPortals?.map((portal) => portal.element);
+    return filteredPortals?.map((portal: Portal, i) =>
+      React.cloneElement(portal.element as any, { key: `portal-${index}-${i}` }),
+    );
   };
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
       <Stack spacing={4}>
         {fields.map((field, index) => (
-          <Fragment key={index}>
+          <Fragment key={`${field.name}-${index}`}>
             {getPortalElement(index)}
             <FormField
               control={control}
@@ -90,7 +88,6 @@ const Form: React.FC<FormProps> = ({ fields, onSubmit, submitText, portals, vali
               placeHolder={field.placeHolder}
               settings={field.settings}
               value={field.value}
-              key={field.name}
               element={field.element}
               error={errors[field.name]}
               autoComplete={field.autoComplete}

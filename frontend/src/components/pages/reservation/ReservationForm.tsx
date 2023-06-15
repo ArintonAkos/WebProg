@@ -6,23 +6,45 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../store';
 import { useNavigate } from 'react-router-dom';
 import { clearData } from '../../../reducers/reservationReducer';
+import { fetchReservedTables } from '../../../actions/reservationActions';
 import useStateHandling from '../../../hooks/useStateHandling';
-import { CreateReservationProps, createFields, ReservationFormFields } from './ReservationForm.data';
-import { Text } from '@chakra-ui/react';
+import { createFields, createReservationSchema, ReservationFormFields } from './ReservationForm.data';
+import { FormLabel, Text } from '@chakra-ui/react';
 import Tables from './Tables';
+import { useForm } from 'react-hook-form';
+import { joiResolver } from '@hookform/resolvers/joi';
 
 const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
   useStateHandling('reservation');
   const dispatch = useAppDispatch();
   const data = useSelector((state: RootState) => state.reservation.data);
   const user = useSelector((state: RootState) => state.auth.userData.user);
+  const methods = useForm<ReservationFormFields>({
+    resolver: joiResolver(createReservationSchema),
+  });
+
+  const dateValue = methods.watch('date');
+  const timeValue = methods.watch('time');
+
   const formFields = useMemo(() => {
+    const handleChange = () => {
+      dispatch(
+        fetchReservedTables({
+          restaurantId: id,
+          date: dateValue,
+          time: timeValue,
+        }),
+      );
+    };
+
     return createFields({
       isAuthenticated: !!user,
       email: user?.email,
       phone: user?.phone,
+      onTimeChange: handleChange,
+      onDateChange: handleChange,
     });
-  }, [user]);
+  }, [user, dispatch, dateValue, timeValue, id]);
 
   const [tableIds, setTableIds] = useState<string[]>([]);
   const navigate = useNavigate();
@@ -47,8 +69,31 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
   }, [data, navigate, dispatch]);
 
   const handleTableClick = (tableId: string) => {
-    // setTableIds([tableId]);
+    setTableIds((prev) => {
+      const index = prev.indexOf(tableId);
+
+      if (index > -1) {
+        return prev.filter((id) => id !== tableId);
+      }
+
+      return [...prev, tableId];
+    });
   };
+
+  const portals = useMemo(
+    () => [
+      {
+        index: 0,
+        element: (
+          <>
+            <FormLabel>Table</FormLabel>
+            <Tables onTableClick={handleTableClick} />
+          </>
+        ),
+      },
+    ],
+    [handleTableClick],
+  );
 
   return (
     <>
@@ -56,17 +101,12 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
         Make a Reservation
       </Text>
       <Form
+        methods={methods}
         fields={formFields}
         onSubmit={handleSubmit}
         submitText="Make Reservation"
-        portals={[
-          {
-            index: 0,
-            element: <Tables onTableClick={handleTableClick} />,
-          },
-        ]}
+        portals={portals}
       />
-      ;
     </>
   );
 };

@@ -13,6 +13,7 @@ import Form, { FormFieldProps } from '../../components/form';
 import { AddRestaurantFormData } from './AddRestaurantForm';
 import Restaurant from '../../models/restaurant';
 import { clearEditedRestaurantData } from '../../reducers/restaurantReducer';
+import { useForm } from 'react-hook-form';
 
 const fields: Array<FormFieldProps> = [
   {
@@ -69,6 +70,7 @@ const RestaurantEditPage: React.FC = () => {
   const showToast = useCustomToast();
   const [images, setImages] = useState<Array<File>>([]);
   const [formFields, setFormFields] = useState(fields);
+  const methods = useForm();
 
   useEffect(() => {
     dispatch(fetchRestaurant(id));
@@ -137,6 +139,7 @@ const RestaurantEditPage: React.FC = () => {
           Edit Restaurant
         </Text>
         <Form
+          methods={methods}
           fields={formFields}
           onSubmit={handleSubmit}
           portals={[

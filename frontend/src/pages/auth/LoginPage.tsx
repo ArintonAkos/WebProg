@@ -9,6 +9,8 @@ import { loginUser } from '../../actions/authAction';
 import { setIdleState } from '../../reducers/authReducer';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import { useForm } from 'react-hook-form';
+import { joiResolver } from '@hookform/resolvers/joi';
 
 const loginSchema = Joi.object({
   email: Joi.string()
@@ -41,6 +43,9 @@ const LoginPage: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.userData.user);
   const { status } = useStateHandling('auth');
   const dispatch = useAppDispatch();
+  const methods = useForm({
+    resolver: joiResolver(loginSchema),
+  });
 
   const onSubmit = (data: any) => {
     dispatch(loginUser(data));
@@ -62,7 +67,7 @@ const LoginPage: React.FC = () => {
       <Text fontSize="2xl" mb={5}>
         Login
       </Text>
-      <Form fields={loginFields} onSubmit={onSubmit} submitText="Login" validationSchema={loginSchema} />
+      <Form fields={loginFields} onSubmit={onSubmit} submitText="Login" methods={methods} />
     </Container>
   );
 };

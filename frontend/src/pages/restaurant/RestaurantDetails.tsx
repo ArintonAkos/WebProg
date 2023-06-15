@@ -110,17 +110,17 @@ const RestaurantDetails: React.FC = () => {
             {restaurant?.openingHours}
           </Text>
         </Flex>
-        <Flex w="100%" direction={flexDirection} justifyContent="space-between" alignItems="flex-start">
+        <Flex w="100%" justifyContent="space-between" alignItems="flex-start">
           <Flex direction="column" flex={1} width="100%">
             <ReservationForm id={id!} />
           </Flex>
-          <Flex pl={leftPadding} direction="column" mt={topMargin} flex={1} width="100%">
-            <Text fontSize="2xl" fontWeight="bold" mb={4}>
-              Upload Images
-            </Text>
-            <ImageUpload onUploadedFiles={handleImageUpload} files={files} />
-            <Form fields={[]} onSubmit={handleFormSubmit} />
-          </Flex>
+          {/*<Flex pl={leftPadding} direction="column" mt={topMargin} flex={1} width="100%">*/}
+          {/*  <Text fontSize="2xl" fontWeight="bold" mb={4}>*/}
+          {/*    Upload Images*/}
+          {/*  </Text>*/}
+          {/*  <ImageUpload onUploadedFiles={handleImageUpload} files={files} />*/}
+          {/*  <Form fields={[]} onSubmit={handleFormSubmit} />*/}
+          {/*</Flex>*/}
         </Flex>
       </VStack>
     </StatusHandler>

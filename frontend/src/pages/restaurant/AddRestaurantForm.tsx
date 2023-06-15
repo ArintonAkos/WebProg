@@ -5,6 +5,7 @@ import { createRestaurant } from '../../actions/restaurantActions';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import useStateHandling from '../../hooks/useStateHandling';
 import StatusHandler from '../../components/shared/StatusHandler';
+import { useForm } from 'react-hook-form';
 
 export type AddRestaurantFormData = {
   name: string;
@@ -64,6 +65,7 @@ const fields: Array<FormFieldProps> = [
 const AddRestaurantForm: React.FC = () => {
   const dispatch = useAppDispatch();
   const { status, error } = useStateHandling('restaurant');
+  const methods = useForm();
 
   const handleFormSubmit = (data: AddRestaurantFormData) => {
     dispatch(createRestaurant(data));
@@ -75,7 +77,7 @@ const AddRestaurantForm: React.FC = () => {
         <Text fontSize="2xl" mb={5}>
           Add Restaurant
         </Text>
-        <Form fields={fields} onSubmit={handleFormSubmit} submitText="Add Restaurant"></Form>
+        <Form fields={fields} onSubmit={handleFormSubmit} submitText="Add Restaurant" methods={methods} />
       </Container>
     </StatusHandler>
   );

@@ -9,6 +9,8 @@ import { registerUser } from '../../actions/authAction';
 import { setIdleState } from '../../reducers/authReducer';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import { useForm } from 'react-hook-form';
+import { joiResolver } from '@hookform/resolvers/joi';
 
 const registrationSchema = Joi.object({
   name: Joi.string().min(3).max(30).required(),
@@ -58,6 +60,9 @@ const registerFields: FormFieldProps[] = [
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.auth.userData.user);
+  const methods = useForm({
+    resolver: joiResolver(registrationSchema),
+  });
 
   if (user) {
     navigate('/');
@@ -86,7 +91,7 @@ const RegisterPage: React.FC = () => {
       <Text fontSize="2xl" mb={5}>
         Registration
       </Text>
-      <Form fields={registerFields} onSubmit={onSubmit} submitText="Register" validationSchema={registrationSchema} />
+      <Form fields={registerFields} onSubmit={onSubmit} submitText="Register" methods={methods} />
     </Container>
   );
 };
