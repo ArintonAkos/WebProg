@@ -19,6 +19,7 @@ const onComplete = async () => {
       password: bcrypt.hashSync('jelszo1', 10),
       roles: [roleIds['User']],
       adminRestaurants: [],
+      phone: '07301234567',
     },
     {
       name: 'Erzsébet Tóth',
@@ -26,6 +27,7 @@ const onComplete = async () => {
       password: bcrypt.hashSync('jelszo2', 10),
       roles: [roleIds['Admin']],
       adminRestaurants: [],
+      phone: '0731236572',
     },
     {
       name: 'Péter Szabó',
@@ -33,6 +35,7 @@ const onComplete = async () => {
       password: bcrypt.hashSync('jelszo3', 10),
       roles: [roleIds['Moderator']],
       adminRestaurants: [],
+      phone: '0723675323',
     },
     {
       name: 'Mária Kovács',
@@ -40,6 +43,7 @@ const onComplete = async () => {
       password: bcrypt.hashSync('jelszo4', 10),
       roles: [roleIds['User']],
       adminRestaurants: [],
+      phone: '0754196534',
     },
     {
       name: 'József Horváth',
@@ -47,6 +51,7 @@ const onComplete = async () => {
       password: bcrypt.hashSync('jelszo5', 10),
       roles: [roleIds['User']],
       adminRestaurants: [],
+      phone: '07431646796',
     },
   ];
 

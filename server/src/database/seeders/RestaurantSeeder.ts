@@ -1,5 +1,7 @@
 import Seeder from './Seeder';
 import Restaurant, { IRestaurant } from '../../models/restaurant';
+import Table from '../../models/table';
+import { Types } from 'mongoose';
 
 const restaurantSeeds: IRestaurant[] = [
   {
@@ -9,6 +11,7 @@ const restaurantSeeds: IRestaurant[] = [
     city: 'Budapest',
     street: 'Király utca',
     number: '100',
+    tables: [],
   },
   {
     name: 'Tóth Vendéglő',
@@ -17,6 +20,7 @@ const restaurantSeeds: IRestaurant[] = [
     city: 'Budapest',
     street: 'Rákóczi út',
     number: '101',
+    tables: [],
   },
   {
     name: 'Szabó Pizzéria',
@@ -25,6 +29,7 @@ const restaurantSeeds: IRestaurant[] = [
     city: 'Budapest',
     street: 'Andrássy út',
     number: '102',
+    tables: [],
   },
   {
     name: 'Kovács Bistro',
@@ -33,6 +38,7 @@ const restaurantSeeds: IRestaurant[] = [
     city: 'Budapest',
     street: 'Váci utca',
     number: '103',
+    tables: [],
   },
   {
     name: 'Horváth Kávézó',
@@ -41,7 +47,36 @@ const restaurantSeeds: IRestaurant[] = [
     city: 'Budapest',
     street: 'Dózsa György út',
     number: '104',
+    tables: [],
   },
 ];
 
-export default new Seeder<IRestaurant>(Restaurant, restaurantSeeds);
+const createRandomTableForRestaurant = async (restaurantId: Types.ObjectId): Promise<Types.ObjectId[]> => {
+  const tables: Types.ObjectId[] = [];
+
+  const tableCount = Math.floor(Math.random() * 10) + 1;
+  for (let i = 0; i < tableCount; i++) {
+    const table = await Table.create({
+      seats: Math.floor(Math.random() * 10) + 1,
+      number: i + 1,
+      restaurant: restaurantId,
+    });
+
+    tables.push(table.id);
+  }
+
+  return tables;
+};
+
+const onComplete = async () => {
+  const restaurants = await Restaurant.find({});
+
+  for (const restaurant of restaurants) {
+    const restaurantId: Types.ObjectId = restaurant._id;
+
+    restaurant.tables = await createRandomTableForRestaurant(restaurantId);
+    await restaurant.save();
+  }
+};
+
+export default new Seeder<IRestaurant>(Restaurant, restaurantSeeds, onComplete);

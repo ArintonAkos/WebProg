@@ -3,6 +3,8 @@ import Restaurant from '../models/restaurant';
 import { validateOpeningHours } from '../services/restaurantService';
 import { deleteFiles } from '../utils/storage';
 import Request from '../types/request.types';
+import { AddRestaurantRequest, EditRestaurantRequest } from '../requests/restaurantRequestTypes';
+import { createTables } from '../services/tableService';
 
 export const getRestaurants = async (req: Request, res: Response) => {
   try {
@@ -20,9 +22,9 @@ export const getRestaurants = async (req: Request, res: Response) => {
   }
 };
 
-export const addRestaurant = async (req: Request, res: Response) => {
+export const addRestaurant = async (req: AddRestaurantRequest, res: Response) => {
   try {
-    const { name, city, street, number, phone, openingHours } = req.body;
+    const { name, city, street, number, phone, openingHours, tables } = req.body;
 
     if (!validateOpeningHours(openingHours)) {
       res.status(401).json({
@@ -32,7 +34,9 @@ export const addRestaurant = async (req: Request, res: Response) => {
     }
 
     const restaurant = new Restaurant({ name, city, street, number, phone, openingHours });
+    await restaurant.save();
 
+    restaurant.tables = await createTables(restaurant._id, tables);
     await restaurant.save();
 
     res.status(201).json({
@@ -49,7 +53,7 @@ export const addRestaurant = async (req: Request, res: Response) => {
 
 export const getRestaurantById = async (req: Request, res: Response) => {
   try {
-    const restaurant = await Restaurant.findById(req.params.id);
+    const restaurant = await Restaurant.findById(req.params.id).populate('tables', '_id number seats').exec();
 
     if (!restaurant) {
       res.status(404).json({ message: 'Restaurant not found' });
@@ -63,11 +67,12 @@ export const getRestaurantById = async (req: Request, res: Response) => {
   }
 };
 
-export const editRestaurant = async (req, res) => {
+export const editRestaurant = async (req: EditRestaurantRequest, res: Response) => {
   const { name, city, street, number, phone, openingHours } = req.body;
 
   if (!validateOpeningHours(openingHours)) {
-    deleteFiles(req.files, res.params.id);
+    deleteFiles(req.files, req.params.id);
+
     return res.status(400).json({
       showToast: true,
       type: 'warning',
@@ -79,7 +84,7 @@ export const editRestaurant = async (req, res) => {
     const restaurant = await Restaurant.findById(req.params.id);
 
     if (!restaurant) {
-      deleteFiles(req.files, res.params.id);
+      deleteFiles(req.files, req.params.id);
       return res.status(404).json({ message: 'Restaurant not found', showToast: true });
     }
 
@@ -103,7 +108,7 @@ export const editRestaurant = async (req, res) => {
     });
 
     if (!updatedRestaurant) {
-      deleteFiles(req.files, res.params.id);
+      deleteFiles(req.files, req.params.id);
       return res.status(404).json({ message: 'Restaurant not found', type: 'error' });
     }
 

@@ -8,6 +8,7 @@ export interface IRestaurant {
   city: string;
   street: string;
   number: string;
+  tables: Types.ObjectId[];
   images?: string[];
 }
 
@@ -18,6 +19,7 @@ const restaurantSchema = new Schema<IRestaurant>({
   number: { type: String, required: true },
   phone: { type: String, required: true },
   openingHours: { type: String, required: true },
+  tables: [{ type: Schema.Types.ObjectId, ref: 'Table', required: true }],
   images: [
     {
       type: String,
