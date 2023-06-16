@@ -2,8 +2,8 @@ import { model, Schema, Types } from 'mongoose';
 
 export interface ITable {
   _id?: Types.ObjectId;
-  number: Number;
-  seats: Number;
+  number: number;
+  seats: number;
   restaurant: Types.ObjectId;
 }
 
@@ -21,6 +21,8 @@ const tableSchema = new Schema<ITable>({
     ref: 'Restaurant',
   },
 });
+
+tableSchema.index({ restaurant: 1, number: 1 }, { unique: true });
 
 const Table = model<ITable>('Table', tableSchema);
 

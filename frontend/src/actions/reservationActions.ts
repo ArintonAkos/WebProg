@@ -1,5 +1,5 @@
 import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
-import { CreateReservationProps } from '../components/pages/reservation/ReservationForm.data';
+import { CreateReservationProps } from '../form-data/reservation/ReservationFormData';
 import Reservation from '../models/reservation';
 import createAuthClient from '../services/createAuthClient';
 import BaseResponse from '../types/BaseResponse';

@@ -16,3 +16,18 @@ export const createTables = async (restaurantId: Types.ObjectId, tables: TablePr
     }),
   );
 };
+
+export const deleteTable = async (tableId: Types.ObjectId) => {
+  try {
+    const deletedTable = await Table.findByIdAndDelete(tableId);
+
+    if (!deletedTable) {
+      return null;
+    }
+
+    return deletedTable;
+  } catch (error) {
+    console.error('Error deleting table:', error);
+    return null;
+  }
+};

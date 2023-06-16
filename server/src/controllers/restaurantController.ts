@@ -4,7 +4,8 @@ import { validateOpeningHours } from '../services/restaurantService';
 import { deleteFiles } from '../utils/storage';
 import Request from '../types/request.types';
 import { AddRestaurantRequest, EditRestaurantRequest } from '../requests/restaurantRequestTypes';
-import { createTables } from '../services/tableService';
+import { createTables, deleteTable } from '../services/tableService';
+import MongoErrorCodes from '../database/MongoErrorCodes';
 
 export const getRestaurants = async (req: Request, res: Response) => {
   try {
@@ -15,16 +16,27 @@ export const getRestaurants = async (req: Request, res: Response) => {
       type: 'success',
     });
   } catch (error) {
-    console.error('Error getting restaurants:', error);
-    res.status(500).json({
-      message: 'Error getting restaurants',
-    });
+    if (error.code === MongoErrorCodes.DUPLICATE_KEY || error.code === MongoErrorCodes.DUPLICATE_KEY_UPDATE) {
+      const field = error.message.split('index:')[1].split('dup key')[0].split('$')[1];
+
+      res.status(400).json({
+        message: `There's already a table with the same ${field} in the restaurant.`,
+        showToast: true,
+        type: 'error',
+      });
+    } else {
+      console.error('Error getting restaurants:', error);
+      res.status(500).json({
+        message: 'Error getting restaurants',
+      });
+    }
   }
 };
 
 export const addRestaurant = async (req: AddRestaurantRequest, res: Response) => {
   try {
-    const { name, city, street, number, phone, openingHours, tables } = req.body;
+    const { name, city, street, number, phone, openingHours, tables: rawTables } = req.body;
+    const tables = JSON.parse(rawTables);
 
     if (!validateOpeningHours(openingHours)) {
       res.status(401).json({
@@ -46,8 +58,18 @@ export const addRestaurant = async (req: AddRestaurantRequest, res: Response) =>
       message: 'Restaurant added successfully',
     });
   } catch (error) {
-    console.error('Error adding restaurant:', error);
-    res.status(500).json({ message: 'Error adding restaurant' });
+    if (error.code === MongoErrorCodes.DUPLICATE_KEY || error.code === MongoErrorCodes.DUPLICATE_KEY_UPDATE) {
+      const field = error.message.split('index:')[1].split('dup key')[0].split('$')[1];
+
+      res.status(400).json({
+        message: `There's already a table with the same ${field} in the restaurant.`,
+        showToast: true,
+        type: 'error',
+      });
+    } else {
+      console.error('Error adding restaurant:', error);
+      res.status(500).json({ message: 'Error adding restaurant' });
+    }
   }
 };
 
@@ -68,11 +90,10 @@ export const getRestaurantById = async (req: Request, res: Response) => {
 };
 
 export const editRestaurant = async (req: EditRestaurantRequest, res: Response) => {
-  const { name, city, street, number, phone, openingHours } = req.body;
+  const { name, city, street, number, phone, openingHours, tables: rawTables } = req.body;
 
-  if (!validateOpeningHours(openingHours)) {
-    deleteFiles(req.files, req.params.id);
-
+  const trimmedOpeningHours = openingHours.trim();
+  if (!validateOpeningHours(trimmedOpeningHours)) {
     return res.status(400).json({
       showToast: true,
       type: 'warning',
@@ -81,6 +102,7 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
   }
 
   try {
+    const tables = JSON.parse(rawTables);
     const restaurant = await Restaurant.findById(req.params.id);
 
     if (!restaurant) {
@@ -88,13 +110,20 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
       return res.status(404).json({ message: 'Restaurant not found', showToast: true });
     }
 
+    for (let table of restaurant.tables) {
+      await deleteTable(table);
+    }
+
+    console.log(req.body, tables);
+    restaurant.tables = await createTables(restaurant._id, tables);
+
     const updatedRestaurantData = {
       name,
       city,
       street,
       number,
       phone,
-      openingHours,
+      openingHours: trimmedOpeningHours,
       images: [...restaurant.images],
     };
 
@@ -119,6 +148,7 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
       type: 'success',
     });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Error updating restaurant', error: err, showToast: true, type: 'error' });
   }
 };

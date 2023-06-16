@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Container, Text } from '@chakra-ui/react';
 import ImageUpload from '../../components/pages/restaurant/ImageUpload';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -9,56 +9,12 @@ import { editRestaurant, fetchRestaurant } from '../../actions/restaurantActions
 import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { useCustomToast } from '../../hooks/useCustomToast';
-import Form, { FormFieldProps } from '../../components/form';
-import { AddRestaurantFormData } from './AddRestaurantForm';
+import Form from '../../components/form';
 import Restaurant from '../../models/restaurant';
 import { clearEditedRestaurantData } from '../../reducers/restaurantReducer';
 import { useForm } from 'react-hook-form';
-
-const fields: Array<FormFieldProps> = [
-  {
-    name: 'name',
-    label: 'Name',
-    type: 'text',
-    required: true,
-    placeHolder: 'Arinton Akos',
-  },
-  {
-    name: 'city',
-    label: 'City',
-    type: 'text',
-    required: true,
-    placeHolder: 'Kolozsvar',
-  },
-  {
-    name: 'street',
-    label: 'Street',
-    type: 'text',
-    required: true,
-    placeHolder: 'Farkas utca',
-  },
-  {
-    name: 'number',
-    label: 'Number',
-    type: 'text',
-    required: true,
-    placeHolder: '5',
-  },
-  {
-    name: 'phone',
-    label: 'Phone',
-    type: 'text',
-    required: true,
-    placeHolder: '(+40) 712 345 678',
-  },
-  {
-    name: 'openingHours',
-    label: 'Opening Hours',
-    type: 'text',
-    required: true,
-    placeHolder: '8:00 - 16:00',
-  },
-];
+import { RestaurantCreateFormData } from '../../form-data/restaurant/RestaurantCreateFormData';
+import { editFieldsProps } from '../../form-data/restaurant/RestaurantEditFormData';
 
 const RestaurantEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -69,16 +25,12 @@ const RestaurantEditPage: React.FC = () => {
   const editedRestaurant = useSelector((state: RootState) => state.restaurant.editRestaurant);
   const showToast = useCustomToast();
   const [images, setImages] = useState<Array<File>>([]);
-  const [formFields, setFormFields] = useState(fields);
+
   const methods = useForm();
 
-  useEffect(() => {
-    dispatch(fetchRestaurant(id));
-  }, [id, dispatch]);
-
-  useEffect(() => {
+  const formFields = useMemo(() => {
     if (restaurant) {
-      const updatedFields = fields.map((field) => {
+      return editFieldsProps({ methods }).map((field) => {
         const fieldName = field.name as keyof Restaurant;
 
         return {
@@ -87,10 +39,14 @@ const RestaurantEditPage: React.FC = () => {
           value: restaurant[fieldName] as string | undefined,
         };
       });
-
-      setFormFields(updatedFields);
+    } else {
+      return editFieldsProps({ methods });
     }
-  }, [restaurant]);
+  }, [restaurant, methods]);
+
+  useEffect(() => {
+    dispatch(fetchRestaurant(id));
+  }, [id, dispatch]);
 
   useEffect(() => {
     if (status === 'failed') {
@@ -117,7 +73,7 @@ const RestaurantEditPage: React.FC = () => {
     setImages([...files]);
   };
 
-  const handleSubmit = async (submittedData: AddRestaurantFormData) => {
+  const handleSubmit = async (submittedData: RestaurantCreateFormData) => {
     submittedData.images = [...images];
 
     try {

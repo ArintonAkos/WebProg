@@ -30,6 +30,7 @@ export type FormFieldProps = {
   error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;
   autoComplete?: string;
   disabled?: boolean;
+  customComponent?: React.ReactNode;
 };
 
 type Portal = {
@@ -90,6 +91,7 @@ const Form: React.FC<FormProps> = ({ fields, onSubmit, submitText, portals, meth
               element={field.element}
               error={errors[field.name]}
               autoComplete={field.autoComplete}
+              customComponent={field.customComponent}
             />
           </Fragment>
         ))}

@@ -5,48 +5,48 @@ import { Types } from 'mongoose';
 
 const restaurantSeeds: IRestaurant[] = [
   {
-    name: 'Nagy Étterem',
-    phone: '06 1 123 4567',
-    openingHours: '10:00 - 22:00',
-    city: 'Budapest',
-    street: 'Király utca',
-    number: '100',
+    name: 'Café Bulgakov',
+    phone: '0264 450 156',
+    openingHours: '12:00 - 24:00',
+    city: 'Kolozsvár',
+    street: 'Inocențiu Micu Klein',
+    number: '17',
     tables: [],
   },
   {
-    name: 'Tóth Vendéglő',
-    phone: '06 1 234 5678',
-    openingHours: '11:00 - 23:00',
-    city: 'Budapest',
-    street: 'Rákóczi út',
-    number: '101',
+    name: 'Rhédey Café',
+    phone: '0364 156 905',
+    openingHours: '10:00 - 23:00',
+    city: 'Kolozsvár',
+    street: 'Piața Unirii',
+    number: '9',
     tables: [],
   },
   {
-    name: 'Szabó Pizzéria',
-    phone: '06 1 345 6789',
-    openingHours: '10:00 - 24:00',
-    city: 'Budapest',
-    street: 'Andrássy út',
-    number: '102',
+    name: '1568 Bistro',
+    phone: '0770 163 152',
+    openingHours: '12:00 - 23:00',
+    city: 'Kolozsvár',
+    street: 'Bulevardul 21 Decembrie 1989',
+    number: '14',
     tables: [],
   },
   {
-    name: 'Kovács Bistro',
-    phone: '06 1 456 7890',
-    openingHours: '09:00 - 21:00',
-    city: 'Budapest',
-    street: 'Váci utca',
-    number: '103',
+    name: 'Insomnia Cafe & Bistro The oldest pub in town!',
+    phone: '0741 245 315',
+    openingHours: '12:00 - 02:00',
+    city: 'Kolozsvár',
+    street: 'Str. Universității',
+    number: '2',
     tables: [],
   },
   {
-    name: 'Horváth Kávézó',
-    phone: '06 1 567 8901',
-    openingHours: '08:00 - 20:00',
-    city: 'Budapest',
-    street: 'Dózsa György út',
-    number: '104',
+    name: 'Samsara Foodhouse',
+    phone: '0799 073 073',
+    openingHours: '12:00 - 23:30',
+    city: 'Kolozsvár',
+    street: 'Cardinal Iuliu Hossu Street',
+    number: '3',
     tables: [],
   },
 ];
@@ -76,6 +76,8 @@ const onComplete = async () => {
 
     restaurant.tables = await createRandomTableForRestaurant(restaurantId);
     await restaurant.save();
+
+    console.log('Generated ', restaurant.tables.length, 'number of tables for restaurant: ', restaurant.name);
   }
 };
 

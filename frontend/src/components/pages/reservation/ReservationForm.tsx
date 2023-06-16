@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Form from '../../form';
 import useAppDispatch from '../../../hooks/useAppDispatch';
 import { createReservation } from '../../../actions/reservationActions';
@@ -8,8 +8,12 @@ import { useNavigate } from 'react-router-dom';
 import { clearData } from '../../../reducers/reservationReducer';
 import { fetchReservedTables } from '../../../actions/reservationActions';
 import useStateHandling from '../../../hooks/useStateHandling';
-import { createFields, createReservationSchema, ReservationFormFields } from './ReservationForm.data';
-import { FormLabel, Text } from '@chakra-ui/react';
+import {
+  createFields,
+  createReservationSchema,
+  ReservationFormFields,
+} from '../../../form-data/reservation/ReservationFormData';
+import { FormErrorMessage, FormLabel, Text } from '@chakra-ui/react';
 import Tables from './Tables';
 import { useForm } from 'react-hook-form';
 import { joiResolver } from '@hookform/resolvers/joi';
@@ -23,34 +27,30 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
     resolver: joiResolver(createReservationSchema),
   });
   const tables = useSelector((state: RootState) => state.restaurant.restaurant.details?.tables ?? []);
+  const { watch } = methods;
 
-  const dateValue = methods.watch('date');
-  const timeValue = methods.watch('time');
+  const dateValue = watch('date');
+  const timeValue = watch('time');
 
   const formFields = useMemo(() => {
-    const handleChange = () => {
-      dispatch(
-        fetchReservedTables({
-          restaurantId: id,
-          date: dateValue,
-          time: timeValue,
-        }),
-      );
-    };
-
     return createFields({
       isAuthenticated: !!user,
       email: user?.email,
       phone: user?.phone,
-      onTimeChange: handleChange,
-      onDateChange: handleChange,
     });
-  }, [user, dispatch, dateValue, timeValue, id]);
+  }, [user]);
 
   const [tableIds, setTableIds] = useState<string[]>([]);
+  const [tableErrorMessage, setTableErrorMessage] = useState<string | undefined>(undefined);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (formData: ReservationFormFields) => {
+    if (!tableIds.length) {
+      setTableErrorMessage('Please select at least one table!');
+      return;
+    }
+
     dispatch(
       createReservation({
         id,
@@ -69,18 +69,34 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
     }
   }, [data, navigate, dispatch]);
 
-  const handleTableClick = (tableId: string) => {
-    console.log(tableId);
-    setTableIds((prev) => {
-      const index = prev.indexOf(tableId);
+  useEffect(() => {
+    if (!dateValue || !timeValue) {
+      return;
+    }
 
-      if (index > -1) {
-        return prev.filter((id) => id !== tableId);
-      }
+    dispatch(
+      fetchReservedTables({
+        restaurantId: id,
+        date: dateValue,
+        time: timeValue,
+      }),
+    );
+  }, [dateValue, timeValue, id, dispatch]);
 
-      return [...prev, tableId];
-    });
-  };
+  const handleTableClick = useCallback(
+    (tableId: string) => {
+      setTableIds((prev) => {
+        const index = prev.indexOf(tableId);
+
+        if (index > -1) {
+          return prev.filter((id) => id !== tableId);
+        }
+
+        return [...prev, tableId];
+      });
+    },
+    [setTableIds],
+  );
 
   const portals = useMemo(
     () => [
@@ -90,11 +106,12 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
           <>
             <FormLabel>Table</FormLabel>
             <Tables onTableClick={handleTableClick} tables={tables} selectedTableIds={tableIds} />
+            <FormErrorMessage>{tableErrorMessage}</FormErrorMessage>
           </>
         ),
       },
     ],
-    [handleTableClick],
+    [handleTableClick, tables, tableIds, tableErrorMessage],
   );
 
   return (
@@ -102,13 +119,20 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
       <Text fontSize="2xl" fontWeight="bold" mb={4}>
         Make a Reservation
       </Text>
-      <Form
-        methods={methods}
-        fields={formFields}
-        onSubmit={handleSubmit}
-        submitText="Make Reservation"
-        portals={portals}
-      />
+      {!!tables.length && (
+        <Form
+          methods={methods}
+          fields={formFields}
+          onSubmit={handleSubmit}
+          submitText="Make Reservation"
+          portals={portals}
+        />
+      )}
+      {!tables.length && (
+        <Text fontSize="xl" mb={4}>
+          No tables available. Can't make reservation at this time!
+        </Text>
+      )}
     </>
   );
 };

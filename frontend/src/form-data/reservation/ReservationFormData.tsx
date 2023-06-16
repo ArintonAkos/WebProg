@@ -1,4 +1,4 @@
-import { FormFieldProps } from '../../form';
+import { FormFieldProps } from '../../components/form';
 import Joi from 'joi';
 
 export const createReservationSchema = Joi.object({
@@ -10,10 +10,6 @@ export const createReservationSchema = Joi.object({
       'string.pattern.base': 'Email must be a valid email address.',
       'any.required': 'Email is required.',
     }),
-  name: Joi.string().required().messages({
-    'string.base': 'Name must be a string.',
-    'any.required': 'Name is required.',
-  }),
   date: Joi.string().isoDate().required().messages({
     'string.base': 'Date must be a string.',
     'string.isoDate': 'Date must be in the ISO format (YYYY-MM-DD).',
@@ -33,6 +29,10 @@ export const createReservationSchema = Joi.object({
     'number.min': 'Number of guests must be at least 1.',
     'any.required': 'Number of guests is required.',
   }),
+  phone: Joi.string()
+    .length(10)
+    .pattern(/^[0-9]+$/, 'numbers')
+    .required(),
 });
 
 export interface CreateReservationProps {
@@ -61,13 +61,7 @@ export type ReservationFormFields = {
   tableIds: Array<string>;
 };
 
-export const createFields = ({
-  isAuthenticated,
-  email,
-  phone,
-  onDateChange,
-  onTimeChange,
-}: CreateFieldsProps): FormFieldProps[] => {
+export const createFields = ({ isAuthenticated, email, phone }: CreateFieldsProps): FormFieldProps[] => {
   return [
     {
       name: 'email',
@@ -78,7 +72,7 @@ export const createFields = ({
       disabled: isAuthenticated,
     },
     {
-      name: 'Phone',
+      name: 'phone',
       label: 'Phone',
       type: 'text',
       value: phone,
@@ -89,32 +83,12 @@ export const createFields = ({
       label: 'Date',
       type: 'date',
       required: true,
-      settings: {
-        onChange: (e: any) => {
-          console.log(e, e?.target.value);
-          const value = e?.target.value;
-
-          if (onDateChange) {
-            onDateChange(value);
-          }
-        },
-      },
     },
     {
       name: 'time',
       label: 'Time',
       type: 'time',
       required: true,
-      settings: {
-        onChange: (e: any) => {
-          console.log(e, e?.target.value);
-          const value = e?.target.value;
-
-          if (onTimeChange) {
-            onTimeChange(value);
-          }
-        },
-      },
     },
     {
       name: 'numberOfGuests',

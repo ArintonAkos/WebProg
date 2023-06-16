@@ -1,13 +1,13 @@
 import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
-import { AddRestaurantFormData } from '../pages/restaurant/AddRestaurantForm';
 import Restaurant from '../models/restaurant';
 import User from '../models/user';
 import { RestaurantPageData } from '../reducers/restaurantReducer';
 import createAuthClient from '../services/createAuthClient';
+import { RestaurantCreateFormData } from '../form-data/restaurant/RestaurantCreateFormData';
 
 interface EditRestaurantArgs {
   id: string;
-  restaurant: AddRestaurantFormData;
+  restaurant: RestaurantCreateFormData;
 }
 
 interface UploadImagesFormData {
@@ -19,21 +19,25 @@ interface UploadImagesArgs {
   restaurant: UploadImagesFormData;
 }
 
-const restaurantToFormData = (restaurant: AddRestaurantFormData | UploadImagesFormData) => {
+const restaurantToFormData = (restaurant: RestaurantCreateFormData | UploadImagesFormData) => {
   const formData = new FormData();
 
   for (const key in restaurant) {
+    const objKey: keyof (RestaurantCreateFormData | UploadImagesFormData) = key as keyof (
+      | RestaurantCreateFormData
+      | UploadImagesFormData
+    );
+
+    const value: any = restaurant[objKey];
+
     if (key === 'images' && restaurant.images) {
       restaurant.images.forEach((image) => {
         formData.append('images', image);
       });
+    } else if (Array.isArray(value)) {
+      formData.append(key, JSON.stringify(value));
     } else {
-      const objKey: keyof (AddRestaurantFormData | UploadImagesFormData) = key as keyof (
-        | AddRestaurantFormData
-        | UploadImagesFormData
-      );
-
-      formData.append(key, restaurant[objKey]!.toString());
+      formData.append(key, value?.toString());
     }
   }
 
@@ -76,6 +80,7 @@ export const editRestaurant: AsyncThunk<any, any, {}> = createAsyncThunk<any, an
     const { putMultiPart } = createAuthClient(thunkAPI);
 
     const formData = restaurantToFormData(restaurant);
+
     return await putMultiPart(`restaurant/${id}`, formData);
   },
 );

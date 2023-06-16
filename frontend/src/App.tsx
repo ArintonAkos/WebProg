@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ChakraProvider, theme } from '@chakra-ui/react';
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
-import AddRestaurantForm from './pages/restaurant/AddRestaurantForm';
+import RestaurantCreate from './pages/restaurant/RestaurantCreate';
 import HomePage from './pages/HomePage';
 import Layout from './components/shared/Layout';
 import { ToastProvider } from './context/toastContext';
@@ -24,7 +24,7 @@ export const App = () => (
             <Route path="/home" element={<HomePage />} />
 
             <Route path="/restaurants/:id" element={<RestaurantDetails />} />
-            <Route path="/restaurant/add" element={<AddRestaurantForm />} />
+            <Route path="/restaurant/add" element={<RestaurantCreate />} />
             <Route path="/restaurants/edit/:id" element={<RestaurantEdit />} />
 
             <Route path="/reservations/" element={<ReservationList />} />

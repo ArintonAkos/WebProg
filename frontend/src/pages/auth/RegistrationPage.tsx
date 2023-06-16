@@ -21,6 +21,10 @@ const registrationSchema = Joi.object({
   confirmPassword: Joi.string().valid(Joi.ref('password')).required().messages({
     'any.only': 'Passwords do not match',
   }),
+  phone: Joi.string()
+    .length(10)
+    .pattern(/^[0-9]+$/, 'numbers')
+    .required(),
 });
 
 const registerFields: FormFieldProps[] = [
@@ -38,6 +42,14 @@ const registerFields: FormFieldProps[] = [
     required: true,
     placeHolder: 'Enter your email',
     autoComplete: 'username',
+  },
+  {
+    name: 'phone',
+    label: 'Phone',
+    type: 'tel',
+    required: true,
+    placeHolder: 'Enter your phone number',
+    autoComplete: 'tel',
   },
   {
     name: 'password',

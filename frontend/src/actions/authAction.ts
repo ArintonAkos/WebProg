@@ -4,16 +4,17 @@ import createAuthClient from '../services/createAuthClient';
 type CreateUserArgs = {
   name: string;
   email: string;
+  phone: string;
   password: string;
   confirmPassword: string;
 };
 
 export const registerUser: AsyncThunk<any, CreateUserArgs, {}> = createAsyncThunk<any, CreateUserArgs>(
   'auth/registerUser',
-  async ({ name, email, password, confirmPassword }, thunkAPI) => {
+  async (createUserArgs, thunkAPI) => {
     const { post } = createAuthClient(thunkAPI);
 
-    return await post(`auth/register`, { name, email, password, confirmPassword });
+    return await post(`auth/register`, createUserArgs);
   },
 );
 

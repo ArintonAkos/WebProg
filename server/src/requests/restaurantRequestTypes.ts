@@ -13,7 +13,7 @@ interface RestaurantProps {
   number: number;
   phone: string;
   openingHours: string;
-  tables: TableProps[];
+  tables: string;
 }
 
 export interface AddRestaurantRequest extends Request {

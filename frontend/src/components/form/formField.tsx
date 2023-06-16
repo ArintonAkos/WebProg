@@ -24,7 +24,13 @@ const FormField: React.FC<FormFieldPropsWithControl> = ({
   value,
   error,
   autoComplete,
+  customComponent,
 }) => {
+  if (customComponent) {
+    console.log('Rendered custom component!');
+    return <>{customComponent}</>;
+  }
+
   const renderedObject = (field: ControllerRenderProps) => {
     switch (element) {
       case 'select':

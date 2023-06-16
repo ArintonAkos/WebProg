@@ -4,7 +4,7 @@ import { RootState } from '../../store';
 import { shallowEqual, useSelector } from 'react-redux';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import { fetchRestaurants } from '../../actions/restaurantActions';
-import RestaurantCard from './RestaurantCard';
+import RestaurantCard from '../../components/pages/restaurant/RestaurantCard';
 
 const RestaurantList: React.FC = () => {
   const dispatch = useAppDispatch();

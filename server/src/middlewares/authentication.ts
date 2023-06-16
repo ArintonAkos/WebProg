@@ -23,6 +23,7 @@ const authentication = async (req: Request, res: Response, next: NextFunction) =
 
     try {
       const userData = jwt.verify(token, config.jwtSecret) as JwtPayload;
+      console.log('userData', userData);
       const user = await getUser(userData?.id);
 
       if (user instanceof ErrorMessage) {
@@ -43,6 +44,7 @@ const authentication = async (req: Request, res: Response, next: NextFunction) =
         try {
           const userData = jwt.verify(refreshToken as string, config.refreshTokenSecret) as JwtPayload;
 
+          console.log('userData', userData);
           const user = await getUser(userData?.id);
 
           if (user instanceof ErrorMessage) {

@@ -14,5 +14,8 @@
     "frontend": "npm start --prefix frontend/",
     "backend": "npm start --prefix server/",
     "seed": "npm run seed --prefix server/"
+  },
+  "dependencies": {
+    "@types/redux-persist": "^4.3.1"
   }
 }

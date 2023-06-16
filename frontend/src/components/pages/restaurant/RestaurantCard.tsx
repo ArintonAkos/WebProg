@@ -6,19 +6,19 @@ import {
   AccordionPanel,
   Box,
   Button,
-  Icon,
   Image,
   Skeleton,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import Restaurant, { MinimalRestaurantData } from '../../models/restaurant';
-import { fetchRestaurant } from '../../actions/restaurantActions';
-import useAppDispatch from '../../hooks/useAppDispatch';
-import { EditIcon } from '@chakra-ui/icons';
+import Restaurant, { MinimalRestaurantData } from '../../../models/restaurant';
+import { fetchRestaurant } from '../../../actions/restaurantActions';
+import useAppDispatch from '../../../hooks/useAppDispatch';
 import { Link, useNavigate } from 'react-router-dom';
-import Loading from '../../components/shared/Loading';
-import { API_BASE_URL } from '../../services/createAuthClient';
+import Loading from '../../shared/Loading';
+import { API_BASE_URL } from '../../../services/createAuthClient';
+import useAbility from '../../../hooks/useAbility';
+import { EditIcon, Icon } from '@chakra-ui/icons';
 
 interface RestaurantCardProps {
   restaurant: Restaurant | MinimalRestaurantData;
@@ -29,6 +29,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const ability = useAbility();
 
   const handleDetailsClick = async () => {
     if (!('street' in restaurant)) {
@@ -65,16 +66,17 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) => {
           <VStack alignItems="start">
             <Text>City: {restaurant.city}</Text>
             <Text>Opening Hours: {restaurant.openingHours}</Text>
-
-            <Button
-              size="sm"
-              width="100%"
-              colorScheme="blue"
-              onClick={handleEditClick}
-              leftIcon={<Icon as={EditIcon} />}
-            >
-              Edit
-            </Button>
+            {ability.can('edit', 'Restaurant') && (
+              <Button
+                size="sm"
+                width="100%"
+                colorScheme="blue"
+                onClick={handleEditClick}
+                leftIcon={<Icon as={EditIcon} />}
+              >
+                Edit
+              </Button>
+            )}
           </VStack>
         </Box>
       </Box>
