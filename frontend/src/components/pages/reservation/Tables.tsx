@@ -20,6 +20,8 @@ const Tables: React.FC<TablesProps> = ({ onTableClick, tables, selectedTableIds 
         <Table
           key={table._id}
           id={table._id}
+          number={table.number}
+          seats={table.seats}
           reserved={reservedTableIds.includes(table._id)}
           selected={selectedTableIds.includes(table._id)}
           onClick={() => onTableClick(table._id)}

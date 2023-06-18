@@ -1,14 +1,17 @@
 import React, { useCallback } from 'react';
-import { Box, Button, Text, Image, Flex } from '@chakra-ui/react';
+import { Box, Button, Text, Image, Flex, IconButton } from '@chakra-ui/react';
 import { useDropzone } from 'react-dropzone';
 import { useCustomToast } from '../../../hooks/useCustomToast';
+import { CloseIcon } from '@chakra-ui/icons';
 
 interface ImageUploadProps {
   onUploadedFiles: (files: File[]) => void;
+  onDeleteFile: (file: File | string, type: 'new' | 'existing') => void;
   files: Array<File>;
+  existingImages?: Array<string>;
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadedFiles, files }) => {
+const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadedFiles, files, existingImages = [], onDeleteFile }) => {
   const toast = useCustomToast();
 
   const onDrop = useCallback(
@@ -54,17 +57,47 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadedFiles, files }) => 
         </Button>
       </Box>
       <Flex direction="row" flexWrap="wrap" mt={2}>
-        {files.map((preview, index) => (
-          <Image
-            key={index}
-            src={URL.createObjectURL(preview)}
-            alt="uploaded preview"
-            width="calc(33.3% - 6px)"
-            objectFit="cover"
-            borderRadius="md"
-            mb={2}
-            mr={(index + 1) % 3 !== 0 ? 2 : 0}
-          />
+        {existingImages.map((file, index) => (
+          <Box position="relative" key={`file-index`}>
+            <Image
+              src={typeof file === 'string' ? file : URL.createObjectURL(file)}
+              alt="uploaded preview"
+              width="calc(33.3% - 6px)"
+              objectFit="cover"
+              borderRadius="md"
+              mb={2}
+              mr={(index + 1) % 3 !== 0 ? 2 : 0}
+            />
+            <IconButton
+              icon={<CloseIcon />}
+              aria-label="Delete"
+              position="absolute"
+              top={2}
+              right={2}
+              onClick={() => onDeleteFile(file, 'existing')}
+            />
+          </Box>
+        ))}
+        {files.map((file, index) => (
+          <Box position="relative" key={`new-${index}`}>
+            <Image
+              src={URL.createObjectURL(file)}
+              alt="uploaded preview"
+              width="calc(33.3% - 6px)"
+              objectFit="cover"
+              borderRadius="md"
+              mb={2}
+              mr={(index + 1) % 3 !== 0 ? 2 : 0}
+            />
+            <IconButton
+              icon={<CloseIcon />}
+              aria-label="Delete"
+              position="absolute"
+              top={2}
+              right={2}
+              onClick={() => onDeleteFile(file, 'new')}
+            />
+          </Box>
         ))}
       </Flex>
     </>

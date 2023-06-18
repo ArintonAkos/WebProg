@@ -17,16 +17,19 @@ import { RestaurantCreateFormData } from '../../form-data/restaurant/RestaurantC
 import { editFieldsProps } from '../../form-data/restaurant/RestaurantEditFormData';
 
 const RestaurantEditPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const { status, error } = useStateHandling('restaurant');
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const showToast = useCustomToast();
+
+  const { status, error } = useStateHandling('restaurant');
+  const { id } = useParams<{ id: string }>();
+  const methods = useForm();
   const restaurant = useSelector((state: RootState) => state.restaurant.restaurant.details, shallowEqual);
   const editedRestaurant = useSelector((state: RootState) => state.restaurant.editRestaurant);
-  const showToast = useCustomToast();
+
   const [images, setImages] = useState<Array<File>>([]);
 
-  const methods = useForm();
+  const [deletedImages, setDeletedImages] = useState<Array<string>>([]);
 
   const formFields = useMemo(() => {
     if (restaurant) {
@@ -73,20 +76,31 @@ const RestaurantEditPage: React.FC = () => {
     setImages([...files]);
   };
 
-  const handleSubmit = async (submittedData: RestaurantCreateFormData) => {
-    submittedData.images = [...images];
+  const handleDeletedFile = (file: File | string, type: 'new' | 'existing') => {
+    if (type === 'existing') {
+      setDeletedImages([...deletedImages, file as string]);
+    } else {
+      setImages(images.filter((imageFile) => imageFile !== file));
+    }
+  };
 
+  const handleSubmit = async (submittedData: RestaurantCreateFormData) => {
     try {
-      await dispatch(
+      dispatch(
         editRestaurant({
           id: id!,
-          restaurant: submittedData,
+          restaurant: {
+            ...submittedData,
+            deletedImages,
+          },
         }),
       );
     } catch (error) {
       console.error('Error editing restaurant:', error);
     }
   };
+
+  const existingImages = restaurant?.images?.filter((image) => deletedImages.includes(image)) || [];
 
   return (
     <StatusHandler status={status} error={error}>
@@ -101,7 +115,15 @@ const RestaurantEditPage: React.FC = () => {
           portals={[
             {
               index: formFields.length,
-              element: <ImageUpload onUploadedFiles={handleUploadedFiles} key="imageUpload" files={images} />,
+              element: (
+                <ImageUpload
+                  onUploadedFiles={handleUploadedFiles}
+                  key="imageUpload"
+                  files={images}
+                  onDeleteFile={handleDeletedFile}
+                  existingImages={existingImages}
+                />
+              ),
             },
           ]}
         />

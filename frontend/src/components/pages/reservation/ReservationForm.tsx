@@ -13,7 +13,7 @@ import {
   createReservationSchema,
   ReservationFormFields,
 } from '../../../form-data/reservation/ReservationFormData';
-import { FormErrorMessage, FormLabel, Text } from '@chakra-ui/react';
+import { FormControl, FormErrorMessage, FormLabel, Text } from '@chakra-ui/react';
 import Tables from './Tables';
 import { useForm } from 'react-hook-form';
 import { joiResolver } from '@hookform/resolvers/joi';
@@ -81,6 +81,8 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
         time: timeValue,
       }),
     );
+    setTableIds([]);
+    setTableErrorMessage(undefined);
   }, [dateValue, timeValue, id, dispatch]);
 
   const handleTableClick = useCallback(
@@ -92,22 +94,25 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
           return prev.filter((id) => id !== tableId);
         }
 
+        setTableErrorMessage(undefined);
         return [...prev, tableId];
       });
     },
-    [setTableIds],
+    [setTableIds, setTableErrorMessage],
   );
+
+  console.log(tables, tableIds);
 
   const portals = useMemo(
     () => [
       {
         index: 0,
         element: (
-          <>
+          <FormControl isInvalid={!!tableErrorMessage} isRequired>
             <FormLabel>Table</FormLabel>
             <Tables onTableClick={handleTableClick} tables={tables} selectedTableIds={tableIds} />
             <FormErrorMessage>{tableErrorMessage}</FormErrorMessage>
-          </>
+          </FormControl>
         ),
       },
     ],

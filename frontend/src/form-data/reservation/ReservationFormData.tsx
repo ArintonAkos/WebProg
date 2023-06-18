@@ -1,5 +1,6 @@
 import { FormFieldProps } from '../../components/form';
 import Joi from 'joi';
+import moment from 'moment';
 
 export const createReservationSchema = Joi.object({
   email: Joi.string()
@@ -10,11 +11,6 @@ export const createReservationSchema = Joi.object({
       'string.pattern.base': 'Email must be a valid email address.',
       'any.required': 'Email is required.',
     }),
-  date: Joi.string().isoDate().required().messages({
-    'string.base': 'Date must be a string.',
-    'string.isoDate': 'Date must be in the ISO format (YYYY-MM-DD).',
-    'any.required': 'Date is required.',
-  }),
   time: Joi.string()
     .pattern(/^\d{2}:\d{2}$/)
     .required()
@@ -33,6 +29,12 @@ export const createReservationSchema = Joi.object({
     .length(10)
     .pattern(/^[0-9]+$/, 'numbers')
     .required(),
+  date: Joi.date().min('now').iso().required().messages({
+    'date.base': 'Date must be a date string.',
+    'date.min': 'Date must be today or in the future.',
+    'date.isoDate': 'Date must be in the ISO format (YYYY-MM-DD).',
+    'any.required': 'Date is required.',
+  }),
 });
 
 export interface CreateReservationProps {
@@ -62,6 +64,9 @@ export type ReservationFormFields = {
 };
 
 export const createFields = ({ isAuthenticated, email, phone }: CreateFieldsProps): FormFieldProps[] => {
+  const today = moment().format('YYYY-MM-DD');
+  const currentTime = moment().format('HH:mm');
+
   return [
     {
       name: 'email',
@@ -83,12 +88,17 @@ export const createFields = ({ isAuthenticated, email, phone }: CreateFieldsProp
       label: 'Date',
       type: 'date',
       required: true,
+      settings: {
+        min: today,
+      },
+      value: today,
     },
     {
       name: 'time',
       label: 'Time',
       type: 'time',
       required: true,
+      value: currentTime,
     },
     {
       name: 'numberOfGuests',

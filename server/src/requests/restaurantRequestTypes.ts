@@ -20,8 +20,12 @@ export interface AddRestaurantRequest extends Request {
   body: RestaurantProps;
 }
 
+interface EditRestaurantProps extends RestaurantProps {
+  deletedImages: string[];
+}
+
 export interface EditRestaurantRequest extends Request {
-  body: RestaurantProps;
+  body: EditRestaurantProps;
   params: {
     id: string;
   };

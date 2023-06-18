@@ -5,9 +5,13 @@ import { RestaurantPageData } from '../reducers/restaurantReducer';
 import createAuthClient from '../services/createAuthClient';
 import { RestaurantCreateFormData } from '../form-data/restaurant/RestaurantCreateFormData';
 
+interface EditRestaurantProps extends RestaurantCreateFormData {
+  deletedImages: string[];
+}
+
 interface EditRestaurantArgs {
   id: string;
-  restaurant: RestaurantCreateFormData;
+  restaurant: EditRestaurantProps;
 }
 
 interface UploadImagesFormData {
@@ -74,9 +78,9 @@ export const createRestaurant: AsyncThunk<any, any, {}> = createAsyncThunk<any, 
   },
 );
 
-export const editRestaurant: AsyncThunk<any, any, {}> = createAsyncThunk<any, any>(
+export const editRestaurant: AsyncThunk<any, EditRestaurantArgs, {}> = createAsyncThunk<any, EditRestaurantArgs>(
   'restaurant/editRestaurant',
-  async ({ id, restaurant }: EditRestaurantArgs, thunkAPI) => {
+  async ({ id, restaurant }, thunkAPI) => {
     const { putMultiPart } = createAuthClient(thunkAPI);
 
     const formData = restaurantToFormData(restaurant);

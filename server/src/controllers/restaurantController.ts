@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import Restaurant from '../models/restaurant';
 import { validateOpeningHours } from '../services/restaurantService';
-import { deleteFiles } from '../utils/storage';
+import { deleteFile, deleteFiles } from '../utils/storage';
 import Request from '../types/request.types';
 import { AddRestaurantRequest, EditRestaurantRequest } from '../requests/restaurantRequestTypes';
 import { createTables, deleteTable } from '../services/tableService';
@@ -90,7 +90,7 @@ export const getRestaurantById = async (req: Request, res: Response) => {
 };
 
 export const editRestaurant = async (req: EditRestaurantRequest, res: Response) => {
-  const { name, city, street, number, phone, openingHours, tables: rawTables } = req.body;
+  const { name, city, street, number, phone, openingHours, tables: rawTables, deletedImages } = req.body;
 
   const trimmedOpeningHours = openingHours.trim();
   if (!validateOpeningHours(trimmedOpeningHours)) {
@@ -103,7 +103,8 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
 
   try {
     const tables = JSON.parse(rawTables);
-    const restaurant = await Restaurant.findById(req.params.id);
+    const restaurantId = req.params.id;
+    const restaurant = await Restaurant.findById(restaurantId);
 
     if (!restaurant) {
       deleteFiles(req.files, req.params.id);
@@ -126,6 +127,11 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
       openingHours: trimmedOpeningHours,
       images: [...restaurant.images],
     };
+
+    if (deletedImages && deletedImages.length > 0) {
+      updatedRestaurantData.images = updatedRestaurantData.images.filter((image) => !deletedImages.includes(image));
+      deletedImages.forEach((image) => deleteFile(`${restaurantId}/${image}`));
+    }
 
     if (req.files && req.files.length > 0) {
       const uploadedImages = req.files.map((file) => file.path);
