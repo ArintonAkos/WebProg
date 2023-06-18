@@ -91,6 +91,7 @@ const Form: React.FC<FormProps> = ({ fields, onSubmit, submitText, portals, meth
               element={field.element}
               error={errors[field.name]}
               autoComplete={field.autoComplete}
+              disabled={field.disabled}
               customComponent={field.customComponent}
             />
           </Fragment>

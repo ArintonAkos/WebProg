@@ -23,6 +23,7 @@ type CustomInputProps = {
   error?: boolean;
   errorMessage?: string;
   autoComplete?: string;
+  disabled?: boolean;
 };
 
 const Input: React.FC<CustomInputProps> = ({
@@ -37,12 +38,20 @@ const Input: React.FC<CustomInputProps> = ({
   error,
   errorMessage,
   autoComplete,
+  disabled,
 }) => {
   return (
     <FormControl isRequired={isRequired} isInvalid={error}>
       {label && <FormLabel>{label}</FormLabel>}
       <InputGroup>
-        <ChakraInput {...field} placeholder={placeHolder} type={type} {...settings} autoComplete={autoComplete} />
+        <ChakraInput
+          {...field}
+          placeholder={placeHolder}
+          type={type}
+          {...settings}
+          autoComplete={autoComplete}
+          disabled={disabled}
+        />
         {icon && <InputRightElement children={icon} />}
       </InputGroup>
       {helperText && <FormHelperText>{helperText}</FormHelperText>}

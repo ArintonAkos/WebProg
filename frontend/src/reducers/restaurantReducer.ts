@@ -9,7 +9,6 @@ import { CustomRootState, DefaultState } from '../store/state';
 import { mapAsyncThunkToGlobalAction } from '../actions';
 import { wrapSliceWithCommonFunctions } from '../hoc/reducerWrapper';
 import Restaurant, { MinimalRestaurantData } from '../models/restaurant';
-import User from '../models/user';
 
 export interface RestaurantPageData {
   details?: Restaurant;

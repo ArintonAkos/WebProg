@@ -44,22 +44,6 @@ const RestaurantDetails: React.FC = () => {
     navigate(`/restaurants/edit/${id}`);
   };
 
-  const handleImageUpload = (uploadedFiles: File[]) => {
-    setFiles([...uploadedFiles]);
-  };
-
-  const handleFormSubmit = () => {
-    dispatch(
-      uploadImages({
-        id,
-        restaurant: {
-          images: files,
-        },
-      }),
-    );
-    setFiles([]);
-  };
-
   const { flexDirection, topMargin }: ResponsiveStyles = useBreakpointValue({
     base: { flexDirection: 'column', topMargin: 4 },
     md: { flexDirection: 'row', topMargin: 0 },
@@ -115,13 +99,6 @@ const RestaurantDetails: React.FC = () => {
           <Flex direction="column" flex={1} width="100%">
             <ReservationForm id={id!} />
           </Flex>
-          {/*<Flex pl={leftPadding} direction="column" mt={topMargin} flex={1} width="100%">*/}
-          {/*  <Text fontSize="2xl" fontWeight="bold" mb={4}>*/}
-          {/*    Upload Images*/}
-          {/*  </Text>*/}
-          {/*  <ImageUpload onUploadedFiles={handleImageUpload} files={files} />*/}
-          {/*  <Form fields={[]} onSubmit={handleFormSubmit} />*/}
-          {/*</Flex>*/}
         </Flex>
       </VStack>
     </StatusHandler>

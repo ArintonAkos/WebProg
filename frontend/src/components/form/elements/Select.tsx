@@ -24,11 +24,12 @@ const Select: React.FC<CustomSelectProps & OmitSizeProp & SelectProps> = ({
   isRequired,
   field,
   settings,
+  disabled,
 }) => {
   return (
     <FormControl isRequired={isRequired}>
       {label && <FormLabel>{label}</FormLabel>}
-      <ChakraSelect {...field} {...settings}>
+      <ChakraSelect {...field} {...settings} disabled={disabled}>
         {options.map((option: SelectOption, index: number) => (
           <option key={index} value={option.value}>
             {option.label}

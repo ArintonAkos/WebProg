@@ -21,6 +21,7 @@ type CustomCheckboxGroupProps = {
   field: ControllerRenderProps;
   options: Array<CheckboxOptions>;
   settings?: CheckboxProps;
+  disabled?: boolean;
 };
 
 const CheckboxGroup: React.FC<CustomCheckboxGroupProps> = ({
@@ -30,11 +31,12 @@ const CheckboxGroup: React.FC<CustomCheckboxGroupProps> = ({
   field,
   options,
   settings,
+  disabled,
 }) => {
   return (
     <FormControl isRequired={isRequired}>
       {label && <FormLabel>{label}</FormLabel>}
-      <ChakraCheckboxGroup {...field}>
+      <ChakraCheckboxGroup {...field} isDisabled={disabled}>
         {options.map((option, index) => (
           <Checkbox key={index} value={option.value} {...settings}>
             {option.label}

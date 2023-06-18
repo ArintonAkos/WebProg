@@ -34,12 +34,16 @@ const restaurantToFormData = (restaurant: RestaurantCreateFormData | UploadImage
 
     const value: any = restaurant[objKey];
 
-    if (key === 'images' && restaurant.images) {
-      restaurant.images.forEach((image) => {
-        formData.append('images', image);
+    if (Array.isArray(value)) {
+      value.forEach((val: any, index) => {
+        if (typeof val === 'object') {
+          Object.entries(value).forEach(([key, value]) => {
+            formData.append(`${objKey}[${index}][${key}]`, value);
+          });
+        } else {
+          formData.append(`${objKey}[${index}]`, value?.toString());
+        }
       });
-    } else if (Array.isArray(value)) {
-      formData.append(key, JSON.stringify(value));
     } else {
       formData.append(key, value?.toString());
     }

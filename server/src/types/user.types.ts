@@ -23,6 +23,7 @@ export interface IPopulatedUser {
   id: Types.ObjectId;
   name: string;
   email: string;
+  phone: string | undefined;
   roles: IRole[];
   permissions: IPermission[];
   adminRestaurants: IRestaurant[];

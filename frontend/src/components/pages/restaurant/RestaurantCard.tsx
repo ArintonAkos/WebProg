@@ -66,7 +66,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) => {
           <VStack alignItems="start">
             <Text>City: {restaurant.city}</Text>
             <Text>Opening Hours: {restaurant.openingHours}</Text>
-            {ability.can('edit', 'Restaurant') && (
+            {ability.can('update', 'Restaurant') && (
               <Button
                 size="sm"
                 width="100%"

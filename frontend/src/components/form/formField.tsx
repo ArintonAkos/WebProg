@@ -24,10 +24,10 @@ const FormField: React.FC<FormFieldPropsWithControl> = ({
   value,
   error,
   autoComplete,
+  disabled,
   customComponent,
 }) => {
   if (customComponent) {
-    console.log('Rendered custom component!');
     return <>{customComponent}</>;
   }
 
@@ -42,6 +42,7 @@ const FormField: React.FC<FormFieldPropsWithControl> = ({
             isRequired={required}
             field={field}
             settings={settings as SelectProps}
+            disabled={disabled}
           />
         );
       case 'checkbox':
@@ -55,6 +56,7 @@ const FormField: React.FC<FormFieldPropsWithControl> = ({
             isRequired={required}
             field={field}
             settings={settings as CheckboxProps}
+            disabled={disabled}
           />
         );
       case 'textarea':
@@ -66,6 +68,7 @@ const FormField: React.FC<FormFieldPropsWithControl> = ({
             field={field}
             placeHolder={placeHolder}
             settings={settings as TextareaProps}
+            disabled={disabled}
           />
         );
       default:
@@ -81,6 +84,7 @@ const FormField: React.FC<FormFieldPropsWithControl> = ({
             error={!!error}
             errorMessage={error?.message?.toString()}
             autoComplete={autoComplete}
+            disabled={disabled}
           />
         );
     }

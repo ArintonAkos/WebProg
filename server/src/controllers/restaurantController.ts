@@ -35,8 +35,7 @@ export const getRestaurants = async (req: Request, res: Response) => {
 
 export const addRestaurant = async (req: AddRestaurantRequest, res: Response) => {
   try {
-    const { name, city, street, number, phone, openingHours, tables: rawTables } = req.body;
-    const tables = JSON.parse(rawTables);
+    const { name, city, street, number, phone, openingHours, tables } = req.body;
 
     if (!validateOpeningHours(openingHours)) {
       res.status(401).json({
@@ -90,7 +89,7 @@ export const getRestaurantById = async (req: Request, res: Response) => {
 };
 
 export const editRestaurant = async (req: EditRestaurantRequest, res: Response) => {
-  const { name, city, street, number, phone, openingHours, tables: rawTables, deletedImages } = req.body;
+  const { name, city, street, number, phone, openingHours, tables, deletedImages } = req.body;
 
   const trimmedOpeningHours = openingHours.trim();
   if (!validateOpeningHours(trimmedOpeningHours)) {
@@ -102,7 +101,6 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
   }
 
   try {
-    const tables = JSON.parse(rawTables);
     const restaurantId = req.params.id;
     const restaurant = await Restaurant.findById(restaurantId);
 
@@ -115,7 +113,6 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
       await deleteTable(table);
     }
 
-    console.log(req.body, tables);
     restaurant.tables = await createTables(restaurant._id, tables);
 
     const updatedRestaurantData = {

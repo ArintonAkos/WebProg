@@ -158,6 +158,7 @@ const userToPublicUser = (user: IPopulatedUserDocument): IPopulatedUser => {
     id: user._id,
     name: user.name,
     email: user.email,
+    phone: user.phone,
     roles: user.roles as IRole[],
     permissions: Array.from(permissionsSet),
     adminRestaurants: user.adminRestaurants,

@@ -9,6 +9,7 @@ import {
   updateReservation,
 } from '../controllers/reservationController';
 import { Types } from 'mongoose';
+import { validateAddReservation } from '../validators/reservation';
 
 const router = express.Router();
 
@@ -21,7 +22,7 @@ const validateRestaurantId = (req, res, next) => {
   }
 };
 
-router.post('/:restaurantId', addReservation);
+router.post('/:restaurantId', validateAddReservation, addReservation);
 router.get('/:restaurantId', validateRestaurantId, getReservationsByRestaurantId);
 router.get('/reserved-tables/:restaurantId', validateRestaurantId, getReservedTablesByRestaurantId);
 router.delete('/:id', deleteReservation);
