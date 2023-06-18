@@ -32,6 +32,10 @@ const userSchema = new Schema<IUser>({
       ref: 'Restaurant',
     },
   ],
+  approved: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const User = model<IUser>('User', userSchema);

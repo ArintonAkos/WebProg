@@ -12,6 +12,7 @@ export interface IUser {
   password: string;
   roles: Types.ObjectId[];
   adminRestaurants: Types.ObjectId[];
+  approved: boolean;
 }
 
 export interface IPopulatedUserDocument extends Omit<IUser, 'roles' | 'adminRestaurants'> {
@@ -27,4 +28,5 @@ export interface IPopulatedUser {
   roles: IRole[];
   permissions: IPermission[];
   adminRestaurants: IRestaurant[];
+  approved: boolean;
 }

@@ -6,6 +6,7 @@ interface RegisterUserProps {
   phone: string;
   password: string;
   confirmPassword: string;
+  role: 'Admin' | 'Moderator' | 'User';
 }
 
 export interface RegisterUserRequest extends Request {

@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { useForm } from 'react-hook-form';
 import { joiResolver } from '@hookform/resolvers/joi';
+import { AvailableRoles } from '../../models/role';
 
 const registrationSchema = Joi.object({
   name: Joi.string().min(3).max(30).required(),
@@ -24,6 +25,9 @@ const registrationSchema = Joi.object({
   phone: Joi.string()
     .length(10)
     .pattern(/^[0-9]+$/, 'numbers')
+    .required(),
+  role: Joi.string()
+    .valid(...AvailableRoles)
     .required(),
 });
 
@@ -66,6 +70,18 @@ const registerFields: FormFieldProps[] = [
     required: true,
     placeHolder: 'Confirm your password',
     autoComplete: 'new-password',
+  },
+  {
+    name: 'role',
+    label: 'Account Type',
+    type: 'select',
+    required: true,
+    value: 'User',
+    options: [
+      { value: 'User', label: 'User' },
+      { value: 'Moderator', label: 'Moderator' },
+      { value: 'Admin', label: 'Admin' },
+    ],
   },
 ];
 

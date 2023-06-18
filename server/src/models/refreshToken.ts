@@ -6,7 +6,10 @@ const RefreshTokenSchema = new Schema<IRefreshToken>(
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     token: { type: String, required: true },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    expires: '7d',
+  },
 );
 
 const RefreshToken = model<IRefreshToken>('RefreshToken', RefreshTokenSchema);

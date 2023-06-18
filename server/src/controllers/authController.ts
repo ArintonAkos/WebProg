@@ -12,7 +12,7 @@ import { RegisterUserRequest } from '../requests/authRequestTypes';
 import RefreshToken from '../models/refreshToken';
 
 export const register = async (req: RegisterUserRequest, res: Response) => {
-  const { name, email, password, confirmPassword, phone } = req.body;
+  const { name, email, password, confirmPassword, phone, role } = req.body;
 
   if (password.length < 8) {
     return res.status(400).json({ message: 'Password must be at least 8 characters long', showToast: true });
@@ -30,7 +30,7 @@ export const register = async (req: RegisterUserRequest, res: Response) => {
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const userRole = await RoleRepository.getRole('User');
+    const userRole = await RoleRepository.getRole(role);
 
     user = new User({
       name,
@@ -38,6 +38,7 @@ export const register = async (req: RegisterUserRequest, res: Response) => {
       phone,
       password: passwordHash,
       roles: [userRole],
+      approved: [role === 'User'],
     });
 
     await user.save();
@@ -162,5 +163,6 @@ const userToPublicUser = (user: IPopulatedUserDocument): IPopulatedUser => {
     roles: user.roles as IRole[],
     permissions: Array.from(permissionsSet),
     adminRestaurants: user.adminRestaurants,
+    approved: user.approved,
   };
 };

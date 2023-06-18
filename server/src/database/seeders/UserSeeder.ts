@@ -20,6 +20,7 @@ const onComplete = async () => {
       roles: [roleIds['Admin']],
       adminRestaurants: [],
       phone: '0723150884',
+      approved: true,
     },
   ];
 

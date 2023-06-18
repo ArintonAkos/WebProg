@@ -8,6 +8,7 @@ interface User {
   phone: string;
   roles: Role[];
   permissions: Permission[];
+  approved: boolean;
 }
 
 export default User;
