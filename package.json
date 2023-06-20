@@ -17,8 +17,5 @@
     "backend": "npm start --prefix server/",
     "seed": "npm run seed --prefix server/",
     "lint": "eslint './frontend/**/*.{ts,tsx}' './server/**/*.{ts,tsx}' --fix"
-  },
-  "dependencies": {
-    "@types/redux-persist": "^4.3.1"
   }
 }
