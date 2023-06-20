@@ -6,6 +6,8 @@ extends:
   - eslint:recommended
   - airbnb-base
   - prettier
+  - plugin:@typescript-eslint/eslint-recommended
+  - plugin:@typescript-eslint/recommended
 globals:
   Atomics: readonly
   SharedArrayBuffer: readonly
