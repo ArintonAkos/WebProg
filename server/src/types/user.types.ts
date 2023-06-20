@@ -1,5 +1,5 @@
-import { IRole } from '../models/role';
 import { Types } from 'mongoose';
+import { IRole } from '../models/role';
 import { IPermission } from '../models/permission';
 import { IPopulatedRole } from './role.types';
 import { IRestaurant } from '../models/restaurant';

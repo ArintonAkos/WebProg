@@ -2,9 +2,7 @@ import multer, { Multer } from 'multer';
 import * as fs from 'fs';
 import path from 'path';
 
-const getFileName = (file: Multer.File, restaurantId: string) => {
-  return `/images/${restaurantId}/${file.originalname}`;
-};
+const getFileName = (file: Multer.File, restaurantId: string) => `/images/${restaurantId}/${file.originalname}`;
 
 export const deleteFiles = (files: Multer.File[] | undefined, dir: string) => {
   if (!files) {

@@ -50,13 +50,12 @@ const onComplete = async () => {
   await RoleRepository.clearAll();
 };
 
-const getPermissionsForRole = (permissions, actions) => {
-  return permissions
+const getPermissionsForRole = (permissions, actions) =>
+  permissions
     .filter((permission) => {
       const [action, _] = permission.name.split(' ');
       return actions.includes(action);
     })
     .map((permission) => permission._id);
-};
 
 export default new Seeder<IRole>(Role, roleSeeds, onComplete);

@@ -1,6 +1,6 @@
+import { Model } from 'mongoose';
 import { IRedisRepository } from './IRedisRepository';
 import { redis } from '../index';
-import { Model } from 'mongoose';
 
 abstract class BaseRepository<T> implements IRedisRepository<T> {
   constructor(private model: Model<T>) {}
@@ -17,7 +17,7 @@ abstract class BaseRepository<T> implements IRedisRepository<T> {
   }
 
   async get(redisKey: string): Promise<T> {
-    let data = await redis.get(redisKey);
+    const data = await redis.get(redisKey);
 
     if (data) {
       return JSON.parse(data);

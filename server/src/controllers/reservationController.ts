@@ -9,7 +9,7 @@ import { AddReservationRequest, GetReservedTablesRequest } from '../requests/res
 export const addReservation = async (req: AddReservationRequest, res: Response) => {
   try {
     const { email, phone, date, time, tableIds, numberOfGuests } = req.body;
-    const restaurantId = req.params.restaurantId;
+    const { restaurantId } = req.params;
 
     const reservationStartTime = new Date(`${date}T${time}`);
     const reservationEndTime = new Date(reservationStartTime.getTime() + 30 * 60 * 1000); // 30 minutes later
@@ -71,7 +71,7 @@ export const addReservation = async (req: AddReservationRequest, res: Response) 
       userId: user.id,
       restaurantId,
       time: reservationStartTime,
-      numberOfGuests: numberOfGuests,
+      numberOfGuests,
       tables: tableIds,
       phone,
       email,
@@ -95,7 +95,7 @@ export const addReservation = async (req: AddReservationRequest, res: Response) 
 
 export const getReservationsByRestaurantId = async (req: Request, res: Response) => {
   try {
-    const restaurantId = req.params.restaurantId;
+    const { restaurantId } = req.params;
     const reservations = await Reservation.find({ restaurantId }).populate('userId').populate('restaurantId').exec();
 
     res.status(200).json({ reservations });
@@ -213,7 +213,7 @@ export const updateReservation = async (req: Request, res: Response) => {
 
 export const getReservedTablesByRestaurantId = async (req: GetReservedTablesRequest, res: Response) => {
   try {
-    const restaurantId = req.params.restaurantId;
+    const { restaurantId } = req.params;
     const { date, time } = req.query;
 
     const reservationStartTime = new Date(`${date}T${time}`);

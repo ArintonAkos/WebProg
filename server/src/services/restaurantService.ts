@@ -14,9 +14,7 @@ export const validateOpeningHours = (openingHours: string): boolean => {
   return start < end;
 };
 
-export const dateTimeToDateString = (dateTime: Date): string => {
-  return dateTime.toISOString().substring(0, 10);
-};
+export const dateTimeToDateString = (dateTime: Date): string => dateTime.toISOString().substring(0, 10);
 
 export const getOpeningHours = (openingHours: string, date: Date = new Date()) => {
   const [startTime, endTime] = openingHours.split('-');

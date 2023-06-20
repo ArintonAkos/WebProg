@@ -1,4 +1,5 @@
 import express from 'express';
+import { Types } from 'mongoose';
 import {
   addReservation,
   deleteReservation,
@@ -8,7 +9,6 @@ import {
   getReservedTablesByRestaurantId,
   updateReservation,
 } from '../controllers/reservationController';
-import { Types } from 'mongoose';
 import { validateAddReservation } from '../validators/reservation';
 
 const router = express.Router();

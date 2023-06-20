@@ -1,6 +1,6 @@
+import bcrypt from 'bcryptjs';
 import User from '../../models/user';
 import Seeder from './Seeder';
-import bcrypt from 'bcryptjs';
 import Role from '../../models/role';
 import { IUser } from '../../types/user.types';
 
@@ -17,7 +17,7 @@ const onComplete = async () => {
       name: 'Arinton Akos',
       email: 'arintonakos@gmail.com',
       password: bcrypt.hashSync('Asd@1234', 10),
-      roles: [roleIds['Admin']],
+      roles: [roleIds.Admin],
       adminRestaurants: [],
       phone: '0723150884',
       approved: true,

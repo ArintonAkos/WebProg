@@ -5,7 +5,7 @@ class Seeder<T> {
 
   public async run(): Promise<void> {
     try {
-      for (let seed of this.seeds) {
+      for (const seed of this.seeds) {
         const record = await this.model.findOne(seed);
         if (!record) {
           await this.model.create(seed);

@@ -1,7 +1,7 @@
+import { Types } from 'mongoose';
 import Seeder from './Seeder';
 import Restaurant, { IRestaurant } from '../../models/restaurant';
 import Table from '../../models/table';
-import { Types } from 'mongoose';
 
 const restaurantSeeds: IRestaurant[] = [
   {

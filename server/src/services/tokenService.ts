@@ -1,6 +1,6 @@
+import jwt from 'jsonwebtoken';
 import Token from '../models/token';
 import config from '../config/config';
-import jwt from 'jsonwebtoken';
 
 const TokenService = {
   generateTokens: (userData) => {

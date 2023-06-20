@@ -1,9 +1,9 @@
+import { Types } from 'mongoose';
 import { TableProps } from '../requests/restaurantRequestTypes';
 import Table from '../models/table';
-import { Types } from 'mongoose';
 
-export const createTables = async (restaurantId: Types.ObjectId, tables: TableProps[]): Promise<Types.ObjectId[]> => {
-  return await Promise.all(
+export const createTables = async (restaurantId: Types.ObjectId, tables: TableProps[]): Promise<Types.ObjectId[]> =>
+  await Promise.all(
     tables.map(async (tableData) => {
       const table = new Table({
         ...tableData,
@@ -15,7 +15,6 @@ export const createTables = async (restaurantId: Types.ObjectId, tables: TablePr
       return table._id;
     }),
   );
-};
 
 export const deleteTable = async (tableId: Types.ObjectId) => {
   try {

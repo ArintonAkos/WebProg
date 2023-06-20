@@ -109,7 +109,7 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
       return res.status(404).json({ message: 'Restaurant not found', showToast: true });
     }
 
-    for (let table of restaurant.tables) {
+    for (const table of restaurant.tables) {
       await deleteTable(table);
     }
 

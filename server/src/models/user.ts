@@ -38,7 +38,7 @@ const userSchema = new Schema<IUser>({
   },
 });
 
-userSchema.post<IPopulatedUserDocument>('findOne', async function (doc: IPopulatedUserDocument) {
+userSchema.post<IPopulatedUserDocument>('findOne', async (doc: IPopulatedUserDocument) => {
   if (!doc.approved) {
     const userRole = await RoleRepository.getRoleWithPermissions('User');
 

@@ -1,7 +1,7 @@
 import { Response } from 'express';
-import User from '../models/user';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import User from '../models/user';
 import config from '../config/config';
 import Request from '../types/request.types';
 import { IRole } from '../models/role';

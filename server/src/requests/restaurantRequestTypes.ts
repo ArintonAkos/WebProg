@@ -1,5 +1,5 @@
-import Request from '../types/request.types';
 import { Multer } from 'multer';
+import Request from '../types/request.types';
 
 export interface TableProps {
   number: number;

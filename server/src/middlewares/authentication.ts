@@ -1,13 +1,13 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import { NextFunction, Response } from 'express';
+import { Types } from 'mongoose';
 import config from '../config/config';
 import TokenService from '../services/tokenService';
 import User from '../models/user';
-import { NextFunction, Response } from 'express';
 import Request from '../types/request.types';
 import RoleRepository from '../redis/repositories/RoleRepository';
 import { IPopulatedUser, IUser } from '../types/user.types';
 import PermissionRepository from '../redis/repositories/PermissionRepository';
-import { Types } from 'mongoose';
 
 const authentication = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
@@ -93,7 +93,7 @@ const getGuest = async (): Promise<IPopulatedUser> => {
     name: 'Guest',
     email: '',
     roles: guestRole ? [guestRole] : [],
-    permissions: guestPermissions ? guestPermissions : [],
+    permissions: guestPermissions || [],
     adminRestaurants: [],
   } as IPopulatedUser;
 };
@@ -110,17 +110,13 @@ const getUser = async (userId?: string): Promise<IPopulatedUser | ErrorMessage> 
       ...user,
       id: new Types.ObjectId(user._id),
     };
-  } else {
-    return new ErrorMessage(500, { error: 'User is not populated.' });
   }
+  return new ErrorMessage(500, { error: 'User is not populated.' });
 };
 
-const isPopulatedUser = (user: IUser | IPopulatedUser): user is IPopulatedUser => {
-  return (
-    (user as IPopulatedUser).roles !== undefined &&
-    (user as IPopulatedUser).roles.length > 0 &&
-    typeof (user as IPopulatedUser).roles[0] !== 'string'
-  );
-};
+const isPopulatedUser = (user: IUser | IPopulatedUser): user is IPopulatedUser =>
+  (user as IPopulatedUser).roles !== undefined &&
+  (user as IPopulatedUser).roles.length > 0 &&
+  typeof (user as IPopulatedUser).roles[0] !== 'string';
 
 export default authentication;
