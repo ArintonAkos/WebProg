@@ -6,6 +6,7 @@ export const registerSchema = Joi.object({
   password: Joi.string().min(8).required(),
   confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
   phone: Joi.string().required(),
+  role: Joi.string().valid('User', 'Moderator', 'Admin').required(),
 });
 
 export const loginSchema = Joi.object({

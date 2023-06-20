@@ -1,5 +1,7 @@
 import Role, { IRole } from '../../models/role';
 import BaseRepository from './BaseRepository';
+import { IPopulatedRole } from '../../types/role.types';
+import PermissionRepository from './PermissionRepository';
 
 class RoleRepository extends BaseRepository<IRole> {
   protected getBaseRedisKey(): string {
@@ -25,6 +27,17 @@ class RoleRepository extends BaseRepository<IRole> {
 
   async clearRole(roleName: string): Promise<void> {
     await this.clear(this.generateRedisKey({ name: roleName } as IRole));
+  }
+
+  async getRoleWithPermissions(roleName: string): Promise<IPopulatedRole> {
+    const role: IPopulatedRole = await Role.findOne({ name: roleName }).populate('permissions');
+    role.permissions = await PermissionRepository.getPermissionsForRole(role.name);
+
+    if (!role) {
+      throw new Error(`Role ${roleName} not found`);
+    }
+
+    return role;
   }
 }
 

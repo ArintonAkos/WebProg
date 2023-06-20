@@ -2,6 +2,7 @@ import { Document, model, PopulatedDoc, Schema, Types } from 'mongoose';
 import { IPermission } from './permission';
 
 export interface IRole {
+  _id: Types.ObjectId;
   name: string;
   permissions: PopulatedDoc<Document<Types.ObjectId> & IPermission>[];
 }

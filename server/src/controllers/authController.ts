@@ -38,7 +38,7 @@ export const register = async (req: RegisterUserRequest, res: Response) => {
       phone,
       password: passwordHash,
       roles: [userRole],
-      approved: [role === 'User'],
+      approved: role === 'User',
     });
 
     await user.save();

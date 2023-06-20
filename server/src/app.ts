@@ -11,9 +11,9 @@ import ability from './middlewares/ability';
 
 const app = express();
 
-app.use('/images', express.static('/images'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/images', express.static('/images'));
 app.use(cors);
 app.use(responseFormatter);
 app.use(authentication);

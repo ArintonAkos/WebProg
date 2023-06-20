@@ -1,5 +1,6 @@
 import { model, Schema } from 'mongoose';
-import { IUser } from '../types/user.types';
+import { IPopulatedUserDocument, IUser } from '../types/user.types';
+import RoleRepository from '../redis/repositories/RoleRepository';
 
 const userSchema = new Schema<IUser>({
   name: {
@@ -14,7 +15,6 @@ const userSchema = new Schema<IUser>({
   phone: {
     type: String,
     required: true,
-    unique: true,
   },
   password: {
     type: String,
@@ -36,6 +36,14 @@ const userSchema = new Schema<IUser>({
     type: Boolean,
     default: false,
   },
+});
+
+userSchema.post<IPopulatedUserDocument>('findOne', async function (doc: IPopulatedUserDocument) {
+  if (!doc.approved) {
+    const userRole = await RoleRepository.getRoleWithPermissions('User');
+
+    doc.roles = [userRole];
+  }
 });
 
 const User = model<IUser>('User', userSchema);

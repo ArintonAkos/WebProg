@@ -74,7 +74,7 @@ const registerFields: FormFieldProps[] = [
   {
     name: 'role',
     label: 'Account Type',
-    type: 'select',
+    element: 'select',
     required: true,
     value: 'User',
     options: [
