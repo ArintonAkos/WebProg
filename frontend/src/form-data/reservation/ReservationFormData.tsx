@@ -28,7 +28,7 @@ export const createReservationSchema = Joi.object({
   phone: Joi.string()
     .pattern(/^[0-9 ]*$/)
     .required(),
-  date: Joi.date().min('now').iso().required().messages({
+  date: Joi.date().min(moment().startOf('day').toISOString()).iso().required().messages({
     'date.base': 'Date must be a date string.',
     'date.min': 'Date must be today or in the future.',
     'date.isoDate': 'Date must be in the ISO format (YYYY-MM-DD).',

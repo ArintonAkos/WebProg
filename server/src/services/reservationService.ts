@@ -2,6 +2,7 @@ import Restaurant from '../models/restaurant';
 import { getOpeningHours } from './restaurantService';
 
 export const validateStartTime = (startTime: Date) => {
+  console.log(startTime);
   const selectedDate = new Date(startTime.toISOString().slice(0, 10));
 
   selectedDate.setSeconds(0);

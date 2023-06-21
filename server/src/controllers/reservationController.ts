@@ -11,9 +11,12 @@ export const addReservation = async (req: AddReservationRequest, res: Response) 
     const { email, phone, date, time, tableIds, numberOfGuests } = req.body;
     const { restaurantId } = req.params;
 
-    const reservationStartTime = new Date(`${date}T${time}`);
+    const parsedDate = new Date(date).toISOString().split('T')[0];
+    const reservationStartTime = new Date(`${parsedDate}T${time}`);
     const reservationEndTime = new Date(reservationStartTime.getTime() + 30 * 60 * 1000); // 30 minutes later
 
+    console.log(date, time);
+    console.log(reservationStartTime);
     if (!validateStartTime(reservationStartTime)) {
       return res.status(400).json({
         showToast: true,
@@ -48,7 +51,7 @@ export const addReservation = async (req: AddReservationRequest, res: Response) 
 
     for (let i = 0; i < tableIds.length; i++) {
       const existingTableReservation = await Reservation.findOne({
-        restaurantId,
+        restaurant: restaurantId,
         tables: { $in: [tableIds[i]] },
         $or: [
           { time: { $gte: reservationStartTime, $lt: reservationEndTime } },
@@ -68,8 +71,8 @@ export const addReservation = async (req: AddReservationRequest, res: Response) 
     }
 
     const reservation = new Reservation({
-      userId: user.id,
-      restaurantId,
+      user: user.id,
+      restaurant: restaurantId,
       time: reservationStartTime,
       numberOfGuests,
       tables: tableIds,
@@ -96,7 +99,10 @@ export const addReservation = async (req: AddReservationRequest, res: Response) 
 export const getReservationsByRestaurantId = async (req: Request, res: Response) => {
   try {
     const { restaurantId } = req.params;
-    const reservations = await Reservation.find({ restaurantId }).populate('userId').populate('restaurantId').exec();
+    const reservations = await Reservation.find({ restaurant: restaurantId })
+      .populate('user')
+      .populate('restaurant')
+      .exec();
 
     res.status(200).json({ reservations });
   } catch (error) {
@@ -108,7 +114,7 @@ export const getReservationsByRestaurantId = async (req: Request, res: Response)
 export const deleteReservation = async (req: Request, res: Response) => {
   try {
     const reservationId = req.params.id;
-    const reservation = await Reservation.findById(reservationId).populate('restaurantId').populate('userId').exec();
+    const reservation = await Reservation.findById(reservationId).populate('restaurant').populate('user').exec();
 
     if (!reservation) {
       return res.status(404).json({
@@ -148,7 +154,7 @@ export const getAllReservations = async (req: Request, res: Response) => {
   console.log(req.user);
   try {
     const userId = req.user.id;
-    const reservations = await Reservation.find({ userId }).populate('userId').populate('restaurantId').exec();
+    const reservations = await Reservation.find({ user: userId }).populate('user').populate('restaurant').exec();
 
     res.json({ reservations });
   } catch (error) {
@@ -167,10 +173,10 @@ export const getManagedReservations = async (req: Request, res: Response) => {
 
     const restaurantIds = (req.user.adminRestaurants ?? []).map((adminRestaurant) => adminRestaurant._id);
     const reservations = await Reservation.find({
-      restaurantId: { $in: restaurantIds },
+      restaurant: { $in: restaurantIds },
     })
-      .populate('restaurantId')
-      .populate('userId')
+      .populate('restaurant')
+      .populate('user')
       .exec();
 
     res.json({ reservations });
@@ -194,8 +200,8 @@ export const updateReservation = async (req: Request, res: Response) => {
     }
 
     const populatedReservation = await Reservation.findById(reservation._id)
-      .populate('userId')
-      .populate('restaurantId')
+      .populate('user')
+      .populate('restaurant')
       .exec();
 
     res.status(200).json({
@@ -221,7 +227,7 @@ export const getReservedTablesByRestaurantId = async (req: GetReservedTablesRequ
     const reservationEndTime = new Date(reservationStartTime.getTime() + 30 * 60 * 1000);
 
     const reservations = await Reservation.find({
-      restaurantId,
+      restaurant: restaurantId,
       $or: [
         { time: { $gte: reservationStartTime, $lt: reservationEndTime } },
         {
