@@ -3,9 +3,8 @@ import Joi from '@hapi/joi';
 import Request from '../types/request.types';
 
 export const validationMiddleware = (schema: Joi.ObjectSchema) => (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.body, req);
+  console.log('Validation middleware', req.body);
   const { error } = schema.validate(req.body);
-  console.log(error);
 
   if (error) {
     return res.status(400).json({

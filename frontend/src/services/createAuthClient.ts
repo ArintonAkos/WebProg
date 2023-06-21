@@ -1,4 +1,5 @@
 import ResponseError from '../types/ResponseError';
+import FormDataService from './formDataService';
 
 export const API_BASE_URL = 'http://localhost:3000';
 
@@ -23,6 +24,8 @@ const httpRequest = async ({ url, method, data = null, headers = {} }: Request) 
   };
 
   if (data instanceof FormData) {
+    console.log('IDE');
+    FormDataService.logFormData(data);
     options.body = data;
   } else if (data) {
     options.headers = {
@@ -127,13 +130,21 @@ const createAuthClient = (thunkApi: any) => {
     url: string,
     data: FormData | undefined = undefined,
     headers: object | undefined = undefined,
-  ) => postMultiPart(url, data, { ...authHeader, ...headers });
+  ) =>
+    postMultiPart(url, data, {
+      ...authHeader,
+      ...headers,
+    });
 
   const putMultiPartWithAuth = (
     url: string,
     data: FormData | undefined = undefined,
     headers: object | undefined = undefined,
-  ) => putMultiPart(url, data, { ...authHeader, ...headers });
+  ) =>
+    putMultiPart(url, data, {
+      ...authHeader,
+      ...headers,
+    });
 
   return {
     get: getWithAuth,

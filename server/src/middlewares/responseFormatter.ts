@@ -20,7 +20,11 @@ const responseFormatter = (req: Request, res: Response, next: NextFunction) => {
     return originalJson.call(this, data);
   };
 
-  next();
+  try {
+    next();
+  } catch (e) {
+    console.error('Error occured: ', e);
+  }
 };
 
 export default responseFormatter;

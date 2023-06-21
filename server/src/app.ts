@@ -11,13 +11,13 @@ import ability from './middlewares/ability';
 
 const app = express();
 
+app.use(responseFormatter);
+app.use('/images', express.static('/images'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/images', express.static('/images'));
 app.use(cors);
-app.use(responseFormatter);
-app.use(authentication);
-app.use(ability);
+// app.use(authentication);
+// app.use(ability);
 app.use('/reservation', reservationRoutes);
 app.use('/restaurant', restaurantRoutes);
 app.use('/auth', authRoutes);

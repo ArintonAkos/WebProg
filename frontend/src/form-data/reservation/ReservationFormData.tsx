@@ -26,8 +26,7 @@ export const createReservationSchema = Joi.object({
     'any.required': 'Number of guests is required.',
   }),
   phone: Joi.string()
-    .length(10)
-    .pattern(/^[0-9]+$/, 'numbers')
+    .pattern(/^[0-9 ]*$/)
     .required(),
   date: Joi.date().min('now').iso().required().messages({
     'date.base': 'Date must be a date string.',

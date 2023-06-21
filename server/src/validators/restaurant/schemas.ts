@@ -5,10 +5,12 @@ export const addRestaurantSchema = Joi.object({
   city: Joi.string().required(),
   street: Joi.string().required(),
   number: Joi.string().required(),
-  phone: Joi.string().pattern(new RegExp('^[0-9]{10}$')).required(),
+  phone: Joi.string()
+    .pattern(/^[0-9 ]*$/)
+    .required(),
   openingHours: Joi.string()
     .required()
-    .pattern(new RegExp('^([0-1][0-9]|2[0-3]):[0-5][0-9] - ([0-1][0-9]|2[0-3]):[0-5][0-9]$')),
+    .pattern(/^([0-1][0-9]|2[0-3]):[0-5][0-9] - ([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
   tables: Joi.array()
     .items(
       Joi.object({
@@ -24,19 +26,23 @@ export const editRestaurantSchema = Joi.object({
   city: Joi.string().required(),
   street: Joi.string().required(),
   number: Joi.number().integer().required(),
-  phone: Joi.string().pattern(new RegExp('^[0-9]{10}$')).required(),
+  phone: Joi.string()
+    .pattern(/^[0-9 ]*$/)
+    .required(),
   openingHours: Joi.string()
     .required()
-    .pattern(new RegExp('^([0-1][0-9]|2[0-3]):[0-5][0-9] - ([0-1][0-9]|2[0-3]):[0-5][0-9]$')),
+    .pattern(/^([0-1][0-9]|2[0-4]):[0-5][0-9] - ([0-1][0-9]|2[0-4]):[0-5][0-9]$/),
   tables: Joi.array()
     .items(
       Joi.object({
+        _id: Joi.string().allow(null),
         number: Joi.number().integer().required(),
         seats: Joi.number().integer().required(),
       }),
     )
     .required(),
-  deletedImages: Joi.array().items(Joi.string()),
+  deletedImages: Joi.array().items(Joi.string().allow('')),
+  images: Joi.array().items(Joi.any()),
 });
 
 export const uploadRestaurantImagesSchema = Joi.object({

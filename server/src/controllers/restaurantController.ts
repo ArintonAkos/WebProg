@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import Restaurant from '../models/restaurant';
 import { validateOpeningHours } from '../services/restaurantService';
-import { deleteFile, deleteFiles } from '../utils/storage';
+import { deleteFile, deleteFiles, deleteFilesById } from '../utils/storage';
 import Request from '../types/request.types';
 import { AddRestaurantRequest, EditRestaurantRequest } from '../requests/restaurantRequestTypes';
 import { createTables, deleteTable } from '../services/tableService';
@@ -105,8 +105,10 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
     const restaurant = await Restaurant.findById(restaurantId);
 
     if (!restaurant) {
-      deleteFiles(req.files, req.params.id);
+      deleteFiles(req.images, req.params.id);
       return res.status(404).json({ message: 'Restaurant not found', showToast: true });
+    } else {
+      deleteFilesById(deletedImages, req.params.id);
     }
 
     for (const table of restaurant.tables) {
@@ -130,8 +132,8 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
       deletedImages.forEach((image) => deleteFile(`${restaurantId}/${image}`));
     }
 
-    if (req.files && req.files.length > 0) {
-      const uploadedImages = req.files.map((file) => file.path);
+    if (req.images && req.images.length > 0) {
+      const uploadedImages = req.images.map((file) => file.path);
       updatedRestaurantData.images.push(...uploadedImages);
     }
 
@@ -140,7 +142,7 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
     });
 
     if (!updatedRestaurant) {
-      deleteFiles(req.files, req.params.id);
+      deleteFiles(req.images, req.params.id);
       return res.status(404).json({ message: 'Restaurant not found', type: 'error' });
     }
 

@@ -1,15 +1,32 @@
-import multer, { Multer } from 'multer';
+import multer from 'multer';
 import * as fs from 'fs';
 import path from 'path';
+import { BaseRestaurantRequest } from '../requests/restaurantRequestTypes';
+import { Express } from 'express';
 
-const getFileName = (file: Multer.File, restaurantId: string) => `/images/${restaurantId}/${file.originalname}`;
+export function generateFields<T extends BaseRestaurantRequest>(sampleObject: T): multer.Field[] {
+  const fields: multer.Field[] = [];
 
-export const deleteFiles = (files: Multer.File[] | undefined, dir: string) => {
+  for (const key in sampleObject.body) {
+    fields.push({ name: key, maxCount: 1 });
+  }
+
+  console.log(fields, sampleObject.body);
+  return fields;
+}
+
+const getFileName = (file: Express.Multer.File, restaurantId: string) => `/images/${restaurantId}/${file.originalname}`;
+
+export const deleteFiles = (files: Express.Multer.File[] | undefined, dir: string) => {
   if (!files) {
     return;
   }
 
   files.forEach((file) => {
+    if (!file) {
+      return;
+    }
+
     const filePath = getFileName(file, dir);
 
     if (fs.existsSync(filePath)) {
@@ -18,8 +35,27 @@ export const deleteFiles = (files: Multer.File[] | undefined, dir: string) => {
   });
 };
 
-export const uploadRestaurantImagesMulter = (restaurantId: string) => {
+export const deleteFilesById = (files: string[], dir: string) => {
+  if (!files) {
+    return;
+  }
+
+  files.forEach((file) => {
+    if (!file) {
+      return;
+    }
+
+    const filePath = `/images/${dir}/${file}`;
+
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+  });
+};
+
+export const uploadRestaurantImagesMulter = <T extends BaseRestaurantRequest>(restaurantId: string, req: T) => {
   const dir = `/images/${restaurantId}`;
+  console.log(dir, req.files);
 
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
@@ -34,7 +70,7 @@ export const uploadRestaurantImagesMulter = (restaurantId: string) => {
     },
   });
 
-  return multer({ storage }).array('images');
+  return multer({ storage }).fields(generateFields(req));
 };
 
 /**

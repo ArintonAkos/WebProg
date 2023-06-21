@@ -86,12 +86,19 @@ const RestaurantEditPage: React.FC = () => {
 
   const handleSubmit = async (submittedData: RestaurantCreateFormData) => {
     try {
+      console.log(images, {
+        ...submittedData,
+        deletedImages: deletedImages ?? [],
+        images: images,
+      });
+
       dispatch(
         editRestaurant({
           id: id!,
           restaurant: {
             ...submittedData,
-            deletedImages,
+            deletedImages: deletedImages ?? [],
+            images: images,
           },
         }),
       );

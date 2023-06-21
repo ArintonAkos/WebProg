@@ -1,4 +1,3 @@
-import { Multer } from 'multer';
 import Request from '../types/request.types';
 
 export interface TableProps {
@@ -16,18 +15,21 @@ interface RestaurantProps {
   tables: TableProps[];
 }
 
-export interface AddRestaurantRequest extends Request {
-  body: RestaurantProps;
-}
-
 interface EditRestaurantProps extends RestaurantProps {
   deletedImages: string[];
 }
 
-export interface EditRestaurantRequest extends Request {
-  body: EditRestaurantProps;
+export interface BaseRestaurantRequest extends Request {
   params: {
     id: string;
   };
-  files: Multer.File[];
+  images: Express.Multer.File[];
+}
+
+export interface AddRestaurantRequest extends BaseRestaurantRequest {
+  body: RestaurantProps;
+}
+
+export interface EditRestaurantRequest extends BaseRestaurantRequest {
+  body: EditRestaurantProps;
 }

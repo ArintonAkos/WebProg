@@ -2,6 +2,7 @@
   "name": "webprog-lab",
   "version": "1.0.0",
   "devDependencies": {
+    "@types/joi": "^17.2.3",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "@typescript-eslint/parser": "^5.60.0",
     "eslint": "^8.37.0",

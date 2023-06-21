@@ -23,8 +23,7 @@ const registrationSchema = Joi.object({
     'any.only': 'Passwords do not match',
   }),
   phone: Joi.string()
-    .length(10)
-    .pattern(/^[0-9]+$/, 'numbers')
+    .pattern(/^[0-9 ]*$/)
     .required(),
   role: Joi.string()
     .valid(...AvailableRoles)

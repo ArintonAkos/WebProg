@@ -4,6 +4,8 @@ import User from '../models/user';
 import { RestaurantPageData } from '../reducers/restaurantReducer';
 import createAuthClient from '../services/createAuthClient';
 import { RestaurantCreateFormData } from '../form-data/restaurant/RestaurantCreateFormData';
+import { objectToFormData } from '../services/objectService';
+import FormDataService from '../services/formDataService';
 
 interface EditRestaurantProps extends RestaurantCreateFormData {
   deletedImages: string[];
@@ -22,35 +24,6 @@ interface UploadImagesArgs {
   id: string;
   restaurant: UploadImagesFormData;
 }
-
-const restaurantToFormData = (restaurant: RestaurantCreateFormData | UploadImagesFormData) => {
-  const formData = new FormData();
-
-  for (const key in restaurant) {
-    const objKey: keyof (RestaurantCreateFormData | UploadImagesFormData) = key as keyof (
-      | RestaurantCreateFormData
-      | UploadImagesFormData
-    );
-
-    const value: any = restaurant[objKey];
-
-    if (Array.isArray(value)) {
-      value.forEach((val: any, index) => {
-        if (typeof val === 'object') {
-          Object.entries(value).forEach(([key, value]) => {
-            formData.append(`${objKey}[${index}][${key}]`, value);
-          });
-        } else {
-          formData.append(`${objKey}[${index}]`, value?.toString());
-        }
-      });
-    } else {
-      formData.append(key, value?.toString());
-    }
-  }
-
-  return formData;
-};
 
 export const fetchRestaurants = createAsyncThunk<any, void>('restaurant/fetchRestaurants', async (_, thunkAPI) => {
   const { get } = createAuthClient(thunkAPI);
@@ -87,8 +60,9 @@ export const editRestaurant: AsyncThunk<any, EditRestaurantArgs, {}> = createAsy
   async ({ id, restaurant }, thunkAPI) => {
     const { putMultiPart } = createAuthClient(thunkAPI);
 
-    const formData = restaurantToFormData(restaurant);
+    const formData = objectToFormData(restaurant);
 
+    FormDataService.logFormData(formData);
     return await putMultiPart(`restaurant/${id}`, formData);
   },
 );
@@ -98,7 +72,7 @@ export const uploadImages: AsyncThunk<any, any, {}> = createAsyncThunk<any, any>
   async ({ id, restaurant }: UploadImagesArgs, thunkAPI) => {
     const { postMultiPart } = createAuthClient(thunkAPI);
 
-    const formData = restaurantToFormData(restaurant);
+    const formData = objectToFormData(restaurant);
 
     return await postMultiPart(`restaurant/${id}/images`, formData);
   },

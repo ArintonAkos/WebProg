@@ -1,8 +1,10 @@
 import { deleteFiles, uploadRestaurantImagesMulter } from '../utils/storage';
 import Restaurant from '../models/restaurant';
+import { NextFunction, Response } from 'express';
+import { BaseRestaurantRequest } from '../requests/restaurantRequestTypes';
 
-export default async (req, res, next) => {
-  const upload = uploadRestaurantImagesMulter(req.params.id);
+export default async <T extends BaseRestaurantRequest>(req: T, res: Response, next: NextFunction) => {
+  const upload = uploadRestaurantImagesMulter(req.params.id, req);
 
   if (!req.params.id) {
     return res.status(400).json({
@@ -21,11 +23,13 @@ export default async (req, res, next) => {
   upload(req, res, (err) => {
     if (err) {
       console.error(err);
-      deleteFiles(req.files, res.params.id);
+      deleteFiles(req.images, req.params.id);
+
       return res.status(500).json({
         message: 'Error uploading images!',
       });
     }
+
     next();
   });
 };

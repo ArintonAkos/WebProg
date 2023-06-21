@@ -1,4 +1,3 @@
-import { Request, Response, NextFunction } from 'express';
 import { addRestaurantSchema, editRestaurantSchema, uploadRestaurantImagesSchema } from './schemas';
 import { validationMiddleware } from '../../middlewares/validationMiddleware';
 

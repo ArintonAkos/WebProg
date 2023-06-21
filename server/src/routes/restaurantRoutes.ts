@@ -18,7 +18,7 @@ const router = express.Router();
 router.get('/', getRestaurants);
 router.post('/', validateAddRestaurant, addRestaurant);
 router.get('/:id', getRestaurantById);
-router.put('/:id', validateEditRestaurant, uploadRestaurantImages, editRestaurant);
+router.put('/:id', uploadRestaurantImages, validateEditRestaurant, editRestaurant);
 router.post('/:id/images', validateUploadRestaurantImages, uploadRestaurantImages, uploadImages);
 
 export default router;
