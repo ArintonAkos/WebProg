@@ -2,10 +2,8 @@ import { Types } from 'mongoose';
 import { TableProps } from '../requests/restaurantRequestTypes';
 import Table from '../models/table';
 
-export const createTables = async (restaurantId: Types.ObjectId, tables: TableProps[]): Promise<Types.ObjectId[]> => {
-  console.log('CreateTables: ', ...tables);
-
-  return await Promise.all(
+export const createTables = async (restaurantId: Types.ObjectId, tables: TableProps[]): Promise<Types.ObjectId[]> =>
+  await Promise.all(
     tables.map(async (tableData) => {
       const existingTable = await Table.findOne({
         restaurant: restaurantId,
@@ -27,10 +25,9 @@ export const createTables = async (restaurantId: Types.ObjectId, tables: TablePr
       return table._id;
     }),
   );
-};
+
 export const deleteTable = async (tableId: Types.ObjectId) => {
   try {
-    console.log(tableId);
     const deletedTable = await Table.findByIdAndDelete(tableId);
 
     if (!deletedTable) {

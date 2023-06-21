@@ -30,6 +30,7 @@ const authentication = async (req: Request, res: Response, next: NextFunction) =
       }
 
       req.user = user;
+      console.log('user: ', user);
 
       next();
     } catch (err) {
@@ -99,7 +100,7 @@ const getGuest = async (): Promise<IPopulatedUser> => {
 };
 
 const getUser = async (userId?: string): Promise<IPopulatedUser | ErrorMessage> => {
-  const user = await User.findById(userId).populate('roles').populate('adminRestaurants').exec();
+  const user = (await User.findById(userId).populate('roles').populate('adminRestaurants').exec()).toObject();
 
   if (!user) {
     return new ErrorMessage(404, { error: 'User not found.' });

@@ -115,8 +115,6 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
       await deleteTable(table);
     }
 
-    console.log('Tables: ', tables);
-
     const updatedRestaurantData = {
       name,
       city,

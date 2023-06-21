@@ -10,7 +10,7 @@ export const addRestaurantSchema = Joi.object({
     .required(),
   openingHours: Joi.string()
     .required()
-    .pattern(/^([0-1][0-9]|2[0-3]):[0-5][0-9] - ([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
+    .pattern(/^([0-9]|[0-1][0-9]|2[0-4]):[0-5][0-9] - ([0-9]|[0-1][0-9]|2[0-4]):[0-5][0-9]$/),
   tables: Joi.array()
     .items(
       Joi.object({
@@ -31,7 +31,7 @@ export const editRestaurantSchema = Joi.object({
     .required(),
   openingHours: Joi.string()
     .required()
-    .pattern(/^([0-1][0-9]|2[0-4]):[0-5][0-9] - ([0-1][0-9]|2[0-4]):[0-5][0-9]$/),
+    .pattern(/^([0-9]|[0-1][0-9]|2[0-4]):[0-5][0-9] - ([0-9]|[0-1][0-9]|2[0-4]):[0-5][0-9]$/),
   tables: Joi.array()
     .items(
       Joi.object({

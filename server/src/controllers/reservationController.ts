@@ -15,8 +15,6 @@ export const addReservation = async (req: AddReservationRequest, res: Response) 
     const reservationStartTime = new Date(`${parsedDate}T${time}`);
     const reservationEndTime = new Date(reservationStartTime.getTime() + 30 * 60 * 1000); // 30 minutes later
 
-    console.log(date, time);
-    console.log(reservationStartTime);
     if (!validateStartTime(reservationStartTime)) {
       return res.status(400).json({
         showToast: true,
@@ -151,7 +149,6 @@ export const deleteReservation = async (req: Request, res: Response) => {
 };
 
 export const getAllReservations = async (req: Request, res: Response) => {
-  console.log(req.user);
   try {
     const userId = req.user.id;
     const reservations = await Reservation.find({ user: userId }).populate('user').populate('restaurant').exec();
@@ -162,6 +159,7 @@ export const getAllReservations = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error retrieving reservations' });
   }
 };
+
 export const getManagedReservations = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
@@ -171,7 +169,10 @@ export const getManagedReservations = async (req: Request, res: Response) => {
       });
     }
 
+    console.log(req.user.adminRestaurants);
     const restaurantIds = (req.user.adminRestaurants ?? []).map((adminRestaurant) => adminRestaurant._id);
+
+    console.log(restaurantIds);
     const reservations = await Reservation.find({
       restaurant: { $in: restaurantIds },
     })
