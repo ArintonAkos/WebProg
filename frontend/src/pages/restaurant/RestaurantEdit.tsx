@@ -26,37 +26,30 @@ const RestaurantEditPage: React.FC = () => {
   const methods = useForm();
   const restaurant = useSelector((state: RootState) => state.restaurant.restaurant.details, shallowEqual);
   const editedRestaurant = useSelector((state: RootState) => state.restaurant.editRestaurant);
+  const restaurantImages = useSelector((state: RootState) => state.restaurant.restaurant.details?.images || []);
 
   const [images, setImages] = useState<Array<File>>([]);
-
   const [deletedImages, setDeletedImages] = useState<Array<string>>([]);
-
-  const formFields = useMemo(() => {
-    if (restaurant) {
-      return editFieldsProps({ methods }).map((field) => {
-        const fieldName = field.name as keyof Restaurant;
-
-        return {
-          ...field,
-          placeHolder: restaurant[fieldName] as string | undefined,
-          value: restaurant[fieldName] as string | undefined,
-        };
-      });
-    } else {
-      return editFieldsProps({ methods });
-    }
-  }, [restaurant, methods]);
 
   useEffect(() => {
     dispatch(fetchRestaurant(id));
   }, [id, dispatch]);
 
-  useEffect(() => {
-    if (status === 'failed') {
-      dispatch(clearEditedRestaurantData());
-      navigate('/');
-    }
+  const formFields = useMemo(
+    () =>
+      editFieldsProps({ methods }).map((field) => {
+        const fieldName = field.name as keyof Restaurant;
 
+        return {
+          ...field,
+          placeHolder: restaurant?.[fieldName] as string | undefined,
+          value: restaurant?.[fieldName] as string | undefined,
+        };
+      }),
+    [restaurant, methods],
+  );
+
+  useEffect(() => {
     if (status === 'succeeded' && editedRestaurant && !editedRestaurant._id) {
       showToast({
         title: 'Warning',
@@ -70,44 +63,41 @@ const RestaurantEditPage: React.FC = () => {
       dispatch(clearEditedRestaurantData());
       navigate(`/restaurants/${editedRestaurant._id}`);
     }
-  }, [status, restaurant, showToast, navigate, dispatch, editedRestaurant]);
+  }, [status, showToast, navigate, editedRestaurant]);
 
-  const handleUploadedFiles = (files: File[]) => {
-    setImages([...files]);
+  useEffect(() => {
+    if (status === 'failed') {
+      dispatch(clearEditedRestaurantData());
+      navigate('/');
+    }
+  }, [status, dispatch, navigate]);
+
+  const handleUploadedFiles = (newFiles: File[]) => {
+    setImages((prevImages) => [...prevImages, ...newFiles]);
   };
+
+  const existingImages = restaurantImages.filter((image) => !deletedImages.includes(image));
 
   const handleDeletedFile = (file: File | string, type: 'new' | 'existing') => {
     if (type === 'existing') {
-      setDeletedImages([...deletedImages, file as string]);
+      setDeletedImages((prevDeletedImages) => [...prevDeletedImages, file as string]);
     } else {
       setImages(images.filter((imageFile) => imageFile !== file));
     }
   };
 
-  const handleSubmit = async (submittedData: RestaurantCreateFormData) => {
-    try {
-      console.log(images, {
-        ...submittedData,
-        deletedImages: deletedImages ?? [],
-        images: images,
-      });
-
-      dispatch(
-        editRestaurant({
-          id: id!,
-          restaurant: {
-            ...submittedData,
-            deletedImages: deletedImages ?? [],
-            images: images,
-          },
-        }),
-      );
-    } catch (error) {
-      console.error('Error editing restaurant:', error);
-    }
+  const handleSubmit = (submittedData: RestaurantCreateFormData) => {
+    dispatch(
+      editRestaurant({
+        id: id!,
+        restaurant: {
+          ...submittedData,
+          deletedImages: deletedImages ?? [],
+          images: images,
+        },
+      }),
+    );
   };
-
-  const existingImages = restaurant?.images?.filter((image) => deletedImages.includes(image)) || [];
 
   return (
     <StatusHandler status={status} error={error}>
@@ -125,7 +115,6 @@ const RestaurantEditPage: React.FC = () => {
               element: (
                 <ImageUpload
                   onUploadedFiles={handleUploadedFiles}
-                  key="imageUpload"
                   files={images}
                   onDeleteFile={handleDeletedFile}
                   existingImages={existingImages}

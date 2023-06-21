@@ -11,7 +11,6 @@ import PermissionRepository from '../redis/repositories/PermissionRepository';
 
 const authentication = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
-  console.log('Body: ', req.body);
 
   if (authHeader) {
     const token = authHeader.split(' ')[1];

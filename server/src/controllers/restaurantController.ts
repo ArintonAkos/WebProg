@@ -105,7 +105,7 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
     const restaurant = await Restaurant.findById(restaurantId);
 
     if (!restaurant) {
-      deleteFiles(req.images, req.params.id);
+      deleteFiles(req.files, req.params.id);
       return res.status(404).json({ message: 'Restaurant not found', showToast: true });
     } else {
       deleteFilesById(deletedImages, req.params.id);
@@ -129,12 +129,19 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
 
     if (deletedImages && deletedImages.length > 0) {
       updatedRestaurantData.images = updatedRestaurantData.images.filter((image) => !deletedImages.includes(image));
-      deletedImages.forEach((image) => deleteFile(`${restaurantId}/${image}`));
+      deletedImages.forEach((image) => deleteFile(`${restaurantId}${image}`));
     }
 
-    if (req.images && req.images.length > 0) {
-      const uploadedImages = req.images.map((file) => file.path);
-      updatedRestaurantData.images.push(...uploadedImages);
+    if (req.files) {
+      if (Array.isArray(req.files)) {
+        const uploadedImages = req.files.map((file) => file.path);
+        updatedRestaurantData.images.push(...uploadedImages);
+      } else {
+        Object.values(req.files).forEach((filesArray) => {
+          const uploadedImages = filesArray.map((file) => file.path);
+          updatedRestaurantData.images.push(...uploadedImages);
+        });
+      }
     }
 
     const updatedRestaurant = await Restaurant.findByIdAndUpdate(req.params.id, updatedRestaurantData, {
@@ -142,7 +149,7 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
     });
 
     if (!updatedRestaurant) {
-      deleteFiles(req.images, req.params.id);
+      deleteFiles(req.files, req.params.id);
       return res.status(404).json({ message: 'Restaurant not found', type: 'error' });
     }
 

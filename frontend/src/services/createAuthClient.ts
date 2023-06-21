@@ -24,8 +24,6 @@ const httpRequest = async ({ url, method, data = null, headers = {} }: Request) 
   };
 
   if (data instanceof FormData) {
-    console.log('IDE');
-    FormDataService.logFormData(data);
     options.body = data;
   } else if (data) {
     options.headers = {

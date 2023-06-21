@@ -22,7 +22,7 @@ export default async <T extends BaseRestaurantRequest>(req: T, res: Response, ne
 
   upload(req, res, (err) => {
     if (err) {
-      console.error(err);
+      console.error(err, req.images, req.files);
       deleteFiles(req.images, req.params.id);
 
       return res.status(500).json({

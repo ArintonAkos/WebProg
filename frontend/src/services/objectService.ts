@@ -6,6 +6,12 @@ const appendFormData = <T extends PlainObject>(formData: FormData, data: T, pare
   if (data && typeof data === 'object' && !(data instanceof Date) && !(data instanceof File)) {
     if (Array.isArray(data)) {
       if (data.length) {
+        if (parentKey === 'images' || parentKey === 'files') {
+          data.forEach((item, index) => {
+            formData.append(parentKey!, item);
+          });
+        }
+
         data.forEach((item, index) => {
           const newKey = parentKey ? `${parentKey}[${index}]` : `${index}`;
           appendFormData(formData, item, newKey);
@@ -23,8 +29,6 @@ const appendFormData = <T extends PlainObject>(formData: FormData, data: T, pare
         formData.append(parentKey!, '');
       }
     }
-  } else if (data instanceof File) {
-    formData.append(parentKey!, data, data.name);
   } else {
     const value = data || '';
     formData.append(parentKey!, value.toString());

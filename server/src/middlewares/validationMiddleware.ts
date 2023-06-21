@@ -3,7 +3,6 @@ import Joi from '@hapi/joi';
 import Request from '../types/request.types';
 
 export const validationMiddleware = (schema: Joi.ObjectSchema) => (req: Request, res: Response, next: NextFunction) => {
-  console.log('Validation middleware', req.body);
   const { error } = schema.validate(req.body);
 
   if (error) {

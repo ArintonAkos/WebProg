@@ -101,8 +101,6 @@ const ReservationForm: React.FC<{ id: string }> = ({ id }) => {
     [setTableIds, setTableErrorMessage],
   );
 
-  console.log(formFields);
-
   const portals = useMemo(
     () => [
       {

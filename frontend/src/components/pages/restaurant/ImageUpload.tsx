@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react';
-import { Box, Button, Text, Image, Flex, IconButton } from '@chakra-ui/react';
+import { Box, Button, Text, Image, IconButton, VStack } from '@chakra-ui/react';
 import { useDropzone } from 'react-dropzone';
 import { useCustomToast } from '../../../hooks/useCustomToast';
 import { CloseIcon } from '@chakra-ui/icons';
+import { API_BASE_URL } from '../../../services/createAuthClient';
 
 interface ImageUploadProps {
   onUploadedFiles: (files: File[]) => void;
@@ -35,8 +36,49 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadedFiles, files, exist
     },
   });
 
+  const renderImages = (images: Array<File | string>, existingLength: number) => {
+    const getType = (index: number) => {
+      if (index >= existingLength) {
+        return 'new';
+      }
+
+      return 'existing';
+    };
+
+    return images.map((image, index) => {
+      const type = getType(index);
+
+      return (
+        <Box width="48%" p={2} display="flex" justifyContent="center" key={`${type}-image-${index}`}>
+          <Box position="relative">
+            <Image
+              src={typeof image === 'string' ? `${API_BASE_URL}${image}` : URL.createObjectURL(image)}
+              alt="uploaded preview"
+              borderRadius="md"
+              objectFit="cover"
+              maxWidth="200px"
+              maxHeight="200px"
+              transition="all 0.3s"
+              _hover={{ transform: 'scale(1.05)' }}
+            />
+            <IconButton
+              icon={<CloseIcon />}
+              aria-label="Delete"
+              position="absolute"
+              top={1}
+              right={1}
+              onClick={() => onDeleteFile(image, type)}
+            />
+          </Box>
+        </Box>
+      );
+    });
+  };
+
+  const images = [...existingImages, ...files];
+
   return (
-    <>
+    <VStack spacing={4}>
       <Box
         {...getRootProps()}
         border="2px"
@@ -46,61 +88,20 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadedFiles, files, exist
         borderWidth={isDragActive ? 2 : 1}
         cursor="pointer"
         textAlign="center"
-        _hover={{ borderColor: 'blue.500' }}
+        w="100%"
       >
         <input {...getInputProps()} />
-        <Text mb={2}>
-          {isDragActive ? 'Drop the images here ...' : 'Drag and drop images, or click to select files'}
-        </Text>
-        <Button colorScheme="blue" variant="outline">
+        <Text>{isDragActive ? 'Drop the images here ...' : 'Drag and drop images, or click to select files'}</Text>
+        <Button colorScheme="blue" variant="outline" mt={2}>
           Upload Images
         </Button>
       </Box>
-      <Flex direction="row" flexWrap="wrap" mt={2}>
-        {existingImages.map((file, index) => (
-          <Box position="relative" key={`file-index`}>
-            <Image
-              src={typeof file === 'string' ? file : URL.createObjectURL(file)}
-              alt="uploaded preview"
-              width="calc(33.3% - 6px)"
-              objectFit="cover"
-              borderRadius="md"
-              mb={2}
-              mr={(index + 1) % 3 !== 0 ? 2 : 0}
-            />
-            <IconButton
-              icon={<CloseIcon />}
-              aria-label="Delete"
-              position="absolute"
-              top={2}
-              right={2}
-              onClick={() => onDeleteFile(file, 'existing')}
-            />
-          </Box>
-        ))}
-        {files.map((file, index) => (
-          <Box position="relative" key={`new-${index}`}>
-            <Image
-              src={URL.createObjectURL(file)}
-              alt="uploaded preview"
-              width="calc(33.3% - 6px)"
-              objectFit="cover"
-              borderRadius="md"
-              mb={2}
-              mr={(index + 1) % 3 !== 0 ? 2 : 0}
-            />
-            <IconButton
-              icon={<CloseIcon />}
-              aria-label="Delete"
-              position="absolute"
-              top={2}
-              right={2}
-              onClick={() => onDeleteFile(file, 'new')}
-            />
-          </Box>
-        ))}
-      </Flex>
-    </>
+      <VStack spacing={4} align="stretch">
+        <Box display="flex" flexWrap="wrap" justifyContent="center">
+          {renderImages(images, existingImages.length)}
+        </Box>
+      </VStack>
+    </VStack>
   );
 };
 

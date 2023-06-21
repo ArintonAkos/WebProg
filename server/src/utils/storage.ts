@@ -1,38 +1,50 @@
-import multer from 'multer';
+import multer, { Multer } from 'multer';
 import * as fs from 'fs';
 import path from 'path';
 import { BaseRestaurantRequest } from '../requests/restaurantRequestTypes';
 import { Express } from 'express';
 
-export function generateFields<T extends BaseRestaurantRequest>(sampleObject: T): multer.Field[] {
-  const fields: multer.Field[] = [];
-
-  for (const key in sampleObject.body) {
-    fields.push({ name: key, maxCount: 1 });
-  }
-
-  console.log(fields, sampleObject.body);
-  return fields;
-}
-
 const getFileName = (file: Express.Multer.File, restaurantId: string) => `/images/${restaurantId}/${file.originalname}`;
 
-export const deleteFiles = (files: Express.Multer.File[] | undefined, dir: string) => {
+type RequestFile =
+  | {
+      [fieldname: string]: Express.Multer.File[];
+    }
+  | Express.Multer.File[]
+  | undefined;
+
+export const deleteFiles = (files: RequestFile, dir: string) => {
   if (!files) {
     return;
   }
 
-  files.forEach((file) => {
-    if (!file) {
-      return;
-    }
+  if (Array.isArray(files)) {
+    files.forEach((file) => {
+      if (!file) {
+        return;
+      }
 
-    const filePath = getFileName(file, dir);
+      const filePath = getFileName(file, dir);
 
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
-  });
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    });
+  } else {
+    Object.values(files).forEach((filesArray) => {
+      filesArray.forEach((file) => {
+        if (!file) {
+          return;
+        }
+
+        const filePath = getFileName(file, dir);
+
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      });
+    });
+  }
 };
 
 export const deleteFilesById = (files: string[], dir: string) => {
@@ -55,7 +67,6 @@ export const deleteFilesById = (files: string[], dir: string) => {
 
 export const uploadRestaurantImagesMulter = <T extends BaseRestaurantRequest>(restaurantId: string, req: T) => {
   const dir = `/images/${restaurantId}`;
-  console.log(dir, req.files);
 
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
@@ -70,7 +81,7 @@ export const uploadRestaurantImagesMulter = <T extends BaseRestaurantRequest>(re
     },
   });
 
-  return multer({ storage }).fields(generateFields(req));
+  return multer({ storage }).array('images');
 };
 
 /**
