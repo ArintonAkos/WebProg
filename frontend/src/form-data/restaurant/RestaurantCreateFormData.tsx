@@ -3,6 +3,7 @@ import TableFields from '../../components/pages/restaurant/TableFields';
 import React from 'react';
 
 type TableProps = {
+  _id?: string;
   number: number;
   seats: number;
 };

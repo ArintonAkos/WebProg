@@ -145,6 +145,7 @@ export const deleteReservation = async (req: Request, res: Response) => {
 };
 
 export const getAllReservations = async (req: Request, res: Response) => {
+  console.log(req.user);
   try {
     const userId = req.user.id;
     const reservations = await Reservation.find({ userId }).populate('userId').populate('restaurantId').exec();

@@ -102,7 +102,7 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
 
   try {
     const restaurantId = req.params.id;
-    const restaurant = await Restaurant.findById(restaurantId);
+    const restaurant = await Restaurant.findById(restaurantId).populate('tables').exec();
 
     if (!restaurant) {
       deleteFiles(req.files, req.params.id);
@@ -115,7 +115,7 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
       await deleteTable(table);
     }
 
-    restaurant.tables = await createTables(restaurant._id, tables);
+    console.log('Tables: ', tables);
 
     const updatedRestaurantData = {
       name,
@@ -125,6 +125,7 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
       phone,
       openingHours: trimmedOpeningHours,
       images: [...restaurant.images],
+      tables: await createTables(restaurant._id, tables),
     };
 
     if (deletedImages && deletedImages.length > 0) {
