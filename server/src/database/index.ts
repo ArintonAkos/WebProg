@@ -10,9 +10,8 @@ const seedDatabase = async () => {
   try {
     console.log('Database seeding started!');
 
-    for (const seeder of seeders) {
-      await seeder.run();
-    }
+    const promises = seeders.map((seeder) => seeder.run());
+    await Promise.all(promises);
 
     console.log('Database seeded!');
 

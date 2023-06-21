@@ -33,6 +33,12 @@ rules:
     - error
     - single
     - avoidEscape: true
+  no-shadow: "off"
+  no-throw-literal: "off"
+  no-restricted-syntax: "off"
+  guard-for-in: "off"
+  '@typescript-eslint/no-empty-function': "off"
+  no-useless-constructor: "off"
   max-len: ["error", { "code": 120, "ignoreStrings": true, "ignoreTemplateLiterals": true, "ignoreComments": true }]
   max-classes-per-file: ["error", 5]
   no-console: 0

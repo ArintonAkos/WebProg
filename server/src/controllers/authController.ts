@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import User from '../models/user';
 import config from '../config/config';
 import Request from '../types/request.types';
@@ -10,6 +10,26 @@ import { IPermission } from '../models/permission';
 import RoleRepository from '../redis/repositories/RoleRepository';
 import { RegisterUserRequest } from '../requests/authRequestTypes';
 import RefreshToken from '../models/refreshToken';
+
+const userToPublicUser = (user: IPopulatedUserDocument): IPopulatedUser => {
+  const permissionsSet = new Set<IPermission>();
+  user.roles.forEach((role) => {
+    role.permissions.forEach((permission) => {
+      permissionsSet.add(permission);
+    });
+  });
+
+  return {
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    roles: user.roles as IRole[],
+    permissions: Array.from(permissionsSet),
+    adminRestaurants: user.adminRestaurants,
+    approved: user.approved,
+  };
+};
 
 export const register = async (req: RegisterUserRequest, res: Response) => {
   const { name, email, password, confirmPassword, phone, role } = req.body;
@@ -83,9 +103,8 @@ export const login = async (req: Request, res: Response) => {
       const publicUser = userToPublicUser(user);
 
       return res.status(200).json({ token, refreshToken, user: publicUser });
-    } else {
-      return res.status(400).json({ message: 'Invalid password' });
     }
+    return res.status(400).json({ message: 'Invalid password' });
   } catch {
     return res.status(500).json({ message: 'An error occurred during login' });
   }
@@ -99,7 +118,7 @@ export const refreshToken = async (req: Request, res: Response) => {
   }
 
   try {
-    const decoded = jwt.verify(refreshToken, config.refreshTokenSecret) as any;
+    const decoded = jwt.verify(refreshToken, config.refreshTokenSecret) as JwtPayload;
 
     const storedRefreshToken = await RefreshToken.findOne({ token: refreshToken });
     if (!storedRefreshToken) {
@@ -137,7 +156,7 @@ export const refreshToken = async (req: Request, res: Response) => {
 
     const publicUser = userToPublicUser(user as IPopulatedUserDocument);
 
-    res.json({
+    return res.json({
       token: newToken,
       refreshToken: newRefreshToken,
       user: publicUser,
@@ -145,24 +164,4 @@ export const refreshToken = async (req: Request, res: Response) => {
   } catch (err) {
     return res.status(403).send('Invalid refresh token');
   }
-};
-
-const userToPublicUser = (user: IPopulatedUserDocument): IPopulatedUser => {
-  const permissionsSet = new Set<IPermission>();
-  user.roles.forEach((role) => {
-    role.permissions.forEach((permission) => {
-      permissionsSet.add(permission);
-    });
-  });
-
-  return {
-    id: user._id,
-    name: user.name,
-    email: user.email,
-    phone: user.phone,
-    roles: user.roles as IRole[],
-    permissions: Array.from(permissionsSet),
-    adminRestaurants: user.adminRestaurants,
-    approved: user.approved,
-  };
 };

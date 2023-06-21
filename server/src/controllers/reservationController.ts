@@ -47,10 +47,10 @@ export const addReservation = async (req: AddReservationRequest, res: Response) 
       });
     }
 
-    for (let i = 0; i < tableIds.length; i++) {
+    const promises = tableIds.map(async (tableId): Promise<void> => {
       const existingTableReservation = await Reservation.findOne({
         restaurant: restaurantId,
-        tables: { $in: [tableIds[i]] },
+        tables: { $in: [tableId] },
         $or: [
           { time: { $gte: reservationStartTime, $lt: reservationEndTime } },
           {
@@ -61,11 +61,17 @@ export const addReservation = async (req: AddReservationRequest, res: Response) 
       });
 
       if (existingTableReservation) {
-        return res.status(400).json({
+        throw {
           showToast: true,
-          message: `Table ${tableIds[i]} is already reserved for this time interval.`,
-        });
+          message: `Table ${tableId} is already reserved for this time interval.`,
+        };
       }
+    });
+
+    try {
+      await Promise.all(promises);
+    } catch (e) {
+      res.status(400).json(e);
     }
 
     const reservation = new Reservation({
@@ -169,10 +175,8 @@ export const getManagedReservations = async (req: Request, res: Response) => {
       });
     }
 
-    console.log(req.user.adminRestaurants);
     const restaurantIds = (req.user.adminRestaurants ?? []).map((adminRestaurant) => adminRestaurant._id);
 
-    console.log(restaurantIds);
     const reservations = await Reservation.find({
       restaurant: { $in: restaurantIds },
     })

@@ -21,7 +21,7 @@ const responseFormatter = (req: Request, res: Response, next: NextFunction) => {
   };
 
   try {
-    next();
+    return next();
   } catch (e) {
     console.error('Error occured: ', e);
   }

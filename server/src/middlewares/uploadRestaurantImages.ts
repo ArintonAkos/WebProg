@@ -4,7 +4,7 @@ import Restaurant from '../models/restaurant';
 import { BaseRestaurantRequest } from '../requests/restaurantRequestTypes';
 
 export default async <T extends BaseRestaurantRequest>(req: T, res: Response, next: NextFunction) => {
-  const upload = uploadRestaurantImagesMulter(req.params.id, req);
+  const upload = uploadRestaurantImagesMulter(req.params.id);
 
   if (!req.params.id) {
     return res.status(400).json({
@@ -30,6 +30,6 @@ export default async <T extends BaseRestaurantRequest>(req: T, res: Response, ne
       });
     }
 
-    next();
+    return next();
   });
 };

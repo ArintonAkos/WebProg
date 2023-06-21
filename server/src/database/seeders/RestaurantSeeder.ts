@@ -55,7 +55,7 @@ const createRandomTableForRestaurant = async (restaurantId: Types.ObjectId): Pro
   const tables: Types.ObjectId[] = [];
 
   const tableCount = Math.floor(Math.random() * 10) + 1;
-  for (let i = 0; i < tableCount; i++) {
+  const promises = Array.from({ length: tableCount }, async (_, i) => {
     const table = await Table.create({
       seats: Math.floor(Math.random() * 10) + 1,
       number: i + 1,
@@ -63,7 +63,9 @@ const createRandomTableForRestaurant = async (restaurantId: Types.ObjectId): Pro
     });
 
     tables.push(table.id);
-  }
+  });
+
+  await Promise.all(promises);
 
   return tables;
 };
@@ -71,14 +73,16 @@ const createRandomTableForRestaurant = async (restaurantId: Types.ObjectId): Pro
 const onComplete = async () => {
   const restaurants = await Restaurant.find({});
 
-  for (const restaurant of restaurants) {
+  const promises = restaurants.map(async (restaurant) => {
     const restaurantId: Types.ObjectId = restaurant._id;
 
     restaurant.tables = await createRandomTableForRestaurant(restaurantId);
     await restaurant.save();
 
     console.log('Generated ', restaurant.tables.length, 'number of tables for restaurant: ', restaurant.name);
-  }
+  });
+
+  await Promise.all(promises);
 };
 
 export default new Seeder<IRestaurant>(Restaurant, restaurantSeeds, onComplete);

@@ -24,12 +24,11 @@ export const getRestaurants = async (req: Request, res: Response) => {
         showToast: true,
         type: 'error',
       });
-    } else {
-      console.error('Error getting restaurants:', error);
-      return res.status(500).json({
-        message: 'Error getting restaurants',
-      });
     }
+    console.error('Error getting restaurants:', error);
+    return res.status(500).json({
+      message: 'Error getting restaurants',
+    });
   }
 };
 
@@ -65,10 +64,9 @@ export const addRestaurant = async (req: AddRestaurantRequest, res: Response) =>
         showToast: true,
         type: 'error',
       });
-    } else {
-      console.error('Error adding restaurant:', error);
-      return res.status(500).json({ message: 'Error adding restaurant' });
     }
+    console.error('Error adding restaurant:', error);
+    return res.status(500).json({ message: 'Error adding restaurant' });
   }
 };
 
@@ -109,9 +107,8 @@ export const editRestaurant = async (req: EditRestaurantRequest, res: Response) 
     }
     deleteFilesById(deletedImages, req.params.id);
 
-    for (const table of restaurant.tables) {
-      await deleteTable(table);
-    }
+    const promises = restaurant.tables.map((table) => deleteTable(table));
+    await Promise.all(promises);
 
     const updatedRestaurantData = {
       name,

@@ -6,7 +6,7 @@ abstract class BaseRepository<T> implements IRedisRepository<T> {
   constructor(private model: Model<T>) {}
 
   async fetchAll(): Promise<T[]> {
-    return this.model.find({}).exec();
+    return await this.model.find({}).exec();
   }
 
   async store(item: T): Promise<void> {
@@ -43,7 +43,7 @@ abstract class BaseRepository<T> implements IRedisRepository<T> {
     const items = await fetchFunction();
     const storedItems = [];
 
-    for (const item of items) {
+    const promises = items.map(async (item) => {
       const redisKey = generateRedisKey(item);
       let data = await redis.get(redisKey);
 
@@ -53,7 +53,9 @@ abstract class BaseRepository<T> implements IRedisRepository<T> {
       }
 
       storedItems.push(JSON.parse(data));
-    }
+    });
+
+    await Promise.all(promises);
 
     return storedItems;
   }

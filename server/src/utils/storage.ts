@@ -1,8 +1,7 @@
-import multer, { Multer } from 'multer';
+import multer from 'multer';
 import * as fs from 'fs';
 import path from 'path';
 import { Express } from 'express';
-import { BaseRestaurantRequest } from '../requests/restaurantRequestTypes';
 
 const getFileName = (file: Express.Multer.File, restaurantId: string) => `/images/${restaurantId}/${file.originalname}`;
 
@@ -65,7 +64,7 @@ export const deleteFilesById = (files: string[], dir: string) => {
   });
 };
 
-export const uploadRestaurantImagesMulter = <T extends BaseRestaurantRequest>(restaurantId: string, req: T) => {
+export const uploadRestaurantImagesMulter = (restaurantId: string) => {
   const dir = `/images/${restaurantId}`;
 
   if (!fs.existsSync(dir)) {

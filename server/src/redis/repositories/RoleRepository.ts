@@ -16,7 +16,7 @@ class RoleRepository extends BaseRepository<IRole> {
     const fetchAllCallback = () => this.fetchAll();
     const generateRedisKeyCallback = (item: IRole) => this.generateRedisKey(item);
 
-    return this.fetchFromRedisOrDB(fetchAllCallback.bind(this), generateRedisKeyCallback.bind(this));
+    return await this.fetchFromRedisOrDB(fetchAllCallback.bind(this), generateRedisKeyCallback.bind(this));
   }
 
   async getRole(roleName: string): Promise<IRole | null> {

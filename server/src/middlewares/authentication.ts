@@ -9,6 +9,51 @@ import RoleRepository from '../redis/repositories/RoleRepository';
 import { IPopulatedUser, IUser } from '../types/user.types';
 import PermissionRepository from '../redis/repositories/PermissionRepository';
 
+class ErrorMessage {
+  status: number;
+  json: object;
+
+  constructor(status: number, json: object) {
+    this.status = status;
+    this.json = json;
+  }
+}
+
+const getGuest = async (): Promise<IPopulatedUser> => {
+  const guestRole = await RoleRepository.getRole('Guest');
+  const guestPermissions = await PermissionRepository.getPermissionsForRole('Guest');
+
+  return {
+    id: new Types.ObjectId(),
+    name: 'Guest',
+    email: '',
+    roles: guestRole ? [guestRole] : [],
+    permissions: guestPermissions || [],
+    adminRestaurants: [],
+  } as IPopulatedUser;
+};
+
+const isPopulatedUser = (user: IUser | IPopulatedUser): user is IPopulatedUser =>
+  (user as IPopulatedUser).roles !== undefined &&
+  (user as IPopulatedUser).roles.length > 0 &&
+  typeof (user as IPopulatedUser).roles[0] !== 'string';
+
+const getUser = async (userId?: string): Promise<IPopulatedUser | ErrorMessage> => {
+  const user = (await User.findById(userId).populate('roles').populate('adminRestaurants').exec()).toObject();
+
+  if (!user) {
+    return new ErrorMessage(404, { error: 'User not found.' });
+  }
+
+  if (isPopulatedUser(user)) {
+    return {
+      ...user,
+      id: new Types.ObjectId(user._id),
+    };
+  }
+  return new ErrorMessage(500, { error: 'User is not populated.' });
+};
+
 const authentication = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
 
@@ -30,9 +75,8 @@ const authentication = async (req: Request, res: Response, next: NextFunction) =
       }
 
       req.user = user;
-      console.log('user: ', user);
 
-      next();
+      return next();
     } catch (err) {
       if (err instanceof jwt.TokenExpiredError) {
         const refreshToken = req.headers['x-refresh-token'];
@@ -60,7 +104,7 @@ const authentication = async (req: Request, res: Response, next: NextFunction) =
           };
           req.user = user;
 
-          next();
+          return next();
         } catch (err) {
           return res.status(403).json({ error: 'Invalid refresh token.' });
         }
@@ -74,50 +118,5 @@ const authentication = async (req: Request, res: Response, next: NextFunction) =
     return next();
   }
 };
-
-class ErrorMessage {
-  status: number;
-  json: Object;
-
-  constructor(status: number, json: Object) {
-    this.status = status;
-    this.json = json;
-  }
-}
-
-const getGuest = async (): Promise<IPopulatedUser> => {
-  const guestRole = await RoleRepository.getRole('Guest');
-  const guestPermissions = await PermissionRepository.getPermissionsForRole('Guest');
-
-  return {
-    id: new Types.ObjectId(),
-    name: 'Guest',
-    email: '',
-    roles: guestRole ? [guestRole] : [],
-    permissions: guestPermissions || [],
-    adminRestaurants: [],
-  } as IPopulatedUser;
-};
-
-const getUser = async (userId?: string): Promise<IPopulatedUser | ErrorMessage> => {
-  const user = (await User.findById(userId).populate('roles').populate('adminRestaurants').exec()).toObject();
-
-  if (!user) {
-    return new ErrorMessage(404, { error: 'User not found.' });
-  }
-
-  if (isPopulatedUser(user)) {
-    return {
-      ...user,
-      id: new Types.ObjectId(user._id),
-    };
-  }
-  return new ErrorMessage(500, { error: 'User is not populated.' });
-};
-
-const isPopulatedUser = (user: IUser | IPopulatedUser): user is IPopulatedUser =>
-  (user as IPopulatedUser).roles !== undefined &&
-  (user as IPopulatedUser).roles.length > 0 &&
-  typeof (user as IPopulatedUser).roles[0] !== 'string';
 
 export default authentication;

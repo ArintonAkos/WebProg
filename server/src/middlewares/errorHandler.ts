@@ -1,7 +1,7 @@
-import { NextFunction, Response } from 'express';
+import { Response } from 'express';
 import Request from '../types/request.types';
 
-const errorHandler = (err: any, req: Request, res: Response, _: NextFunction) => {
+const errorHandler = (err, req: Request, res: Response) => {
   res.status(500).json({ error: 'An error occurred', showToast: true });
 };
 

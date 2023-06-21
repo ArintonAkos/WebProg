@@ -5,13 +5,14 @@ class Seeder<T> {
 
   public async run(): Promise<void> {
     try {
-      for (const seed of this.seeds) {
+      const promises = this.seeds.map(async (seed) => {
         const record = await this.model.findOne(seed);
         if (!record) {
           await this.model.create(seed);
         }
-      }
+      });
 
+      await Promise.all(promises);
       await this.onComplete();
 
       console.log(`Seeded ${this.seeds.length} documents for model "${this.model.modelName}".`);

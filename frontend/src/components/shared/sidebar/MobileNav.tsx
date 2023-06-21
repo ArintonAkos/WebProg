@@ -2,8 +2,6 @@ import { Flex, FlexProps, IconButton, Link, Text, useColorModeValue } from '@cha
 import { FiMenu } from 'react-icons/fi';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../store';
 
 interface MobileProps extends FlexProps {
   onOpen: () => void;
