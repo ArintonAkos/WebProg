@@ -1,8 +1,8 @@
 import multer, { Multer } from 'multer';
 import * as fs from 'fs';
 import path from 'path';
-import { BaseRestaurantRequest } from '../requests/restaurantRequestTypes';
 import { Express } from 'express';
+import { BaseRestaurantRequest } from '../requests/restaurantRequestTypes';
 
 const getFileName = (file: Express.Multer.File, restaurantId: string) => `/images/${restaurantId}/${file.originalname}`;
 

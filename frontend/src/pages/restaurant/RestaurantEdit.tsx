@@ -63,7 +63,7 @@ const RestaurantEditPage: React.FC = () => {
       dispatch(clearEditedRestaurantData());
       navigate(`/restaurants/${editedRestaurant._id}`);
     }
-  }, [status, showToast, navigate, editedRestaurant]);
+  }, [status, showToast, navigate, editedRestaurant, dispatch]);
 
   useEffect(() => {
     if (status === 'failed') {

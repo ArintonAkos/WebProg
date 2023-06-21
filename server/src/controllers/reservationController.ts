@@ -80,14 +80,14 @@ export const addReservation = async (req: AddReservationRequest, res: Response) 
 
     await reservation.save();
 
-    res.status(201).json({
+    return res.status(201).json({
       showToast: true,
       message: 'Reservation created successfully',
       reservation,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({
+    return res.status(500).json({
       showToast: true,
       message: 'Error creating reservation',
     });
@@ -102,10 +102,10 @@ export const getReservationsByRestaurantId = async (req: Request, res: Response)
       .populate('restaurant')
       .exec();
 
-    res.status(200).json({ reservations });
+    return res.status(200).json({ reservations });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error retrieving reservations' });
+    return res.status(500).json({ message: 'Error retrieving reservations' });
   }
 };
 
@@ -133,7 +133,7 @@ export const deleteReservation = async (req: Request, res: Response) => {
 
     await reservation.deleteOne();
 
-    res.status(200).json({
+    return res.status(200).json({
       showToast: true,
       message: 'Reservation deleted successfully',
       type: 'success',
@@ -141,7 +141,7 @@ export const deleteReservation = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({
+    return res.status(500).json({
       showToast: true,
       message: 'Error deleting reservation',
     });
@@ -153,10 +153,10 @@ export const getAllReservations = async (req: Request, res: Response) => {
     const userId = req.user.id;
     const reservations = await Reservation.find({ user: userId }).populate('user').populate('restaurant').exec();
 
-    res.json({ reservations });
+    return res.status(200).json({ reservations });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error retrieving reservations' });
+    return res.status(500).json({ message: 'Error retrieving reservations' });
   }
 };
 
@@ -180,10 +180,10 @@ export const getManagedReservations = async (req: Request, res: Response) => {
       .populate('user')
       .exec();
 
-    res.json({ reservations });
+    return res.status(200).json({ reservations });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error retrieving reservations' });
+    return res.status(500).json({ message: 'Error retrieving reservations' });
   }
 };
 
@@ -205,14 +205,14 @@ export const updateReservation = async (req: Request, res: Response) => {
       .populate('restaurant')
       .exec();
 
-    res.status(200).json({
+    return res.status(200).json({
       showToast: true,
       message: 'Reservation updated successfully',
       reservation: populatedReservation,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({
+    return res.status(500).json({
       showToast: true,
       message: 'Error updating reservation',
     });
@@ -242,9 +242,9 @@ export const getReservedTablesByRestaurantId = async (req: GetReservedTablesRequ
 
     const reservedTables = reservations.flatMap((reservation) => reservation.tables);
 
-    res.status(200).json({ reservedTables });
+    return res.status(200).json({ reservedTables });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error retrieving reserved tables' });
+    return res.status(500).json({ message: 'Error retrieving reserved tables' });
   }
 };

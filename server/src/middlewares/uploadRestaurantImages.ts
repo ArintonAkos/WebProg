@@ -1,6 +1,6 @@
+import { NextFunction, Response } from 'express';
 import { deleteFiles, uploadRestaurantImagesMulter } from '../utils/storage';
 import Restaurant from '../models/restaurant';
-import { NextFunction, Response } from 'express';
 import { BaseRestaurantRequest } from '../requests/restaurantRequestTypes';
 
 export default async <T extends BaseRestaurantRequest>(req: T, res: Response, next: NextFunction) => {

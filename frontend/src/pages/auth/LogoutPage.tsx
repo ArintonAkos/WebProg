@@ -15,7 +15,7 @@ const LogoutPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(logoutUser());
-  }, []);
+  }, [dispatch]);
 
   if (!user) {
     return <Navigate to={'/'} />;

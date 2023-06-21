@@ -8,8 +8,8 @@ import { RootState } from '../../../store';
 interface MobileProps extends FlexProps {
   onOpen: () => void;
 }
+
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
-  const user = useSelector((state: RootState) => state.auth.userData.user);
   const bg = useColorModeValue('white', 'gray.900');
   const borderBottomColor = useColorModeValue('gray.200', 'gray.700');
 

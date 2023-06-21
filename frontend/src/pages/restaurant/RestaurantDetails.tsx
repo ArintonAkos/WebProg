@@ -14,7 +14,7 @@ import {
 import useStateHandling from '../../hooks/useStateHandling';
 import StatusHandler from '../../components/shared/StatusHandler';
 import useAppDispatch from '../../hooks/useAppDispatch';
-import { fetchRestaurant, uploadImages } from '../../actions/restaurantActions';
+import { fetchRestaurant } from '../../actions/restaurantActions';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import ImageCarousel from '../../components/shared/ImageCarousel';
@@ -33,7 +33,6 @@ const RestaurantDetails: React.FC = () => {
   const dispatch = useAppDispatch();
   const restaurant = useSelector((state: RootState) => state.restaurant.restaurant.details);
   const navigate = useNavigate();
-  const [files, setFiles] = useState<File[]>([]);
   const ability = useAbility();
 
   useEffect(() => {

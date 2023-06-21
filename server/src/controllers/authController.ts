@@ -43,10 +43,10 @@ export const register = async (req: RegisterUserRequest, res: Response) => {
 
     await user.save();
 
-    res.status(201).json({ message: 'User registered successfully', showToast: true });
+    return res.status(201).json({ message: 'User registered successfully', showToast: true });
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ message: err.message, showToast: true });
+    return res.status(500).json({ message: err.message, showToast: true });
   }
 };
 
@@ -82,12 +82,12 @@ export const login = async (req: Request, res: Response) => {
 
       const publicUser = userToPublicUser(user);
 
-      res.json({ token, refreshToken, user: publicUser });
+      return res.status(200).json({ token, refreshToken, user: publicUser });
     } else {
-      res.status(400).json({ message: 'Invalid password' });
+      return res.status(400).json({ message: 'Invalid password' });
     }
   } catch {
-    res.status(500).json({ message: 'An error occurred during login' });
+    return res.status(500).json({ message: 'An error occurred during login' });
   }
 };
 
@@ -143,7 +143,7 @@ export const refreshToken = async (req: Request, res: Response) => {
       user: publicUser,
     });
   } catch (err) {
-    res.status(403).send('Invalid refresh token');
+    return res.status(403).send('Invalid refresh token');
   }
 };
 

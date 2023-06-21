@@ -1,6 +1,5 @@
 import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
 import createAuthClient from '../services/createAuthClient';
-import { AvailableRoles } from '../models/role';
 
 type CreateUserArgs = {
   name: string;

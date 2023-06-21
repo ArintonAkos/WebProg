@@ -1,24 +1,13 @@
 import React, { useState } from 'react';
-import {
-  Accordion,
-  AccordionButton,
-  AccordionItem,
-  AccordionPanel,
-  Box,
-  Button,
-  Image,
-  Skeleton,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Button, Image, Skeleton, Text, useDisclosure, VStack } from '@chakra-ui/react';
 import Restaurant, { MinimalRestaurantData } from '../../../models/restaurant';
 import { fetchRestaurant } from '../../../actions/restaurantActions';
 import useAppDispatch from '../../../hooks/useAppDispatch';
 import { Link, useNavigate } from 'react-router-dom';
-import Loading from '../../shared/Loading';
 import { API_BASE_URL } from '../../../services/createAuthClient';
 import useAbility from '../../../hooks/useAbility';
 import { EditIcon, Icon } from '@chakra-ui/icons';
+import RestaurantPreview from './RestaurantPreview';
 
 interface RestaurantCardProps {
   restaurant: Restaurant | MinimalRestaurantData;
@@ -30,8 +19,11 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const ability = useAbility();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleDetailsClick = async () => {
+    onOpen();
+
     if (!('street' in restaurant)) {
       setIsLoading(true);
       await dispatch(fetchRestaurant(restaurant._id));
@@ -50,7 +42,6 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) => {
       <Skeleton isLoaded={imageLoaded}>
         <Image src={image} alt="Image" objectFit="cover" h="400px" w="full" onLoad={() => setImageLoaded(true)} />
       </Skeleton>
-
       <Box p="6">
         <Box display="flex" alignItems="baseline" flexDirection="column">
           <Box
@@ -81,22 +72,13 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) => {
         </Box>
       </Box>
 
-      <Accordion allowToggle>
-        <AccordionItem>
-          <AccordionButton onClick={handleDetailsClick}>{isLoading ? 'Loading...' : 'More Details'}</AccordionButton>
-          <AccordionPanel>
-            {isLoading && <Loading />}
-            {!isLoading && 'street' in restaurant && (
-              <>
-                <Text>City: {restaurant.city}</Text>
-                <Text>Street: {restaurant.street}</Text>
-                <Text>Phone: {restaurant.phone}</Text>
-                <Text>Opening hours: {restaurant.openingHours}</Text>
-              </>
-            )}
-          </AccordionPanel>
-        </AccordionItem>
-      </Accordion>
+      <Box p={2}>
+        <Button onClick={handleDetailsClick} isLoading={isLoading} w="full" colorScheme="blue">
+          More Details
+        </Button>
+      </Box>
+
+      <RestaurantPreview restaurant={restaurant} isLoading={isLoading} isOpen={isOpen} onClose={onClose} />
     </Box>
   );
 };
