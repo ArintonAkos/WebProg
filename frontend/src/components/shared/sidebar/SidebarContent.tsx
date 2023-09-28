@@ -4,6 +4,7 @@ import { RootState } from '../../../store';
 import { Group, LinkItems } from './LinkItems';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+// import defineAbilityFor from '../../../ability/defineAbilityFor';
 import NavItem from './NavItem';
 
 interface SidebarProps extends BoxProps {
@@ -12,6 +13,8 @@ interface SidebarProps extends BoxProps {
 
 const SidebarContent: React.FC<SidebarProps> = ({ onClose, ...rest }: SidebarProps) => {
   const user = useSelector((state: RootState) => state.auth.userData.user);
+  // const permissions = user?.permissions;
+  // const { can } = defineAbilityFor(user);
 
   const filteredLinkItems = LinkItems.map((group) => ({
     ...group,
